@@ -1,1 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap');
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+html,
+body,
+section,
+button {
+    font-family: 'Roboto Condensed', sans-serif;
+    box-sizing: border-box;
+}
+
+section {
+    height: 100%;
+    min-height: 100vh;
+}
+
+button:hover {
+    cursor: pointer;
+}

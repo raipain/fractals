@@ -1,0 +1,25 @@
+section {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1,
+h3,
+a {
+    text-align: center;
+}
+
+button {
+    background: none;
+    border: 2px solid black;
+    padding: .5em 1em;
+    font-weight: bold;
+}
+
+a {
+    color: inherit;
+    font-weight: bold;
+}
