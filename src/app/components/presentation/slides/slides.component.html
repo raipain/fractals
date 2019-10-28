@@ -1,0 +1,4 @@
+<div class="wrapper" fxLayout fxLayoutAlign="center center">
+    <app-intro @intro *ngIf="(currentSlide$ | async) == 1"></app-intro>
+    <app-usage *ngIf="(currentSlide$ | async) == 2"></app-usage>
+</div>

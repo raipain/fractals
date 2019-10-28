@@ -1,13 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
+//#region @Component 
 @Component({
-  selector: 'app-intro01',
-  templateUrl: './intro01.component.html',
-  styleUrls: ['./intro01.component.scss'],
+  selector: 'app-presentation',
+  templateUrl: './presentation.component.html',
+  styleUrls: ['./presentation.component.scss'],
   animations: [
-    trigger('slide-1', [
+    trigger('content', [
       state('state-1', style({
+        transform: 'translateX(0)'
+      })),
+      state('state-2', style({
+        transform: 'translateX(-100%)'
+      })),
+      state('state-4', style({
+        transform: 'translateX(-200%)'
+      })),
+      state('state-7', style({
+        transform: 'translateX(-300%)'
+      })),
+      state('state-10', style({
+        transform: 'translateX(-400%)'
+      })),
+      transition('*=>*', animate('1s'))
+    ]),
+    trigger('intro', [
+      state('state-1', style({
+        transform: 'translateX(100%)'
+      })),
+      state('state-2', style({
         transform: 'translateX(0)'
       })),
       state('state-4', style({
@@ -24,6 +46,9 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     trigger('slide-2', [
       state('state-1', style({
         transform: 'translateX(100%)'
+      })),
+      state('state-2', style({
+        transform: 'translateX()'
       })),
       state('state-4', style({
         transform: 'translateX(0)'
@@ -68,7 +93,9 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     ])
   ]
 })
-export class Intro01Component implements OnInit {
+//#endregion
+
+export class PresentationComponent implements OnInit {
 
   private states: number = 12;
   private currentState: number = 1;

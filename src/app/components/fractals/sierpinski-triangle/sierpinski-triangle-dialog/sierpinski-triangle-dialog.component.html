@@ -1,0 +1,36 @@
+<h3>Sierpinszki háromszög</h3>
+<div fxLayout>
+    <div id="canvas"></div>
+    <div class="settings">
+        <h4>Konfigurálás</h4>
+        <ul>
+            <li>
+                <mat-radio-group>
+                    <mat-radio-button value="true" checked (click)="toggleDefault(true)">Alapértelmezett kezdőpontok</mat-radio-button>
+                    <mat-radio-button value="false" (click)="toggleDefault(false)">Saját kezdőpontok</mat-radio-button>
+                  </mat-radio-group>
+            </li>
+            <li>
+                <mat-checkbox [(ngModel)]="highlight" (click)="toggleHighlight()">Háromszög részeinek kijelölése</mat-checkbox>
+            </li>
+            <li>
+                <span>Két pont közötti távolság: </span>
+                <mat-slider
+                    max="0.9"
+                    min="0.1"
+                    step="0.1"
+                    thumbLabel
+                    (change)="changeLerp()"
+                    [(ngModel)]="lerp">
+                </mat-slider>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="controls">
+    <ul fxLayout fxLayoutGap="1em">
+        <li fxLayout fxLayoutAlign="center center" (click)="start()"><i class="material-icons">play_arrow</i>START</li>
+        <li fxLayout fxLayoutAlign="center center" (click)="pause()"><i class="material-icons">pause</i>PAUSE</li>
+        <li fxLayout fxLayoutAlign="center center" (click)="stop()"><i class="material-icons">stop</i>STOP</li>
+    </ul>
+</div>

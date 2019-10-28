@@ -1,0 +1,31 @@
+#canvas {
+    width: 70%;
+    border: 1px solid #161616;
+}
+
+span {
+    display: inline-block;
+    width: 230px;
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    margin: .5em;
+}
+
+.controls li:hover {
+    cursor: pointer;
+}
+
+::ng-deep .mat-accent .mat-slider-thumb {
+    background-color: black;
+} 
+::ng-deep .mat-accent .mat-slider-thumb-label {
+    background-color: black;
+} 
+::ng-deep .mat-accent .mat-slider-track-fill {
+    background-color: black;
+} 

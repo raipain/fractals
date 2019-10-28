@@ -6,12 +6,12 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    background-color: #929292;
 }
 
-html,
-body,
-section,
-button {
+*,
+*::after,
+*::before {
     font-family: 'Roboto Condensed', sans-serif;
     box-sizing: border-box;
 }
@@ -24,3 +24,5 @@ section {
 button:hover {
     cursor: pointer;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
