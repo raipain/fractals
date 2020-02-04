@@ -8,8 +8,14 @@ span {
     width: 230px;
 }
 
-ul {
+.settings {
+    padding-left: .5em;
+}
+
+ul, li {
     list-style: none;
+    margin-left: 0;
+    padding-left: 0;
 }
 
 li {

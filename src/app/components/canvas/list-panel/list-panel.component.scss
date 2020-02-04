@@ -1,0 +1,53 @@
+.panel {
+    position: absolute;
+    height: 100vh;
+    width: 150px;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    background-color: #036683;
+    transform: rotate(180deg);
+}
+
+.arrow {
+    background-image: url("/assets/icons/left-arrow.svg");
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    top: 50%;
+    left: calc(100% - 20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    height: 25px;
+    width: 25px;
+    background-color: #036683;
+    color: black;
+    z-index: 2;
+    transition: .5s;
+
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.75);
+    }
+}
+
+h5 {
+    text-align: center;
+}
+
+.item {
+    transition: .5s;
+    padding: 5px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #034f66;
+    }
+
+    &.active {
+      background-color: #034f66;
+    }
+}

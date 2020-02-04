@@ -1,0 +1,44 @@
+.container {
+    position: relative;
+    width: 150px;
+    height: 100vh;
+    background-color: #036683;
+    transition: .5s;
+
+    /*&:hover {
+        overflow-y: scroll;
+    }*/
+}
+
+h5 {
+  text-align: center;
+}
+
+/*::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #036683;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #034f66;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #034f66;
+  }*/
+
+.item {
+    transition: .5s;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #034f66;
+    }
+
+    &.active {
+      background-color: #034f66;
+    }
+}

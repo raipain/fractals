@@ -1,0 +1,18 @@
+<div class="panel" [@configurationPanelHideAnimation]="configurationPanelHideAnimationStatus">
+    <h5>Beállítások</h5>
+    <div *ngIf="selectedFractal != null" fxLayout="column" fxLayoutAlign="start start">
+        <div *ngFor="let conf of fractalList[selectedFractal].configurations">
+            <div *ngIf="conf.type == 'slider'">
+                <p>{{conf.name}}</p>
+                <mat-slider thumbLabel min="{{conf.minValue}}" max="{{conf.maxValue}}" step="{{conf.step}}" value="{{conf.value}}"></mat-slider>
+            </div>
+            <div *ngIf="conf.type == 'checkbox'">
+                <mat-checkbox>{{conf.name}}</mat-checkbox>
+            </div>
+        </div>
+    </div>
+    <span class="arrow" 
+        (click)="toggleConfigurationPanelAnimation()"
+        [style.transform]="configurationPanelHideAnimationStatus == 'show' ? 'rotate(180deg)' : 'rotate(0)'">
+    </span>
+</div>

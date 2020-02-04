@@ -1,0 +1,5 @@
+<div class="container" id="drawing" #container [@listAnimation]="listAnimation">
+    <button (click)="removeCanvas()">Delete</button>
+    <span class="left-arrow" (click)="toggleList()" [style.transform]="listAnimation == 'show' ? '' : 'rotate(180deg)'"></span>
+    <p *ngIf="selectedFractal == null">{{nullText}}</p>
+</div>

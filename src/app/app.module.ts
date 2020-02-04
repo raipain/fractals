@@ -20,6 +20,18 @@ import { MaterialModule } from './material.module';
 import { SierpinskiTriangleDialogComponent } from './components/fractals/sierpinski-triangle/sierpinski-triangle-dialog/sierpinski-triangle-dialog.component';
 import { SierpinskiCarpetComponent } from './components/fractals/sierpinski-carpet/sierpinski-carpet.component';
 import { SierpinskiCarpetDialogComponent } from './components/fractals/sierpinski-carpet/sierpinski-carpet-dialog/sierpinski-carpet-dialog.component';
+import { Fractalsv1Component } from './components/fractalsv1/fractalsv1.component';
+import { ListComponent } from './components/fractalsv1/list/list.component';
+import { SierpinskiTrianglePreview } from './algorithms/sierpinski-triangle-prev';
+import { SierpinskiCarpetPreview } from './algorithms/sierpinski-carpet-prev';
+import { ConfComponent } from './components/fractalsv1/conf/conf.component';
+import { DrawingComponent } from './components/fractalsv1/drawing/drawing.component';
+import { SierpinskiCarpetConf } from './algorithms/sierpinski-carpet-conf';
+import { SierpinskiTriangleConf } from './algorithms/sierpinski-triangle-conf';
+import { CanvasComponent } from './components/canvas/canvas.component';
+import { ListPanelComponent } from './components/canvas/list-panel/list-panel.component';
+import { ConfigurationPanelComponent } from './components/canvas/configuration-panel/configuration-panel.component';
+import { LevyCCurvePreview } from './algorithms/levy-c-curve-prev';
 
 @NgModule({
   declarations: [
@@ -34,7 +46,14 @@ import { SierpinskiCarpetDialogComponent } from './components/fractals/sierpinsk
     SierpinskiTriangleComponent,
     SierpinskiTriangleDialogComponent,
     SierpinskiCarpetComponent,
-    SierpinskiCarpetDialogComponent
+    SierpinskiCarpetDialogComponent,
+    Fractalsv1Component,
+    ListComponent,
+    ConfComponent,
+    DrawingComponent,
+    CanvasComponent,
+    ListPanelComponent,
+    ConfigurationPanelComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +63,7 @@ import { SierpinskiCarpetDialogComponent } from './components/fractals/sierpinsk
     MaterialModule,
     FormsModule
   ],
-  providers: [],
+  providers: [SierpinskiTrianglePreview, SierpinskiCarpetPreview, SierpinskiTriangleConf, SierpinskiCarpetConf, LevyCCurvePreview],
   bootstrap: [AppComponent],
   entryComponents: [SierpinskiTriangleDialogComponent]
 })

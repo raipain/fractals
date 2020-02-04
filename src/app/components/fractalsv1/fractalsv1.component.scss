@@ -1,0 +1,13 @@
+.container {
+    position: relative;
+}
+
+.panel {
+    position: absolute;
+    height: 100vh;
+    width: 150px;
+    z-index: 1000;
+    left: 50%;
+    top: 0;
+    background-color: blue;
+}
