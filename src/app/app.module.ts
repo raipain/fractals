@@ -31,7 +31,9 @@ import { SierpinskiTriangleConf } from './algorithms/sierpinski-triangle-conf';
 import { CanvasComponent } from './components/canvas/canvas.component';
 import { ListPanelComponent } from './components/canvas/list-panel/list-panel.component';
 import { ConfigurationPanelComponent } from './components/canvas/configuration-panel/configuration-panel.component';
-import { LevyCCurvePreview } from './algorithms/levy-c-curve-prev';
+import { LevyCCurvePreview } from './algorithms/levy-c-curve/levy-c-curve-preview';
+import { PythagorasTreePreview } from './algorithms/pythagoras-tree/pythagoras-tree-preview';
+import { KochCurvePreview } from './algorithms/koch-curve/koch-curve-preview';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,15 @@ import { LevyCCurvePreview } from './algorithms/levy-c-curve-prev';
     MaterialModule,
     FormsModule
   ],
-  providers: [SierpinskiTrianglePreview, SierpinskiCarpetPreview, SierpinskiTriangleConf, SierpinskiCarpetConf, LevyCCurvePreview],
+  providers: [
+    SierpinskiTrianglePreview, 
+    SierpinskiCarpetPreview, 
+    SierpinskiTriangleConf, 
+    SierpinskiCarpetConf, 
+    LevyCCurvePreview, 
+    PythagorasTreePreview,
+    KochCurvePreview
+  ],
   bootstrap: [AppComponent],
   entryComponents: [SierpinskiTriangleDialogComponent]
 })

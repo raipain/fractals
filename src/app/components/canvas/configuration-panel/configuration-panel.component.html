@@ -1,5 +1,5 @@
 <div class="panel" [@configurationPanelHideAnimation]="configurationPanelHideAnimationStatus">
-    <h5>Beállítások</h5>
+    <h5>Konfiguráció</h5>
     <div *ngIf="selectedFractal != null" fxLayout="column" fxLayoutAlign="start start">
         <div *ngFor="let conf of fractalList[selectedFractal].configurations">
             <div *ngIf="conf.type == 'slider'">

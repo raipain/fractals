@@ -21,8 +21,11 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   constructor(private fractalService: FractalsService) {
     this.fractalList = fractalService.getList();
     fractalService.getSelectedFractal().subscribe((index: number) => { 
-      this.selectedFractal = index;
-      if(this.selectedFractal != null) {
+      if(index != null) {
+        if(this.selectedFractal != null) {
+          this.fractalList[this.selectedFractal].algorithm.removeCanvas();
+        }
+        this.selectedFractal = index;
         this.title = this.fractalList[this.selectedFractal].name;
         this.fractalList[this.selectedFractal].algorithm.init("canvas", this.container.nativeElement.offsetWidth, this.container.nativeElement.offsetHeight, 50);
       }

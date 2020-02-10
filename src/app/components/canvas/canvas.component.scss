@@ -7,10 +7,20 @@
 h1 {
     margin: 0;
     padding: 0;
+    margin-bottom: 40px;
+    margin-top: 10px;
 }
 
 #canvas {
-    background-color: green;
+    background-color: #f3f3f3;
     height: 75vh;
-    width: 100vw;
+    width: 70vw;
+    box-shadow: 2px 2px 12px -2px rgba(0,0,0,0.75);
+    margin: 0 auto;
+}
+
+.button-container {
+    width: 70vw;
+    margin: 0 auto;
+    margin-top: 20px;
 }
