@@ -9,7 +9,7 @@ import { IFractalList } from 'src/app/models/fractal-list';
   styleUrls: ['./list-panel.component.scss'],
   animations: [
     trigger('listPanelHideAnimation', [
-      state('hide', style({ transform: "translateX(-95%)" })),
+      state('hide', style({ transform: "translateX(-75%)" })),
       state('show', style({ transform: "translateX(0)" })),
       transition('show <=> hide', animate('275ms ease-in-out'))
     ])
@@ -26,7 +26,7 @@ export class ListPanelComponent implements OnInit {
   ngOnInit() {
     this.fractalList = this.fractalService.getList();
     for(let i = 0; i < this.fractalList.length; i++) {
-      this.fractalList[i].preview.init(this.fractalList[i].previewId, 150, 150, 10);
+      this.fractalList[i].preview.init(this.fractalList[i].previewId, 150, 150, "#cbcbcb", 700);
     }
   }
 

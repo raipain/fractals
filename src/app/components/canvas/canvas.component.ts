@@ -27,11 +27,15 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         }
         this.selectedFractal = index;
         this.title = this.fractalList[this.selectedFractal].name;
-        this.fractalList[this.selectedFractal].algorithm.init("canvas", this.container.nativeElement.offsetWidth, this.container.nativeElement.offsetHeight, 50);
+        this.fractalList[this.selectedFractal].algorithm.init("canvas", this.container.nativeElement.offsetWidth, this.container.nativeElement.offsetHeight, "#f3f3f3", 700);
       }
     });
   }
 
   ngOnInit() { }
+
+  setSpeed(speed: number) {
+    this.fractalList[this.selectedFractal].algorithm.setSpeed(speed);
+  }
 
 }

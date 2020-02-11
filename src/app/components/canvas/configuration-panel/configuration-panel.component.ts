@@ -20,6 +20,8 @@ export class ConfigurationPanelComponent implements OnInit {
   configurationPanelHideAnimationStatus: string = "show";
   fractalList: IFractalList[];
   selectedFractal: number;
+  color: string = "#000";
+  subColors: string[] = ["#000", "#000", "#000"];
 
   constructor(private fractalService: FractalsService) { }
 
@@ -35,6 +37,11 @@ export class ConfigurationPanelComponent implements OnInit {
     else {
       this.configurationPanelHideAnimationStatus = "show";
     }
+  }
+
+  setValue(func, value) {
+    func(value);
+    console.log(this.subColors)
   }
 
 }

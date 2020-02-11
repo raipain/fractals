@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SierpinskiTrianglePreview } from '../algorithms/sierpinski-triangle-prev';
+import { SierpinskiTrianglePreview } from '../algorithms/sierpinski-triangle/sierpinski-triangle-preview';
 import { SierpinskiCarpetPreview } from '../algorithms/sierpinski-carpet-prev';
 import { IFractalList } from '../models/fractal-list';
 import { SierpinskiCarpetConf } from '../algorithms/sierpinski-carpet-conf';
-import { SierpinskiTriangleConf } from '../algorithms/sierpinski-triangle-conf';
+import { SierpinskiTriangleConfigurable } from '../algorithms/sierpinski-triangle/sierpinski-triangle-conf';
 import { LevyCCurvePreview } from '../algorithms/levy-c-curve/levy-c-curve-preview';
 import { PythagorasTreePreview } from '../algorithms/pythagoras-tree/pythagoras-tree-preview';
 import { KochCurvePreview } from '../algorithms/koch-curve/koch-curve-preview';
@@ -18,43 +18,64 @@ export class FractalsService {
   list = new Array<IFractalList>();
   activeFractal = new BehaviorSubject<number>(null);
 
-  constructor(private sierpt: SierpinskiTrianglePreview, private sierptC: SierpinskiTriangleConf, private sierpc: SierpinskiCarpetPreview, private sierpcC: SierpinskiCarpetConf, private levyC: LevyCCurvePreview, private pythTree: PythagorasTreePreview, private kochCurvePreview: KochCurvePreview) {
+  constructor(private sierpinskiTrianglePreview: SierpinskiTrianglePreview, 
+              private sierpinskiTriangleConfigurable: SierpinskiTriangleConfigurable, 
+              private sierpc: SierpinskiCarpetPreview, private sierpcC: SierpinskiCarpetConf, 
+              private levyC: LevyCCurvePreview, 
+              private pythTree: PythagorasTreePreview, 
+              private kochCurvePreview: KochCurvePreview) 
+  {
     this.list.push({
       name: "Sierpinszki háromszög", 
-      previewId: "sierpt", 
-      preview: this.sierpt, 
-      algorithm: this.sierptC,
+      previewId: "sierpinski-triangle-preview", 
+      preview: this.sierpinskiTrianglePreview, 
+      algorithm: this.sierpinskiTriangleConfigurable,
       configurations: [
         { 
           name: "Gyorsaság",
           type: "slider",
-          value: 1,
-          minValue: 0.1,
-          maxValue: 1,
-          step: 0.1
+          value: 60,
+          minValue: 1,
+          maxValue: 200,
+          step: 1,
+          func: this.sierpinskiTriangleConfigurable.setSpeed
         },
         { 
-          name: "Fixált csúcspontok",
-          type: "checkbox",
-          value: 1
-        },
-        { 
-          name: "Fixált kezdőpont",
+          name: "Fixált kezdőpontok",
           type: "checkbox",
           value: 1
         },
         { 
           name: "Háromszög részeinek kijelölése",
-          type: "checkbox",
-          value: 1
+          type: "checkbox-tree",
+          value: 0,
+          func: this.sierpinskiTriangleConfigurable.setCustomColors,
+          configurations: [
+            {
+              name: "Szín 1",
+              type: "colorpicker",
+              color: "#000",
+              func: this.sierpinskiTriangleConfigurable.setColor1
+            },
+            {
+              name: "Szín 2",
+              type: "colorpicker",
+              color: "#000",
+              func: this.sierpinskiTriangleConfigurable.setColor2
+            },
+            {
+              name: "Szín 3",
+              type: "colorpicker",
+              color: "#000",
+              func: this.sierpinskiTriangleConfigurable.setColor3
+            }
+          ]
         },
         { 
           name: "Szín",
-          type: "slider",
-          value: 1,
-          minValue: 0.1,
-          maxValue: 1,
-          step: 0.1
+          type: "colorpicker",
+          color: "#000",
+          func: this.sierpinskiTriangleConfigurable.setColor
         }
       ]
     });

@@ -5,6 +5,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @NgModule({
   imports: [
@@ -12,17 +13,17 @@ import {MatRadioModule} from '@angular/material/radio';
     MatSliderModule,
     MatRadioModule,
     MatCheckboxModule,
-    MatButtonModule
-    
+    MatButtonModule,
+    ColorPickerModule
   ],
   exports: [
     MatDialogModule,
     MatSliderModule,
     MatRadioModule,
     MatCheckboxModule,
-    MatButtonModule
+    MatButtonModule,
+    ColorPickerModule
   ],
 })
 
-export class MaterialModule {
-}
+export class MaterialModule { }

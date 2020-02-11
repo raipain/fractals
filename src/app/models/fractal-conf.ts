@@ -1,8 +1,11 @@
 export interface IFractalConfiguration {
     name: string;
     type: string;
-    value: number;
+    value?: number;
+    color?: string;
     maxValue?: number;
     minValue?: number;
     step?: number;
+    func?: Function;
+    configurations?: IFractalConfiguration[];
 }

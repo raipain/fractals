@@ -1,13 +1,26 @@
 <div class="panel" [@configurationPanelHideAnimation]="configurationPanelHideAnimationStatus">
     <h5>Konfiguráció</h5>
     <div *ngIf="selectedFractal != null" fxLayout="column" fxLayoutAlign="start start">
-        <div *ngFor="let conf of fractalList[selectedFractal].configurations">
+        <div *ngFor="let conf of fractalList[selectedFractal].configurations; let i = index">
             <div *ngIf="conf.type == 'slider'">
                 <p>{{conf.name}}</p>
-                <mat-slider thumbLabel min="{{conf.minValue}}" max="{{conf.maxValue}}" step="{{conf.step}}" value="{{conf.value}}"></mat-slider>
+                <mat-slider #slider thumbLabel min="{{conf.minValue}}" max="{{conf.maxValue}}" step="{{conf.step}}" value="{{conf.value}}" (change)="setValue(conf.func, slider.value)"></mat-slider>
             </div>
             <div *ngIf="conf.type == 'checkbox'">
-                <mat-checkbox>{{conf.name}}</mat-checkbox>
+                <mat-checkbox #checkbox (change)="setValue(conf.func, checkbox._checked)">{{conf.name}}</mat-checkbox>
+            </div>
+            <div *ngIf="conf.type == 'checkbox-tree'">
+                <mat-checkbox #checkbox (change)="setValue(conf.func, checkbox._checked)">{{conf.name}}</mat-checkbox>
+                <div *ngIf="checkbox._checked">
+                    <div *ngFor="let childConf of conf.configurations; let j = index">
+                        <div *ngIf="childConf.type == 'colorpicker'">
+                            <label>{{childConf.name}}</label><input class="color-picker" [(colorPicker)]="subColors[j]" [style.background]="subColors[j]" [cpAlphaChannel]="'disabled'" [cpPosition]="'left'" (colorPickerChange)="setValue(childConf.func, subColors[j])"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="conf.type == 'colorpicker'">
+                <label>{{conf.name}}</label><input class="color-picker" [(colorPicker)]="color" [style.background]="color" [cpAlphaChannel]="'disabled'" [cpPosition]="'left'" (colorPickerChange)="setValue(conf.func, color)"/>
             </div>
         </div>
     </div>
