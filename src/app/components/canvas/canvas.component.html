@@ -3,7 +3,15 @@
     <app-configuration-panel></app-configuration-panel>
     <h1>{{title}}</h1>
     <div id="canvas" #canvas></div>
-    <div class="button-container" fxLayout fxLayoutAlign="end center">
-        <button mat-stroked-button>Mentés képként</button>
+    <div class="button-container" fxLayout fxLayoutAlign="space-between center">
+        <div class="slidecontainer">
+            <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+        </div>
+        <div>
+            <i *ngIf="!play" (click)="togglePlay()" class="material-icons control-btn">play_arrow</i>
+            <i *ngIf="play" (click)="togglePlay()" class="material-icons control-btn">pause</i>
+            <i (click)="stop()" class="material-icons control-btn">stop</i>
+        </div>
+        <button mat-stroked-button (click)="save()">Mentés képként</button>
     </div>
 </div>

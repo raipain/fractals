@@ -7,16 +7,13 @@ import { IFractalList } from 'src/app/models/fractal-list';
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss']
 })
-export class CanvasComponent implements OnInit, AfterViewInit {
-  
-  ngAfterViewInit(): void {
-    console.log(this.container.nativeElement.offsetHeight, this.container.nativeElement.offsetWidth);
-  }
+export class CanvasComponent implements OnInit {
 
   @ViewChild('canvas', {read: ElementRef, static: false}) container: ElementRef;
   fractalList: IFractalList[];
   selectedFractal: number;
   title: string = "Kérlek válassz algoritmust!";
+  play: boolean = false;
 
   constructor(private fractalService: FractalsService) {
     this.fractalList = fractalService.getList();
@@ -27,7 +24,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         }
         this.selectedFractal = index;
         this.title = this.fractalList[this.selectedFractal].name;
-        this.fractalList[this.selectedFractal].algorithm.init("canvas", this.container.nativeElement.offsetWidth, this.container.nativeElement.offsetHeight, "#f3f3f3", 700);
+        this.fractalList[this.selectedFractal].algorithm.init("canvas", this.container.nativeElement.offsetWidth, this.container.nativeElement.offsetHeight, "#f3f3f3");
       }
     });
   }
@@ -36,6 +33,20 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   setSpeed(speed: number) {
     this.fractalList[this.selectedFractal].algorithm.setSpeed(speed);
+  }
+
+  togglePlay() {
+    this.fractalList[this.selectedFractal].algorithm.togglePlay();
+    this.play = !this.play;
+  }
+
+  stop() {
+    this.fractalList[this.selectedFractal].algorithm.stop();
+    this.play = false;
+  }
+
+  save() {
+    this.fractalList[this.selectedFractal].algorithm.saveCanvas();
   }
 
 }

@@ -7,7 +7,7 @@
                 <mat-slider #slider thumbLabel min="{{conf.minValue}}" max="{{conf.maxValue}}" step="{{conf.step}}" value="{{conf.value}}" (change)="setValue(conf.func, slider.value)"></mat-slider>
             </div>
             <div *ngIf="conf.type == 'checkbox'">
-                <mat-checkbox #checkbox (change)="setValue(conf.func, checkbox._checked)">{{conf.name}}</mat-checkbox>
+                <mat-checkbox #checkbox [checked]="conf.value" (change)="setValue(conf.func, checkbox._checked)">{{conf.name}}</mat-checkbox>
             </div>
             <div *ngIf="conf.type == 'checkbox-tree'">
                 <mat-checkbox #checkbox (change)="setValue(conf.func, checkbox._checked)">{{conf.name}}</mat-checkbox>

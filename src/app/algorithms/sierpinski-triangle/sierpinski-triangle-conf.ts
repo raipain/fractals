@@ -1,112 +1,161 @@
 import * as p5 from 'p5';
+import { Fractal } from '../fractal';
 
-var width: number;
-var height: number;
-var canvasColor: string
-var parentId: string;
-var points;
-var refPoint;
-var iter: number;
-var maxIter: number;
+export class SierpinskiTriangleConfigurable extends Fractal {
+  private fixedPoints;
+  private customPoints;
+  private fixedRefPoint;
+  private customRefPoint;
+  private points;
+  private refPoint;
+  private setup: boolean;
+  private lerpValue: number;
+  private useFixedPoints: boolean;
+  private customColors: boolean;
+  private color1: string;
+  private color2: string;
+  private color3: string;
+  private maxPoints: number;
+  private currentPoints: number;
 
-var frameRate = 100;
-var color = "#000";
-var customColors: boolean = false;
-var color1 = "#000";
-var color2 = "#000";
-var color3 = "#000";
+  constructor() {
+    super();
+    this.useFixedPoints = true;
+    this.maxPoints = 3;
+    this.currentPoints = 0;
+    this.lerpValue = 0.5;
+    this.customPoints = [];
+    this.fixedPoints = [];
+    this.setup = false;
+    this.strokeWeight = 3;
+    this.frameRate = 60;
+  }
 
-export class SierpinskiTriangleConfigurable {
-  private p5;
-
-  constructor() { }
-
-  init(pId: string, w: number, h: number, cc: string, mI: number) {
-    width = w;
-    height = h;
-    canvasColor = cc;
-    parentId = pId;
-    points = [];
-    iter = 0;
-    maxIter = mI;
+  init(parentId: string, width: number, height: number, canvasColor: string) {
+    super.init(parentId, width, height, canvasColor);
     this.createCanvas();
   }
   
-  createCanvas() {
-    this.p5 = new p5(this.sketch);
-  }
-  
-  private sketch(p: any) {    
+  sketch(p: any) { 
     p.setup = () => {
-      let canvas = p.createCanvas(width, height);
-      canvas.parent(parentId);
+      this.canvas = p.createCanvas(this.width, this.height);
+      this.canvas.parent(this.parentId);
+      this.canvas.mousePressed(p.handleMousePressed);
 
-      p.background(canvasColor);
-      p.stroke(color);
-      p.strokeWeight(3);
-      p.frameRate(100);
+      p.background(this.canvasColor);
+      p.stroke(this.color);
+      p.strokeWeight(this.strokeWeight);
+      p.frameRate(this.frameRate);
 
-      refPoint = p.createVector(width / 2, height / 2);
-
-      points.push(p.createVector(width / 2, 5));
-      points.push(p.createVector(5, height - 5));
-      points.push(p.createVector(width - 5, height - 5));
-    
-      p.point(points[0].x, points[0].y);
-      p.point(points[1].x, points[1].y);
-      p.point(points[2].x, points[2].y);
-      p.point(refPoint.x, refPoint.y);
+      this.fixedPoints.push(p.createVector(this.width / 2, 5));
+      this.fixedPoints.push(p.createVector(5, this.height - 5));
+      this.fixedPoints.push(p.createVector(this.width - 5, this.height - 5));
+      this.fixedRefPoint = p.createVector(this.width / 2, this.height / 2);
+        
+      this.points = this.fixedPoints;
+      this.refPoint = this.fixedRefPoint;
     };
   
     p.draw = () => {
-      setConfigurables(p);
+      this.setConfigurables(p);
 
-      if(iter < maxIter) {
-        let rand = p.floor(p.random(3));
-        if(customColors && rand == 0) p.stroke(color1);
-        else if(customColors && rand == 1) p.stroke(color2);
-        else if(customColors && rand == 2) p.stroke(color3);
-        let newPoint = p5.Vector.lerp(points[rand], refPoint, 0.5);
-        p.point(newPoint.x, newPoint.y);   
-        refPoint = newPoint;
-        iter++;
+      if(this.play && !this.useFixedPoints && !this.setup) {
+        p.background(this.canvasColor);
+        p.point(p.mouseX, p.mouseY);
+
+        for(let i = 0; i < this.customPoints.length; i++) {
+          p.point(this.customPoints[i].x, this.customPoints[i].y);
+        }
+
+        if(this.maxPoints + 1 == this.currentPoints) {
+          this.setup = true;
+          this.points = this.customPoints;
+          this.refPoint = this.customRefPoint;
+        }
       }
-      else {
-        points = [];
-        iter = 0;
-        p.setup();
+      else if(this.play && this.useFixedPoints && !this.setup) {
+        p.point(this.fixedPoints[0].x, this.fixedPoints[0].y);
+        p.point(this.fixedPoints[1].x, this.fixedPoints[1].y);
+        p.point(this.fixedPoints[2].x, this.fixedPoints[2].y);
+        p.point(this.fixedRefPoint.x, this.fixedRefPoint.y);
+        this.setup = true;
+      }
+      else if(this.play) {
+        let rand = p.floor(p.random(3));
+
+        if(this.customColors && rand == 0) p.stroke(this.color1);
+        else if(this.customColors && rand == 1) p.stroke(this.color2);
+        else if(this.customColors && rand == 2) p.stroke(this.color3);
+
+        let newPoint = p5.Vector.lerp(this.points[rand], this.refPoint, this.lerpValue);
+        p.point(newPoint.x, newPoint.y);   
+        this.refPoint = newPoint;
+      }
+    }
+
+    p.handleMousePressed = () => {
+      if(this.play && !this.useFixedPoints && this.currentPoints < this.maxPoints + 1) {
+        this.currentPoints++;
+        p.point(p.mouseX, p.mouseY);
+        
+        if(this.currentPoints <= this.maxPoints) {
+          this.customPoints.push(p.createVector(p.mouseX, p.mouseY));
+        }
+        else if(this.currentPoints == this.maxPoints + 1) {
+          this.customRefPoint = p.createVector(p.mouseX, p.mouseY);
+        }
       }
     }
   };
 
-  setSpeed(speed: number) {
-    frameRate = speed;
+  setCustomColors(obj: any, value: boolean) {
+    obj.customColors = value
   }
 
-  setCustomColors(value: boolean) {
-    customColors = value
+  setColor1(obj: any, color: string) {
+    obj.color1 = color;
   }
 
-  setColor(col: string) {
-    color = col;
+  setColor2(obj: any, color: string) {
+    obj.color2 = color;
   }
 
-  setColor1(col: string) {
-    console.log(col)
-    color1 = col;
+  setColor3(obj: any, color: string) {
+    obj.color3 = color;
   }
 
-  setColor2(col: string) {
-    color2 = col;
+  setLerpValue(obj: any, value: number) {
+    obj.lerpValue = value;
   }
 
-  setColor3(col: string) {
-    color3 = col;
+  setUseFixedPoints(obj: any, value: boolean) {
+    obj.useFixedPoints = value;
+    obj.clearCanvas();
+    obj.currentPoints = 0;
+    obj.customPoints = [];
+    obj.setup = false;
+
+    if(value) {
+      obj.points = obj.fixedPoints;
+      obj.refPoint = obj.fixedRefPoint
+    }
+    else {
+      obj.points = [];
+      obj.refPoint = null;
+    }
   }
 
-}
+  setConfigurables(p: any) {
+    p.frameRate(this.frameRate);
+    p.stroke(this.color);
+    p.strokeWeight(this.strokeWeight);
+  }
 
-function setConfigurables(p: any) {
-  p.frameRate(frameRate);
-  p.stroke(color);
+  stop() {
+    super.stop();
+    this.setup = false;
+    this.customPoints = [];
+    this.customRefPoint = null;
+    this.currentPoints = 0;
+  }
 }

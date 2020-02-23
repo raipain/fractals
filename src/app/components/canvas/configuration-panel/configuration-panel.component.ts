@@ -40,8 +40,7 @@ export class ConfigurationPanelComponent implements OnInit {
   }
 
   setValue(func, value) {
-    func(value);
-    console.log(this.subColors)
+    func(this.fractalList[this.selectedFractal].algorithm, value);
   }
 
 }

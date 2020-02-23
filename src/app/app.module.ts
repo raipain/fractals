@@ -34,6 +34,7 @@ import { ConfigurationPanelComponent } from './components/canvas/configuration-p
 import { LevyCCurvePreview } from './algorithms/levy-c-curve/levy-c-curve-preview';
 import { PythagorasTreePreview } from './algorithms/pythagoras-tree/pythagoras-tree-preview';
 import { KochCurvePreview } from './algorithms/koch-curve/koch-curve-preview';
+import { LevyCCurveConfigurable } from './algorithms/levy-c-curve/levy-c-curve-conf';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { KochCurvePreview } from './algorithms/koch-curve/koch-curve-preview';
     SierpinskiTrianglePreview, 
     SierpinskiCarpetPreview, 
     SierpinskiTriangleConfigurable, 
+    LevyCCurveConfigurable,
     SierpinskiCarpetConf, 
     LevyCCurvePreview, 
     PythagorasTreePreview,
