@@ -1,8 +1,0 @@
-<div class="panel" fxLayout="column" fxLayoutAlign="start start">
-    <div class="item" *ngFor="let fractal of list; let i = index" (click)="selectFractal(i)" [class.active]="i == selectedFractal">
-        <div *ngIf="listStatus != 'hide'" fxLayout="column" fxLayoutAlign="center center">
-            <h5>{{fractal.name}}</h5>
-            <div [id]="fractal.previewId"></div>
-        </div>
-    </div>
-</div>

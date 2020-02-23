@@ -1,7 +1,0 @@
-<div class="panel">
-    <h5>Beállítások</h5>
-    <div *ngFor="let conf of list[selected].configurations">
-        <p>{{conf.name}}</p>
-        <mat-slider *ngIf="conf.type == 'slider'" thumbLabel min="{{conf.minValue}}" max="{{conf.maxValue}}" step="{{conf.step}}" value="{{conf.value}}"></mat-slider>
-    </div>
-</div>
