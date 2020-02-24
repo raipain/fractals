@@ -2,12 +2,20 @@ import * as p5 from 'p5';
 import { Fractal } from '../fractal';
 
 export class LevyCCurveConfigurable extends Fractal {
-    private length;
     private lines: Line[];
+    private length: number;
+    private direction: number;
+    private fixedLine: boolean;
+    private setup: boolean;
+    private angle: number;
     
     constructor() {
         super();
         this.lines = [];
+        this.fixedLine = true;
+        this.direction = -1;
+        this.setup = false;
+        this.angle = 0;
     }
     
     init(parentId: string, width: number, height: number, canvasColor: string) {
@@ -26,6 +34,7 @@ export class LevyCCurveConfigurable extends Fractal {
         p.setup = () => {
             this.canvas = p.createCanvas(this.width, this.height);
             this.canvas.parent(this.parentId);
+            this.canvas.mousePressed(p.handleMousePressed);
             p.background(this.canvasColor);
             p.frameRate(this.frameRate);
             p.strokeWeight(this.strokeWeight);
@@ -34,9 +43,17 @@ export class LevyCCurveConfigurable extends Fractal {
         }
 
         p.draw = () => {
+            p.pop();
             this.setConfigurables(p);
 
-            if(this.play) {
+            if(this.play && !this.fixedLine && !this.setup) {
+                p.frameRate(60);
+                p.background(this.canvasColor);
+                p.translate(p.mouseX, p.mouseY);
+                p.rotate(this.angle);
+                p.line(-this.length / 2, 0, this.length / 2, 0);
+            }
+            else if(this.play && ((!this.fixedLine && this.setup) || this.fixedLine)) {
                 p.background(this.canvasColor);
                 let tempLines: Line[] = [];
 
@@ -47,7 +64,7 @@ export class LevyCCurveConfigurable extends Fractal {
                     let lerpAmount = lengthSz / length;
         
                     let dir = p5.Vector.sub(this.lines[i].b, this.lines[i].a);
-                    dir.rotate(-p.PI/4);
+                    dir.rotate(this.direction * p.PI/4);
                     let offset = p5.Vector.add(this.lines[i].a, dir);
                     let adjOffset = p5.Vector.lerp(this.lines[i].a, offset, lerpAmount);
 
@@ -58,7 +75,30 @@ export class LevyCCurveConfigurable extends Fractal {
                     p.line(this.lines[i].b.x, this.lines[i].b.y, adjOffset.x, adjOffset.y);
                 }
                 this.lines = tempLines;
-                console.log(this.lines);
+                p.push();
+            }
+        }
+
+        p.mouseWheel = (event) => {
+            if(this.play && !this.fixedLine && !this.setup) {
+                event.preventDefault();
+                if(event.delta > 0) {
+                    this.angle += 0.1;
+                }
+                else if(event.delta < 0 ) {
+                    this.angle -= 0.1;
+                }
+            }
+        }
+
+        p.handleMousePressed = () => {
+            if(this.play && !this.fixedLine && !this.setup) {
+                p.line(-this.length / 2, 0, this.length / 2, 0);
+                this.setup = true;
+                this.angle = 0;
+                p.frameRate(this.frameRate); 
+                this.lines = [new Line(p.createVector(-this.length / 2, 0), p.createVector(this.length / 2, 0))];
+                p.push();
             }
         }
     }
@@ -77,13 +117,23 @@ export class LevyCCurveConfigurable extends Fractal {
     setLength(obj: any, value: number) {
         obj.length = value;
         obj.stop();
-        obj.play = true;
     }
 
     setConfigurables(p: any) {
         p.frameRate(this.frameRate);
         p.stroke(this.color);
         p.strokeWeight(this.strokeWeight);
+    }
+
+    setFixedLine(obj: any, value: number): void {
+        obj.fixedLine = value;
+        obj.setup = false;
+        obj.stop();
+    }
+
+    setDirection(obj: any, direction: number): void {
+        obj.direction = direction;
+        obj.stop();
     }
 }
 

@@ -16,8 +16,8 @@ import { UsageComponent } from './components/presentation/slides/usage/usage.com
 
 import { MaterialModule } from './material.module';
 import { SierpinskiTrianglePreview } from './algorithms/sierpinski-triangle/sierpinski-triangle-preview';
-import { SierpinskiCarpetPreview } from './algorithms/sierpinski-carpet-prev';
-import { SierpinskiCarpetConf } from './algorithms/sierpinski-carpet-conf';
+import { SierpinskiCarpetPreview } from './algorithms/sierpinski-carpet/sierpinski-carpet-prev';
+import { SierpinskiCarpetConfigurable } from './algorithms/sierpinski-carpet/sierpinski-carpet-conf';
 import { SierpinskiTriangleConfigurable } from './algorithms/sierpinski-triangle/sierpinski-triangle-conf';
 import { CanvasComponent } from './components/canvas/canvas.component';
 import { ListPanelComponent } from './components/canvas/list-panel/list-panel.component';
@@ -26,6 +26,8 @@ import { LevyCCurvePreview } from './algorithms/levy-c-curve/levy-c-curve-previe
 import { PythagorasTreePreview } from './algorithms/pythagoras-tree/pythagoras-tree-preview';
 import { KochCurvePreview } from './algorithms/koch-curve/koch-curve-preview';
 import { LevyCCurveConfigurable } from './algorithms/levy-c-curve/levy-c-curve-conf';
+import { KochCurveConfigurable } from './algorithms/koch-curve/koch-curve-conf';
+import { PythagorasTreeConfigurable } from './algorithms/pythagoras-tree/pythagoras-tree-conf';
 
 @NgModule({
   declarations: [
@@ -53,10 +55,12 @@ import { LevyCCurveConfigurable } from './algorithms/levy-c-curve/levy-c-curve-c
     SierpinskiCarpetPreview, 
     SierpinskiTriangleConfigurable, 
     LevyCCurveConfigurable,
-    SierpinskiCarpetConf, 
+    SierpinskiCarpetConfigurable, 
     LevyCCurvePreview, 
     PythagorasTreePreview,
-    KochCurvePreview
+    PythagorasTreeConfigurable,
+    KochCurvePreview,
+    KochCurveConfigurable
   ],
   bootstrap: [AppComponent],
   entryComponents: []

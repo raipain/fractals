@@ -5,7 +5,8 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
-import { ColorPickerModule } from 'ngx-color-picker';
+import {MatSelectModule} from '@angular/material/select';
+import {ColorPickerModule} from 'ngx-color-picker';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { ColorPickerModule } from 'ngx-color-picker';
     MatRadioModule,
     MatCheckboxModule,
     MatButtonModule,
-    ColorPickerModule
+    ColorPickerModule,
+    MatSelectModule
   ],
   exports: [
     MatDialogModule,
@@ -22,7 +24,8 @@ import { ColorPickerModule } from 'ngx-color-picker';
     MatRadioModule,
     MatCheckboxModule,
     MatButtonModule,
-    ColorPickerModule
+    ColorPickerModule,
+    MatSelectModule
   ],
 })
 

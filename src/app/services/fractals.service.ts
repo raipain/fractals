@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SierpinskiTrianglePreview } from '../algorithms/sierpinski-triangle/sierpinski-triangle-preview';
-import { SierpinskiCarpetPreview } from '../algorithms/sierpinski-carpet-prev';
+import { SierpinskiCarpetPreview } from '../algorithms/sierpinski-carpet/sierpinski-carpet-prev';
 import { IFractalList } from '../models/fractal-list';
-import { SierpinskiCarpetConf } from '../algorithms/sierpinski-carpet-conf';
+import { SierpinskiCarpetConfigurable } from '../algorithms/sierpinski-carpet/sierpinski-carpet-conf';
 import { SierpinskiTriangleConfigurable } from '../algorithms/sierpinski-triangle/sierpinski-triangle-conf';
 import { LevyCCurvePreview } from '../algorithms/levy-c-curve/levy-c-curve-preview';
 import { PythagorasTreePreview } from '../algorithms/pythagoras-tree/pythagoras-tree-preview';
 import { KochCurvePreview } from '../algorithms/koch-curve/koch-curve-preview';
 import { LevyCCurveConfigurable } from '../algorithms/levy-c-curve/levy-c-curve-conf';
+import { KochCurveConfigurable } from '../algorithms/koch-curve/koch-curve-conf';
+import { PythagorasTreeConfigurable } from '../algorithms/pythagoras-tree/pythagoras-tree-conf';
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +24,13 @@ export class FractalsService {
   constructor(private sierpinskiTrianglePreview: SierpinskiTrianglePreview, 
               private sierpinskiTriangleConfigurable: SierpinskiTriangleConfigurable, 
               private sierpc: SierpinskiCarpetPreview, 
-              private sierpcC: SierpinskiCarpetConf, 
+              private sierpinskiCarpetConfigurable: SierpinskiCarpetConfigurable, 
               private levyC: LevyCCurvePreview, 
               private levyCCurveConfigurable: LevyCCurveConfigurable,
-              private pythTree: PythagorasTreePreview, 
-              private kochCurvePreview: KochCurvePreview) 
+              private pythTree: PythagorasTreePreview,
+              private pythagorasTreeConfigurable: PythagorasTreeConfigurable,
+              private kochCurvePreview: KochCurvePreview,
+              private kochCurveConfigurable: KochCurveConfigurable)
   {
       this.list.push({
         name: "Sierpinszki háromszög", 
@@ -105,15 +109,21 @@ export class FractalsService {
       name: "Sierpinszki szőnyeg", 
       previewId: "sierpc", 
       preview: this.sierpc, 
-      algorithm: this.sierpcC,
+      algorithm: this.sierpinskiCarpetConfigurable,
       configurations: [
         { 
           name: "Gyorsaság",
           type: "slider",
           value: 1,
-          minValue: 0.1,
-          maxValue: 1,
-          step: 0.1
+          minValue: 1,
+          maxValue: 60,
+          step: 1,
+          func: this.sierpinskiCarpetConfigurable.setSpeed
+        },
+        { 
+          name: "Szín",
+          type: "colorpicker",
+          func: this.sierpinskiCarpetConfigurable.setColor
         }
       ]
     });
@@ -155,21 +165,48 @@ export class FractalsService {
           step: 1,
           func: this.levyCCurveConfigurable.setLength
         },
+        { 
+          name: "Fixált kezdővonal",
+          type: "checkbox",
+          value: 1,
+          func: this.levyCCurveConfigurable.setFixedLine
+        },
+        { 
+          name: "Irány",
+          type: "combobox",
+          values: [
+            {
+              name: "Fel",
+              value: -1
+            },
+            {
+              name: "Le",
+              value: 1
+            }
+          ],
+          func: this.levyCCurveConfigurable.setDirection
+        },
       ]
     });
     this.list.push({
       name: "Püthagorasz Fa", 
       previewId: "pythagoras-tree-prev", 
       preview: this.pythTree, 
-      algorithm: this.pythTree,
+      algorithm: this.pythagorasTreeConfigurable,
       configurations: [
         { 
           name: "Gyorsaság",
           type: "slider",
           value: 1,
-          minValue: 0.1,
-          maxValue: 1,
-          step: 0.1
+          minValue: 1,
+          maxValue: 60,
+          step: 1,
+          func: this.pythagorasTreeConfigurable.setSpeed
+        },
+        { 
+          name: "Szín",
+          type: "colorpicker",
+          func: this.pythagorasTreeConfigurable.setColor
         }
       ]
     });
@@ -177,15 +214,30 @@ export class FractalsService {
       name: "Koch Görbe", 
       previewId: "koch-curve-preview", 
       preview: this.kochCurvePreview, 
-      algorithm: this.kochCurvePreview,
+      algorithm: this.kochCurveConfigurable,
       configurations: [
         { 
           name: "Gyorsaság",
           type: "slider",
           value: 1,
-          minValue: 0.1,
-          maxValue: 1,
-          step: 0.1
+          minValue: 1,
+          maxValue: 60,
+          step: 1,
+          func: this.kochCurveConfigurable.setSpeed
+        },
+        { 
+          name: "Szín",
+          type: "colorpicker",
+          func: this.kochCurveConfigurable.setColor
+        },
+        { 
+          name: "Vonalvastagság",
+          type: "slider",
+          value: 1,
+          minValue: 1,
+          maxValue: 10,
+          step: 1,
+          func: this.kochCurveConfigurable.setStrokeWeight
         }
       ]
     });
