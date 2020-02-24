@@ -27,7 +27,9 @@ export abstract class Fractal {
         this.height = height;
         this.canvasColor = canvasColor;
     }
-    
+
+    abstract sketch(p: any): void;
+
     createCanvas() {
         this.p5 = new p5(this.sketch);
     }
@@ -44,7 +46,9 @@ export abstract class Fractal {
         this.p5.save(this.canvas, "myFractal.jpg");
     }
 
-    abstract sketch(p: any): void;
+    getStatus(): boolean {
+      return this.play;
+    }
 
     togglePlay() {
         this.play = !this.play;
@@ -65,5 +69,5 @@ export abstract class Fractal {
 
     setStrokeWeight(obj: any, value: number) {
         obj.strokeWeight = value;
-      }
+    }
 }

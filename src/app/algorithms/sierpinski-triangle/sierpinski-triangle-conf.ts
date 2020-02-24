@@ -1,5 +1,6 @@
 import * as p5 from 'p5';
 import { Fractal } from '../fractal';
+import { BehaviorSubject } from 'rxjs';
 
 export class SierpinskiTriangleConfigurable extends Fractal {
   private fixedPoints;
@@ -8,6 +9,8 @@ export class SierpinskiTriangleConfigurable extends Fractal {
   private customRefPoint;
   private points;
   private refPoint;
+  private storedPoints$: BehaviorSubject<Array>;
+  private storedPoints;
   private setup: boolean;
   private lerpValue: number;
   private useFixedPoints: boolean;
@@ -17,6 +20,9 @@ export class SierpinskiTriangleConfigurable extends Fractal {
   private color3: string;
   private maxPoints: number;
   private currentPoints: number;
+
+  private rollBack: boolean;
+  private rollBackTo: number;
 
   constructor() {
     super();
@@ -29,14 +35,16 @@ export class SierpinskiTriangleConfigurable extends Fractal {
     this.setup = false;
     this.strokeWeight = 3;
     this.frameRate = 60;
+    this.storedPoints$ = new BehaviorSubject<Array>([]);
+    this.storedPoints = [];
   }
 
   init(parentId: string, width: number, height: number, canvasColor: string) {
     super.init(parentId, width, height, canvasColor);
     this.createCanvas();
   }
-  
-  sketch(p: any) { 
+
+  sketch(p: any) {
     p.setup = () => {
       this.canvas = p.createCanvas(this.width, this.height);
       this.canvas.parent(this.parentId);
@@ -51,27 +59,30 @@ export class SierpinskiTriangleConfigurable extends Fractal {
       this.fixedPoints.push(p.createVector(5, this.height - 5));
       this.fixedPoints.push(p.createVector(this.width - 5, this.height - 5));
       this.fixedRefPoint = p.createVector(this.width / 2, this.height / 2);
-        
+
       this.points = this.fixedPoints;
       this.refPoint = this.fixedRefPoint;
     };
-  
+
     p.draw = () => {
       this.setConfigurables(p);
 
+      if(this.rollBack) {
+        if(this.play) {
+          for(let i = this.rollBackTo; i < this.storedPoints.length; i++) {
+            p.point(this.storedPoints[i].x, this.storedPoints[i].y);
+          }
+          this.rollBack = false;
+        }
+        else {
+          p.background(this.canvasColor);
+          for(let i = 0; i < this.rollBackTo; i++) {
+            p.point(this.storedPoints[i].x, this.storedPoints[i].y);
+          }
+        }
+      }
       if(this.play && !this.useFixedPoints && !this.setup) {
-        p.background(this.canvasColor);
-        p.point(p.mouseX, p.mouseY);
-
-        for(let i = 0; i < this.customPoints.length; i++) {
-          p.point(this.customPoints[i].x, this.customPoints[i].y);
-        }
-
-        if(this.maxPoints + 1 == this.currentPoints) {
-          this.setup = true;
-          this.points = this.customPoints;
-          this.refPoint = this.customRefPoint;
-        }
+        p.setUpCustomPoints();
       }
       else if(this.play && this.useFixedPoints && !this.setup) {
         p.point(this.fixedPoints[0].x, this.fixedPoints[0].y);
@@ -88,8 +99,26 @@ export class SierpinskiTriangleConfigurable extends Fractal {
         else if(this.customColors && rand == 2) p.stroke(this.color3);
 
         let newPoint = p5.Vector.lerp(this.points[rand], this.refPoint, this.lerpValue);
-        p.point(newPoint.x, newPoint.y);   
+        p.point(newPoint.x, newPoint.y);
         this.refPoint = newPoint;
+
+        this.storedPoints.push(newPoint);
+        this.storedPoints$.next(this.storedPoints);
+      }
+    }
+
+    p.setUpCustomPoints = () => {
+      p.background(this.canvasColor);
+      p.point(p.mouseX, p.mouseY);
+
+      for(let i = 0; i < this.customPoints.length; i++) {
+        p.point(this.customPoints[i].x, this.customPoints[i].y);
+      }
+
+      if(this.maxPoints + 1 == this.currentPoints) {
+        this.setup = true;
+        this.points = this.customPoints;
+        this.refPoint = this.customRefPoint;
       }
     }
 
@@ -97,7 +126,7 @@ export class SierpinskiTriangleConfigurable extends Fractal {
       if(this.play && !this.useFixedPoints && this.currentPoints < this.maxPoints + 1) {
         this.currentPoints++;
         p.point(p.mouseX, p.mouseY);
-        
+
         if(this.currentPoints <= this.maxPoints) {
           this.customPoints.push(p.createVector(p.mouseX, p.mouseY));
         }
@@ -157,5 +186,21 @@ export class SierpinskiTriangleConfigurable extends Fractal {
     this.customPoints = [];
     this.customRefPoint = null;
     this.currentPoints = 0;
+    this.storedPoints = [];
+    this.storedPoints$.next([]);
+  }
+
+  play() {
+    super.play();
+  }
+
+  getStoredPoints() {
+    return this.storedPoints$;
+  }
+
+  setUpRollBack(to: number) {
+    this.rollBack = true;
+    this.rollBackTo = to;
+    this.play = false;
   }
 }

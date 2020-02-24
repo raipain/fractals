@@ -21,11 +21,11 @@ export class FractalsService {
   list = new Array<IFractalList>();
   activeFractal = new BehaviorSubject<number>(null);
 
-  constructor(private sierpinskiTrianglePreview: SierpinskiTrianglePreview, 
-              private sierpinskiTriangleConfigurable: SierpinskiTriangleConfigurable, 
-              private sierpc: SierpinskiCarpetPreview, 
-              private sierpinskiCarpetConfigurable: SierpinskiCarpetConfigurable, 
-              private levyC: LevyCCurvePreview, 
+  constructor(private sierpinskiTrianglePreview: SierpinskiTrianglePreview,
+              private sierpinskiTriangleConfigurable: SierpinskiTriangleConfigurable,
+              private sierpc: SierpinskiCarpetPreview,
+              private sierpinskiCarpetConfigurable: SierpinskiCarpetConfigurable,
+              private levyC: LevyCCurvePreview,
               private levyCCurveConfigurable: LevyCCurveConfigurable,
               private pythTree: PythagorasTreePreview,
               private pythagorasTreeConfigurable: PythagorasTreeConfigurable,
@@ -33,12 +33,13 @@ export class FractalsService {
               private kochCurveConfigurable: KochCurveConfigurable)
   {
       this.list.push({
-        name: "Sierpinszki háromszög", 
-        previewId: "sierpinski-triangle-preview", 
-        preview: this.sierpinskiTrianglePreview, 
+        name: "Sierpinszki háromszög",
+        previewId: "sierpinski-triangle-preview",
+        preview: this.sierpinskiTrianglePreview,
         algorithm: this.sierpinskiTriangleConfigurable,
+        observable: this.sierpinskiTriangleConfigurable.getStoredPoints,
         configurations: [
-          { 
+          {
             name: "Gyorsaság",
             type: "slider",
             value: 60,
@@ -47,7 +48,7 @@ export class FractalsService {
             step: 1,
             func: this.sierpinskiTriangleConfigurable.setSpeed
           },
-          { 
+          {
             name: "Pontvastagság",
             type: "slider",
             value: 3,
@@ -65,13 +66,13 @@ export class FractalsService {
             step: 0.1,
             func: this.sierpinskiTriangleConfigurable.setLerpValue
           },
-          { 
+          {
             name: "Fixált kezdőpontok",
             type: "checkbox",
             value: 1,
             func: this.sierpinskiTriangleConfigurable.setUseFixedPoints
           },
-          { 
+          {
             name: "Háromszög részeinek kijelölése",
             type: "checkbox-tree",
             value: 0,
@@ -97,21 +98,21 @@ export class FractalsService {
               }
             ]
           },
-          { 
+          {
             name: "Szín",
             type: "colorpicker",
             color: "#000",
             func: this.sierpinskiTriangleConfigurable.setColor
           }
-        ] 
+        ]
     });
     this.list.push({
-      name: "Sierpinszki szőnyeg", 
-      previewId: "sierpc", 
-      preview: this.sierpc, 
+      name: "Sierpinszki szőnyeg",
+      previewId: "sierpc",
+      preview: this.sierpc,
       algorithm: this.sierpinskiCarpetConfigurable,
       configurations: [
-        { 
+        {
           name: "Gyorsaság",
           type: "slider",
           value: 1,
@@ -120,7 +121,7 @@ export class FractalsService {
           step: 1,
           func: this.sierpinskiCarpetConfigurable.setSpeed
         },
-        { 
+        {
           name: "Szín",
           type: "colorpicker",
           func: this.sierpinskiCarpetConfigurable.setColor
@@ -128,12 +129,12 @@ export class FractalsService {
       ]
     });
     this.list.push({
-      name: "Levy C Görbe", 
-      previewId: "levy-c-curve-preview", 
-      preview: this.levyC, 
+      name: "Levy C Görbe",
+      previewId: "levy-c-curve-preview",
+      preview: this.levyC,
       algorithm: this.levyCCurveConfigurable,
       configurations: [
-        { 
+        {
           name: "Gyorsaság",
           type: "slider",
           value: 1,
@@ -142,12 +143,12 @@ export class FractalsService {
           step: 1,
           func: this.levyCCurveConfigurable.setSpeed
         },
-        { 
+        {
           name: "Szín",
           type: "colorpicker",
           func: this.levyCCurveConfigurable.setColor
         },
-        { 
+        {
           name: "Vonalvastagság",
           type: "slider",
           value: 1,
@@ -156,7 +157,7 @@ export class FractalsService {
           step: 1,
           func: this.levyCCurveConfigurable.setStrokeWeight
         },
-        { 
+        {
           name: "Vonalhosszúság",
           type: "slider",
           value: 1,
@@ -165,13 +166,13 @@ export class FractalsService {
           step: 1,
           func: this.levyCCurveConfigurable.setLength
         },
-        { 
+        {
           name: "Fixált kezdővonal",
           type: "checkbox",
           value: 1,
           func: this.levyCCurveConfigurable.setFixedLine
         },
-        { 
+        {
           name: "Irány",
           type: "combobox",
           values: [
@@ -189,12 +190,12 @@ export class FractalsService {
       ]
     });
     this.list.push({
-      name: "Püthagorasz Fa", 
-      previewId: "pythagoras-tree-prev", 
-      preview: this.pythTree, 
+      name: "Püthagorasz Fa",
+      previewId: "pythagoras-tree-prev",
+      preview: this.pythTree,
       algorithm: this.pythagorasTreeConfigurable,
       configurations: [
-        { 
+        {
           name: "Gyorsaság",
           type: "slider",
           value: 1,
@@ -203,7 +204,7 @@ export class FractalsService {
           step: 1,
           func: this.pythagorasTreeConfigurable.setSpeed
         },
-        { 
+        {
           name: "Szín",
           type: "colorpicker",
           func: this.pythagorasTreeConfigurable.setColor
@@ -211,12 +212,12 @@ export class FractalsService {
       ]
     });
     this.list.push({
-      name: "Koch Görbe", 
-      previewId: "koch-curve-preview", 
-      preview: this.kochCurvePreview, 
+      name: "Koch Görbe",
+      previewId: "koch-curve-preview",
+      preview: this.kochCurvePreview,
       algorithm: this.kochCurveConfigurable,
       configurations: [
-        { 
+        {
           name: "Gyorsaság",
           type: "slider",
           value: 1,
@@ -225,12 +226,12 @@ export class FractalsService {
           step: 1,
           func: this.kochCurveConfigurable.setSpeed
         },
-        { 
+        {
           name: "Szín",
           type: "colorpicker",
           func: this.kochCurveConfigurable.setColor
         },
-        { 
+        {
           name: "Vonalvastagság",
           type: "slider",
           value: 1,
