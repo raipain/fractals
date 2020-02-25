@@ -48,7 +48,7 @@ export class CanvasComponent implements OnInit {
   }
 
   stop(): void {
-    this.fractalList[this.selectedFractal].algorithm.stop();
+    this.fractalList[this.selectedFractal].algorithm.setStop();
     this.play = false;
   }
 

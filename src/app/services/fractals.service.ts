@@ -239,6 +239,30 @@ export class FractalsService {
           maxValue: 10,
           step: 1,
           func: this.kochCurveConfigurable.setStrokeWeight
+        },
+        {
+          name: "Vonalhosszúság",
+          type: "slider",
+          value: 200,
+          minValue: 1,
+          maxValue: 500,
+          step: 1,
+          func: this.kochCurveConfigurable.setLength
+        },
+        {
+          name: "Irány",
+          type: "combobox",
+          values: [
+            {
+              name: "Fel",
+              value: 1
+            },
+            {
+              name: "Le",
+              value: -1
+            }
+          ],
+          func: this.kochCurveConfigurable.setDirection
         }
       ]
     });

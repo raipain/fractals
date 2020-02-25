@@ -66,8 +66,8 @@ export class SierpinskiCarpetConfigurable extends Fractal  {
     p.fill(this.color);
   }
 
-  stop() {
-    super.stop();
+  setStop() {
+    super.setStop();
     this.detail = 0;
   }
 

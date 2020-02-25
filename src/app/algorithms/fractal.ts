@@ -12,9 +12,11 @@ export abstract class Fractal {
     protected strokeWeight: number;
     protected color: string;
     protected play: boolean;
+    protected stop: boolean;
 
     constructor() {
         this.play = false;
+        this.stop = true;
         this.frameRate = 1;
         this.strokeWeight = 1;
         this.color = "#000";
@@ -52,10 +54,14 @@ export abstract class Fractal {
 
     togglePlay() {
         this.play = !this.play;
+        if(this.play) {
+            this.stop = false;
+        }
     }
 
-    stop() {
+    setStop() {
         this.play = false;
+        this.stop = true;
         this.p5.clear();
     }
 

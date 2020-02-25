@@ -5,17 +5,21 @@ export class KochCurveConfigurable extends Fractal {
     private length: number;
     private lines: Line[];
     private root: Line;
+    private direction: number;
     
     constructor() {
         super();
+        this.direction = -1;
     }
 
     init(parentId: string, width: number, height: number, canvasColor: string) {
         super.init(parentId, width, height, canvasColor);
         
-        this.length = this.width / 3;
+        this.length = this.width / 2;
         this.root = new Line(new p5.Vector(this.width / 2 - this.length / 2, this.height / 2), 
-                            new p5.Vector(this.width /2 + this.length / 2, this.height / 2), this.length)
+                    new p5.Vector(this.width /2 + this.length / 2, this.height / 2), 
+                    this.length);
+
         this.lines = [this.root];
 
         this.createCanvas();
@@ -30,18 +34,20 @@ export class KochCurveConfigurable extends Fractal {
             p.background(this.canvasColor);
             p.stroke(this.color);
             p.strokeWeight(this.strokeWeight);
-
-            p.line(this.lines[0].a.x, this.lines[0].a.y, this.lines[0].b.x, this.lines[0].b.y);
         }
         
         p.draw = () => {
             this.setConfigurables(p);
-            
-            if(this.play) {
+
+            if(this.stop) {
+                p.background(this.canvasColor);
+                p.line(this.lines[0].a.x, this.lines[0].a.y, this.lines[0].b.x, this.lines[0].b.y);
+            }
+            else if(this.play) {
                 p.background(this.canvasColor);
                 let newLines = [];
                 for(let i = 0; i < this.lines.length; i++) {
-                    let temp = this.lines[i].expand(p);
+                    let temp = this.lines[i].expand(p, this.direction);
                     for(let j = 0; j < temp.length; j++) {
                         newLines.push(temp[j]);
                     }
@@ -50,9 +56,13 @@ export class KochCurveConfigurable extends Fractal {
             } 
         }
     }
-    
-    stop() {
-        super.stop();
+
+    setRoot(a: number, b: number, length: number): void {
+        this.root = new Line(a, b, length);
+    }
+     
+    setStop() {
+        super.setStop();
         this.lines = [this.root];
     }
 
@@ -61,13 +71,25 @@ export class KochCurveConfigurable extends Fractal {
         p.stroke(this.color);
         p.strokeWeight(this.strokeWeight);
     }
+
+    setDirection(obj: any, direction: number): void {
+        obj.direction = direction;
+    }
+
+    setLength(obj: any, length: number): void {
+        obj.length = length;
+        obj.root = new Line(new p5.Vector(obj.width / 2 - obj.length / 2, obj.height / 2), 
+                    new p5.Vector(obj.width /2 + obj.length / 2, obj.height / 2), 
+                    obj.length);
+        obj.setStop();
+    }
 }
 
 
 class Line {
-    a;
-    b;
-    length;
+    public a;
+    public b;
+    public length;
 
     constructor(a, b, length) {
         this.a = a;
@@ -75,16 +97,16 @@ class Line {
         this.length = length;
     }
 
-    expand(p: any) {
+    expand(p: any, direction: number) {
         let lerpVal = (this.length/3) / this.length;
 
         let first = p5.Vector.lerp(this.a, this.b, lerpVal);
         let second = p5.Vector.lerp(this.b, this.a, lerpVal);
         let dir = p5.Vector.sub(this.b, this.a);
-        dir.rotate(-p.PI/3);
+        dir.rotate(-direction * p.PI/3);
         let firstRef = p5.Vector.add(first, dir);
         dir = p5.Vector.sub(this.a, this.b);
-        dir.rotate(p.PI/3);
+        dir.rotate(direction * p.PI/3);
         let secRef = p5.Vector.add(second, dir);
     
         firstRef = p5.Vector.lerp(first, firstRef, lerpVal);

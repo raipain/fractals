@@ -180,8 +180,8 @@ export class SierpinskiTriangleConfigurable extends Fractal {
     p.strokeWeight(this.strokeWeight);
   }
 
-  stop() {
-    super.stop();
+  setStop() {
+    super.setStop();
     this.setup = false;
     this.customPoints = [];
     this.customRefPoint = null;

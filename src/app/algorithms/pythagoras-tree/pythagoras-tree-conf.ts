@@ -56,8 +56,8 @@ export class PythagorasTreeConfigurable extends Fractal {
         p.fill(this.color);
     }
 
-    stop() {
-        super.stop();
+    setStop() {
+        super.setStop();
         this.rects = [this.root];
     }
 }

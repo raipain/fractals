@@ -103,8 +103,8 @@ export class LevyCCurveConfigurable extends Fractal {
         }
     }
 
-    stop() {
-        super.stop();
+    setStop() {
+        super.setStop();
         this.lines = [];
         this.lines.push(
             new Line(
