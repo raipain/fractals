@@ -5,5 +5,6 @@ export interface IFractalList {
     previewId: string;
     preview: any;
     algorithm: any;
+    observable?: Function;
     configurations: IFractalConfiguration[];
 }

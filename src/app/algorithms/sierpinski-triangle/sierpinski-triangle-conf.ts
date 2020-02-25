@@ -9,7 +9,7 @@ export class SierpinskiTriangleConfigurable extends Fractal {
   private customRefPoint;
   private points;
   private refPoint;
-  private storedPoints$: BehaviorSubject<Array>;
+  private storedPoints$: BehaviorSubject<Array<p5.Vector>>;
   private storedPoints;
   private setup: boolean;
   private lerpValue: number;
@@ -35,7 +35,7 @@ export class SierpinskiTriangleConfigurable extends Fractal {
     this.setup = false;
     this.strokeWeight = 3;
     this.frameRate = 60;
-    this.storedPoints$ = new BehaviorSubject<Array>([]);
+    this.storedPoints$ = new BehaviorSubject<Array<p5.Vector>>([]);
     this.storedPoints = [];
   }
 
@@ -188,10 +188,6 @@ export class SierpinskiTriangleConfigurable extends Fractal {
     this.currentPoints = 0;
     this.storedPoints = [];
     this.storedPoints$.next([]);
-  }
-
-  play() {
-    super.play();
   }
 
   getStoredPoints() {

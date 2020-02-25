@@ -7,7 +7,6 @@ export interface IFractalConfiguration {
     minValue?: number;
     step?: number;
     func?: Function;
-    observable?: Function;
     values?: IFractalConfiguration[];
     configurations?: IFractalConfiguration[];
 }
