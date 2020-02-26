@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FractalsService } from 'src/app/services/fractals.service';
+import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { IFractalList } from 'src/app/models/fractal-list';
 
 @Component({
@@ -15,9 +16,10 @@ export class CanvasComponent implements OnInit {
   private title: string = "Kérlek válassz algoritmust!";
   private play: boolean = false;
   private sliderLength: number;
+  private animationState: boolean;
 
 
-  constructor(private fractalService: FractalsService) {
+  constructor(private fractalService: FractalsService, private animationStateManagerService: AnimationStateManagerService) {
     this.fractalList = fractalService.getList();
     fractalService.getSelectedFractal().subscribe((index: number) => {
       if(index != null) {
@@ -36,13 +38,16 @@ export class CanvasComponent implements OnInit {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.animationStateManagerService.getState().subscribe((state: boolean) => { this.animationState = state; console.log(this.animationState) });
+  }
 
   setSpeed(speed: number): void {
     this.fractalList[this.selectedFractal].algorithm.setSpeed(speed);
   }
 
   togglePlay(): void {
+    this.animationStateManagerService.setState(!this.animationState);
     this.fractalList[this.selectedFractal].algorithm.togglePlay();
     this.play = !this.play;
   }
