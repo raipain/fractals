@@ -3,7 +3,6 @@ import { Fractal } from '../fractal';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 
 export class SierpinskiCarpetConfigurable extends Fractal  {
-
   private detail: number;
   private maxDetail: number;
   private rectSize: number;
@@ -71,6 +70,28 @@ export class SierpinskiCarpetConfigurable extends Fractal  {
     super.setStop();
     this.detail = 0;
   }
+}
 
-  
+class Rectangle {
+  public A: p5.Vector;
+  public B: p5.Vector;
+  public C: p5.Vector;
+  public D: p5.Vector;
+
+  constructor(A: p5.Vector, B: p5.Vector, C: p5.Vector, D: p5.Vector) {
+    this.A = A;
+    this.B = B;
+    this.C = C;
+    this.D = D;
+  }
+
+  draw(p: any): void {
+    p.beginShape();
+    p.vertex(this.A);
+    p.vertex(this.B);
+    p.vertex(this.D);
+    p.vertex(this.C);
+    p.vertex(this.A);
+    p.endShape();
+  }
 }

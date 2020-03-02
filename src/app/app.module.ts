@@ -28,6 +28,8 @@ import { KochCurvePreview } from './algorithms/koch-curve/koch-curve-preview';
 import { LevyCCurveConfigurable } from './algorithms/levy-c-curve/levy-c-curve-conf';
 import { KochCurveConfigurable } from './algorithms/koch-curve/koch-curve-conf';
 import { PythagorasTreeConfigurable } from './algorithms/pythagoras-tree/pythagoras-tree-conf';
+import { HTreePreview } from './algorithms/h-tree/h-tree-preview';
+import { HTreeConfigurable } from './algorithms/h-tree/h-tree-conf';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,9 @@ import { PythagorasTreeConfigurable } from './algorithms/pythagoras-tree/pythago
     PythagorasTreePreview,
     PythagorasTreeConfigurable,
     KochCurvePreview,
-    KochCurveConfigurable
+    KochCurveConfigurable,
+    HTreePreview,
+    HTreeConfigurable
   ],
   bootstrap: [AppComponent],
   entryComponents: []

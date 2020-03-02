@@ -7,7 +7,6 @@ export class LevyCCurveConfigurable extends Fractal {
     private length: number;
     private direction: number;
     private fixedLine: boolean;
-    private setup: boolean;
     private rotation: number;
     private angle: number;
     private iter: number;
@@ -17,7 +16,6 @@ export class LevyCCurveConfigurable extends Fractal {
         this.lines = [];
         this.fixedLine = true;
         this.direction = -1;
-        this.setup = false;
         this.rotation = 0;
         this.angle = Math.PI / 4;
         this.iter = 0;
@@ -48,7 +46,14 @@ export class LevyCCurveConfigurable extends Fractal {
         p.draw = () => {
             this.setConfigurables(p);
 
-            if(this.play) {
+            if(this.rollBack) {
+                this._rollBack(p);
+            }
+            else if(this.stop) {
+                p.background(this.canvasColor);
+                this.lines[0].draw(p);
+            }
+            else if(this.play) {
                 p.background(this.canvasColor);
 
                 if(!this.fixedLine) {
@@ -61,6 +66,8 @@ export class LevyCCurveConfigurable extends Fractal {
                 }
                 else {
                     let tempLines: Line[] = [];
+                    this.list.push(this.lines.length);
+                    this.rollBackList$.next(this.list);
     
                     for(let i = this.iter; i < this.lines.length; i++) {
                         this.lines[i].draw(p);
@@ -69,8 +76,6 @@ export class LevyCCurveConfigurable extends Fractal {
 
                     this.iter = this.lines.length;
                     this.lines = this.lines.concat(tempLines);
-
-                    console.log(this.lines.length);
                 }
             }
         }
@@ -110,8 +115,33 @@ export class LevyCCurveConfigurable extends Fractal {
         }
     }
 
+    _rollBack(p: any) {
+        let from = this.list[this.rollBackTo - 2];
+        let to = this.list[this.rollBackTo - 1];
+        if(from == null) {
+            from = 0;
+        }
+
+        if(this.rollBack) {
+            if(this.play) {
+                for(let i = this.rollBackTo; i < this.lines.length; i++) {
+                    this.lines[i].draw(p);
+                }
+                this.rollBack = false;
+            }
+            else {
+                p.background(this.canvasColor);
+                for(let i = from; i < to; i++) {
+                    this.lines[i].draw(p);
+                }
+            }
+        }
+    }
+
+    //#region Setters
     setStop() {
         this.lines = [];
+        this.list = [];
         this.lines.push(
             new Line(
                 new p5.Vector(this.width / 2 - this.length / 2, this.height / 2), 
@@ -148,8 +178,10 @@ export class LevyCCurveConfigurable extends Fractal {
         obj.angle = angle * Math.PI / 180;
         obj.setStop();
     }
+    //#endregion
 }
 
+//#region Line
 class Line {
     public A: p5.Vector;
     public B: p5.Vector;
@@ -181,4 +213,4 @@ class Line {
         p.line(this.A.x, this.A.y, this.B.x, this.B.y);
     }
 }
-
+//#endregion

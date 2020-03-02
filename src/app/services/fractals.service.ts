@@ -11,6 +11,8 @@ import { KochCurvePreview } from '../algorithms/koch-curve/koch-curve-preview';
 import { LevyCCurveConfigurable } from '../algorithms/levy-c-curve/levy-c-curve-conf';
 import { KochCurveConfigurable } from '../algorithms/koch-curve/koch-curve-conf';
 import { PythagorasTreeConfigurable } from '../algorithms/pythagoras-tree/pythagoras-tree-conf';
+import { HTreePreview } from '../algorithms/h-tree/h-tree-preview';
+import { HTreeConfigurable } from '../algorithms/h-tree/h-tree-conf';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +32,9 @@ export class FractalsService {
               private pythTree: PythagorasTreePreview,
               private pythagorasTreeConfigurable: PythagorasTreeConfigurable,
               private kochCurvePreview: KochCurvePreview,
-              private kochCurveConfigurable: KochCurveConfigurable)
+              private kochCurveConfigurable: KochCurveConfigurable,
+              private hTreePreview: HTreePreview,
+              private hTreeConfigurable: HTreeConfigurable)
   {
       this.list.push({
         name: "Sierpinszki háromszög",
@@ -307,6 +311,52 @@ export class FractalsService {
             }
           ],
           func: this.kochCurveConfigurable.setDirection
+        }
+      ]
+    });
+    this.list.push({
+      name: "H-fa",
+      previewId: "h-tree-preview",
+      preview: this.hTreePreview,
+      algorithm: this.hTreeConfigurable,
+      configurations: [
+        {
+          name: "Gyorsaság",
+          type: "slider",
+          value: 1,
+          minValue: 1,
+          maxValue: 200,
+          step: 1,
+          func: this.hTreeConfigurable.setSpeed
+        },
+        {
+          name: "Vonalvastagság",
+          type: "slider",
+          value: 3,
+          minValue: 1,
+          maxValue: 10,
+          step: 1,
+          func: this.hTreeConfigurable.setStrokeWeight
+        },
+        {
+          name: "Vonalhosszúság",
+          type: "slider",
+          value: 200,
+          minValue: 50,
+          maxValue: 500,
+          step: 1,
+          func: this.hTreeConfigurable.setLength
+        },
+        {
+          name: "Fixált kezdővonal",
+          type: "checkbox",
+          value: 1,
+          func: this.hTreeConfigurable.setCustomRoot
+        },
+        {
+          name: "Szín",
+          type: "colorpicker",
+          func: this.sierpinskiTriangleConfigurable.setColor
         }
       ]
     });
