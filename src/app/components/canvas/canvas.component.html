@@ -8,8 +8,8 @@
             <input #slider (click)="rollBack(slider.value)" type="range" min="1" max="{{sliderLength}}" value="{{sliderLength}}" class="slider" id="myRange">
         </div>
         <div>
-            <i *ngIf="!play" (click)="togglePlay()" class="material-icons control-btn">play_arrow</i>
-            <i *ngIf="play" (click)="togglePlay()" class="material-icons control-btn">pause</i>
+            <i *ngIf="!animationState" (click)="togglePlay()" class="material-icons control-btn">play_arrow</i>
+            <i *ngIf="animationState" (click)="togglePlay()" class="material-icons control-btn">pause</i>
             <i (click)="stop()" class="material-icons control-btn">stop</i>
         </div>
         <button mat-stroked-button (click)="save()">Mentés képként</button>

@@ -1,15 +1,21 @@
 import * as p5 from 'p5';
 import { Fractal } from '../fractal';
+import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 
 export class KochCurveConfigurable extends Fractal { 
     private length: number;
     private lines: Line[];
     private root: Line;
     private direction: number;
+    private iter: number;
+    private angle: number;
     
-    constructor() {
-        super();
+    constructor(animationStateManagerService: AnimationStateManagerService) {
+        super(animationStateManagerService);
+        this.lines = [];
         this.direction = -1;
+        this.iter = 0;
+        this.angle = 80 * Math.PI / 180;
     }
 
     init(parentId: string, width: number, height: number, canvasColor: string) {
@@ -39,31 +45,61 @@ export class KochCurveConfigurable extends Fractal {
         p.draw = () => {
             this.setConfigurables(p);
 
-            if(this.stop) {
+            if(this.rollBack) {
+                this._rollBack(p);
+            }
+            else if(this.stop) {
                 p.background(this.canvasColor);
-                p.line(this.lines[0].a.x, this.lines[0].a.y, this.lines[0].b.x, this.lines[0].b.y);
+                this.root.draw(p);
             }
             else if(this.play) {
                 p.background(this.canvasColor);
                 let newLines = [];
-                for(let i = 0; i < this.lines.length; i++) {
-                    let temp = this.lines[i].expand(p, this.direction);
+                this.list.push(this.lines.length);
+                this.rollBackList$.next(this.list);
+                for(let i = this.iter; i < this.lines.length; i++) {
+                    this.lines[i].draw(p);
+                    let temp = this.lines[i].expand(p, this.direction, this.angle);
                     for(let j = 0; j < temp.length; j++) {
                         newLines.push(temp[j]);
                     }
                 }
-                this.lines = newLines;
+                this.iter = this.lines.length;
+                this.lines = this.lines.concat(newLines); 
+                console.log("Lines: " + this.lines.length)
+                
             } 
         }
     }
 
-    setRoot(a: number, b: number, length: number): void {
-        this.root = new Line(a, b, length);
+    _rollBack(p: any) {
+        let from = this.list[this.rollBackTo - 2];
+        let to = this.list[this.rollBackTo - 1];
+        if(from == null) {
+            from = 0;
+        }
+
+        if(this.rollBack) {
+            if(this.play) {
+                for(let i = this.rollBackTo; i < this.lines.length; i++) {
+                    this.lines[i].draw(p);
+                }
+                this.rollBack = false;
+            }
+            else {
+                p.background(this.canvasColor);
+                for(let i = from; i < to; i++) {
+                    this.lines[i].draw(p);
+                }
+            }
+        }
     }
      
+    //#region Setters
     setStop() {
         super.setStop();
         this.lines = [this.root];
+        this.iter = 0;
     }
 
     setConfigurables(p: any) {
@@ -74,6 +110,7 @@ export class KochCurveConfigurable extends Fractal {
 
     setDirection(obj: any, direction: number): void {
         obj.direction = direction;
+        obj.setStop();
     }
 
     setLength(obj: any, length: number): void {
@@ -83,9 +120,10 @@ export class KochCurveConfigurable extends Fractal {
                     obj.length);
         obj.setStop();
     }
+    //#endregion
 }
 
-
+//#region Line
 class Line {
     public a;
     public b;
@@ -97,25 +135,24 @@ class Line {
         this.length = length;
     }
 
-    expand(p: any, direction: number) {
-        let lerpVal = (this.length/3) / this.length;
+    expand(p: any, direction: number, angle: number): Line[] {
+        let len = this.length / 3;
+        let alpha = 180 - 2 * p.degrees(angle);
+        let sideLength = (this.length - 2 * len) * p.sin(angle) / p.sin(p.radians(alpha));
+
+        let lerpVal = len / this.length;
 
         let first = p5.Vector.lerp(this.a, this.b, lerpVal);
         let second = p5.Vector.lerp(this.b, this.a, lerpVal);
         let dir = p5.Vector.sub(this.b, this.a);
-        dir.rotate(-direction * p.PI/3);
+        dir.rotate(-direction * angle);
         let firstRef = p5.Vector.add(first, dir);
         dir = p5.Vector.sub(this.a, this.b);
-        dir.rotate(direction * p.PI/3);
+        dir.rotate(direction * angle);
         let secRef = p5.Vector.add(second, dir);
-    
-        firstRef = p5.Vector.lerp(first, firstRef, lerpVal);
-        secRef = p5.Vector.lerp(second, secRef, lerpVal);
-
-        p.line(first.x, first.y, firstRef.x, firstRef.y);
-        p.line(second.x, second.y, secRef.x, secRef.y);  
-        p.line(this.a.x, this.a.y, first.x, first.y);  
-        p.line(this.b.x, this.b.y, second.x, second.y);  
+        
+        firstRef = p5.Vector.lerp(first, firstRef, sideLength / p5.Vector.dist(first, firstRef));
+        secRef = p5.Vector.lerp(second, secRef, sideLength / p5.Vector.dist(second, secRef));
 
         let newLines = [];
         newLines.push(new Line(this.a, first, p5.Vector.dist(this.a, first)));
@@ -125,4 +162,9 @@ class Line {
 
         return newLines;
     }
+
+    draw(p: any): void {
+        p.line(this.a.x, this.a.y, this.b.x, this.b.y);
+    }
+    //#endregion
 }

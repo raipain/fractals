@@ -1,5 +1,6 @@
 import * as p5 from 'p5';
 import { Fractal } from '../fractal';
+import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 
 export class LevyCCurveConfigurable extends Fractal {
     private lines: Line[];
@@ -9,8 +10,8 @@ export class LevyCCurveConfigurable extends Fractal {
     private setup: boolean;
     private angle: number;
     
-    constructor() {
-        super();
+    constructor(animationStateManagerService: AnimationStateManagerService) {
+        super(animationStateManagerService);
         this.lines = [];
         this.fixedLine = true;
         this.direction = -1;

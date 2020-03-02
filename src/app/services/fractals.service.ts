@@ -37,7 +37,6 @@ export class FractalsService {
         previewId: "sierpinski-triangle-preview",
         preview: this.sierpinskiTrianglePreview,
         algorithm: this.sierpinskiTriangleConfigurable,
-        observable: this.sierpinskiTriangleConfigurable.getStoredPoints,
         configurations: [
           {
             name: "Gyorsaság",
@@ -203,6 +202,27 @@ export class FractalsService {
           maxValue: 60,
           step: 1,
           func: this.pythagorasTreeConfigurable.setSpeed
+        },
+        {
+          name: "Fixált szög",
+          type: "checkbox",
+          value: 1,
+          func: this.pythagorasTreeConfigurable.setFixedAngle
+        },
+        {
+          name: "Fixált gyökér",
+          type: "checkbox",
+          value: 1,
+          func: this.pythagorasTreeConfigurable.setFixedRoot
+        },
+        {
+          name: "Oldalhosszúság",
+          type: "slider",
+          value: 1,
+          minValue: 10,
+          maxValue: 400,
+          step: 1,
+          func: this.pythagorasTreeConfigurable.setRectSize
         },
         {
           name: "Szín",

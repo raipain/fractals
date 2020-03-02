@@ -17,6 +17,6 @@ export class AnimationStateManagerService {
   }
 
   getState(): Observable<boolean> {
-    return this.sate;
+    return this.state;
   }
 }

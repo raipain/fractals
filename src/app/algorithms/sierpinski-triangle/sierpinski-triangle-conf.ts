@@ -1,6 +1,7 @@
 import * as p5 from 'p5';
 import { Fractal } from '../fractal';
 import { BehaviorSubject } from 'rxjs';
+import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 
 export class SierpinskiTriangleConfigurable extends Fractal {
   private fixedPoints;
@@ -9,8 +10,6 @@ export class SierpinskiTriangleConfigurable extends Fractal {
   private customRefPoint;
   private points;
   private refPoint;
-  private storedPoints$: BehaviorSubject<Array<p5.Vector>>;
-  private storedPoints;
   private setup: boolean;
   private lerpValue: number;
   private useFixedPoints: boolean;
@@ -21,11 +20,8 @@ export class SierpinskiTriangleConfigurable extends Fractal {
   private maxPoints: number;
   private currentPoints: number;
 
-  private rollBack: boolean;
-  private rollBackTo: number;
-
-  constructor() {
-    super();
+  constructor(animationStateManagerService: AnimationStateManagerService) {
+    super(animationStateManagerService);
     this.useFixedPoints = true;
     this.maxPoints = 3;
     this.currentPoints = 0;
@@ -35,8 +31,6 @@ export class SierpinskiTriangleConfigurable extends Fractal {
     this.setup = false;
     this.strokeWeight = 3;
     this.frameRate = 60;
-    this.storedPoints$ = new BehaviorSubject<Array<p5.Vector>>([]);
-    this.storedPoints = [];
   }
 
   init(parentId: string, width: number, height: number, canvasColor: string) {
@@ -68,18 +62,7 @@ export class SierpinskiTriangleConfigurable extends Fractal {
       this.setConfigurables(p);
 
       if(this.rollBack) {
-        if(this.play) {
-          for(let i = this.rollBackTo; i < this.storedPoints.length; i++) {
-            p.point(this.storedPoints[i].x, this.storedPoints[i].y);
-          }
-          this.rollBack = false;
-        }
-        else {
-          p.background(this.canvasColor);
-          for(let i = 0; i < this.rollBackTo; i++) {
-            p.point(this.storedPoints[i].x, this.storedPoints[i].y);
-          }
-        }
+        this._rollBack(p);
       }
       if(this.play && !this.useFixedPoints && !this.setup) {
         p.setUpCustomPoints();
@@ -102,8 +85,8 @@ export class SierpinskiTriangleConfigurable extends Fractal {
         p.point(newPoint.x, newPoint.y);
         this.refPoint = newPoint;
 
-        this.storedPoints.push(newPoint);
-        this.storedPoints$.next(this.storedPoints);
+        this.list.push(new Point(newPoint));
+        this.rollBackList$.next(this.list);
       }
     }
 
@@ -186,17 +169,17 @@ export class SierpinskiTriangleConfigurable extends Fractal {
     this.customPoints = [];
     this.customRefPoint = null;
     this.currentPoints = 0;
-    this.storedPoints = [];
-    this.storedPoints$.next([]);
+  }  
+}
+
+class Point {
+  public point: p5.Vector;
+
+  constructor(point: p5.Vector) {
+    this.point = point;
   }
 
-  getStoredPoints() {
-    return this.storedPoints$;
-  }
-
-  setUpRollBack(to: number) {
-    this.rollBack = true;
-    this.rollBackTo = to;
-    this.play = false;
+  draw(p: any) {
+    p.point(this.point.x, this.point.y);
   }
 }

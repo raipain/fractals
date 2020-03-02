@@ -1,5 +1,6 @@
 import * as p5 from 'p5';
 import { Fractal } from '../fractal';
+import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 
 export class SierpinskiCarpetConfigurable extends Fractal  {
 
@@ -7,8 +8,8 @@ export class SierpinskiCarpetConfigurable extends Fractal  {
   private maxDetail: number;
   private rectSize: number;
 
-  constructor() {
-    super();
+  constructor(animationStateManagerService: AnimationStateManagerService) {
+    super(animationStateManagerService);
     this.detail = 0;
     this.maxDetail = 6;
     this.rectSize = 300;

@@ -18,10 +18,9 @@ export class CanvasComponent implements OnInit {
   private sliderLength: number;
   private animationState: boolean;
 
-
   constructor(private fractalService: FractalsService, private animationStateManagerService: AnimationStateManagerService) {
     this.fractalList = fractalService.getList();
-    fractalService.getSelectedFractal().subscribe((index: number) => {
+    this.fractalService.getSelectedFractal().subscribe((index: number) => {
       if(index != null) {
         if(this.selectedFractal != null) {
           this.fractalList[this.selectedFractal].algorithm.removeCanvas();
@@ -29,17 +28,15 @@ export class CanvasComponent implements OnInit {
         this.selectedFractal = index;
         this.title = this.fractalList[this.selectedFractal].name;
         this.fractalList[this.selectedFractal].algorithm.init("canvas", this.container.nativeElement.offsetWidth, this.container.nativeElement.offsetHeight, "#f3f3f3");
-        if(this.fractalList[this.selectedFractal].observable != null) {
-          this.fractalList[this.selectedFractal].algorithm.getStoredPoints().subscribe(ret => {
-            this.sliderLength = ret.length;
-          })
-        }
+        this.fractalList[this.selectedFractal].algorithm.getObservable().subscribe(ret => {
+          this.sliderLength = ret.length;
+        })
       }
     });
   }
 
   ngOnInit() {
-    this.animationStateManagerService.getState().subscribe((state: boolean) => { this.animationState = state; console.log(this.animationState) });
+    this.animationStateManagerService.getState().subscribe((state: boolean) => { this.animationState = state });
   }
 
   setSpeed(speed: number): void {
@@ -53,6 +50,7 @@ export class CanvasComponent implements OnInit {
   }
 
   stop(): void {
+    this.animationStateManagerService.setState(false);
     this.fractalList[this.selectedFractal].algorithm.setStop();
     this.play = false;
   }
