@@ -166,6 +166,15 @@ export class FractalsService {
           func: this.levyCCurveConfigurable.setLength
         },
         {
+          name: "Szög",
+          type: "slider",
+          value: 60,
+          minValue: 20,
+          maxValue: 80,
+          step: 1,
+          func: this.levyCCurveConfigurable.setAngle
+        },
+        {
           name: "Fixált kezdővonal",
           type: "checkbox",
           value: 1,
@@ -268,6 +277,21 @@ export class FractalsService {
           maxValue: 500,
           step: 1,
           func: this.kochCurveConfigurable.setLength
+        },
+        {
+          name: "Szög",
+          type: "slider",
+          value: 60,
+          minValue: 20,
+          maxValue: 80,
+          step: 1,
+          func: this.kochCurveConfigurable.setAngle
+        },
+        {
+          name: "Fixált kezdővonal",
+          type: "checkbox",
+          value: 1,
+          func: this.kochCurveConfigurable.setFixedLine
         },
         {
           name: "Irány",

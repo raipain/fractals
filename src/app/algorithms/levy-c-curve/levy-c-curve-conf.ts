@@ -8,7 +8,9 @@ export class LevyCCurveConfigurable extends Fractal {
     private direction: number;
     private fixedLine: boolean;
     private setup: boolean;
+    private rotation: number;
     private angle: number;
+    private iter: number;
     
     constructor(animationStateManagerService: AnimationStateManagerService) {
         super(animationStateManagerService);
@@ -16,7 +18,9 @@ export class LevyCCurveConfigurable extends Fractal {
         this.fixedLine = true;
         this.direction = -1;
         this.setup = false;
-        this.angle = 0;
+        this.rotation = 0;
+        this.angle = Math.PI / 4;
+        this.iter = 0;
     }
     
     init(parentId: string, width: number, height: number, canvasColor: string) {
@@ -39,73 +43,74 @@ export class LevyCCurveConfigurable extends Fractal {
             p.background(this.canvasColor);
             p.frameRate(this.frameRate);
             p.strokeWeight(this.strokeWeight);
-
-            p.line(this.lines[0].a.x, this.lines[0].a.y, this.lines[0].b.x, this.lines[0].b.y);
         }
 
         p.draw = () => {
-            p.pop();
             this.setConfigurables(p);
 
-            if(this.play && !this.fixedLine && !this.setup) {
-                p.frameRate(60);
+            if(this.play) {
                 p.background(this.canvasColor);
-                p.translate(p.mouseX, p.mouseY);
-                p.rotate(this.angle);
-                p.line(-this.length / 2, 0, this.length / 2, 0);
-            }
-            else if(this.play && ((!this.fixedLine && this.setup) || this.fixedLine)) {
-                p.background(this.canvasColor);
-                let tempLines: Line[] = [];
 
-                for(let i = 0; i < this.lines.length; i++) {
-                    let length = p5.Vector.dist(this.lines[i].a, this.lines[i].b);
-                    let lengthSz = Math.sqrt(length/2 * length);
-
-                    let lerpAmount = lengthSz / length;
-        
-                    let dir = p5.Vector.sub(this.lines[i].b, this.lines[i].a);
-                    dir.rotate(this.direction * p.PI/4);
-                    let offset = p5.Vector.add(this.lines[i].a, dir);
-                    let adjOffset = p5.Vector.lerp(this.lines[i].a, offset, lerpAmount);
-
-                    tempLines.push(new Line(this.lines[i].a, adjOffset));
-                    tempLines.push(new Line(adjOffset, this.lines[i].b));
-
-                    p.line(this.lines[i].a.x, this.lines[i].a.y, adjOffset.x, adjOffset.y);
-                    p.line(this.lines[i].b.x, this.lines[i].b.y, adjOffset.x, adjOffset.y);
+                if(!this.fixedLine) {
+                    p.push();
+                    p.frameRate(60);
+                    p.translate(p.mouseX, p.mouseY);
+                    p.rotate(this.rotation);
+                    p.line(-this.length / 2, 0, this.length / 2, 0);
+                    p.pop();
                 }
-                this.lines = tempLines;
-                p.push();
+                else {
+                    let tempLines: Line[] = [];
+    
+                    for(let i = this.iter; i < this.lines.length; i++) {
+                        this.lines[i].draw(p);
+                        tempLines = tempLines.concat(this.lines[i].expand(p, this.direction, this.angle));
+                    }
+
+                    this.iter = this.lines.length;
+                    this.lines = this.lines.concat(tempLines);
+
+                    console.log(this.lines.length);
+                }
             }
         }
 
         p.mouseWheel = (event) => {
-            if(this.play && !this.fixedLine && !this.setup) {
+            if(this.play && !this.fixedLine) {
                 event.preventDefault();
                 if(event.delta > 0) {
-                    this.angle += 0.1;
+                    this.rotation += 0.1;
                 }
                 else if(event.delta < 0 ) {
-                    this.angle -= 0.1;
+                    this.rotation -= 0.1;
                 }
             }
         }
 
         p.handleMousePressed = () => {
-            if(this.play && !this.fixedLine && !this.setup) {
-                p.line(-this.length / 2, 0, this.length / 2, 0);
-                this.setup = true;
-                this.angle = 0;
-                p.frameRate(this.frameRate); 
-                this.lines = [new Line(p.createVector(-this.length / 2, 0), p.createVector(this.length / 2, 0))];
-                p.push();
+            if(this.play && !this.fixedLine) {
+                let center = p.createVector(p.mouseX, p.mouseY);
+                let x = p.createVector(p.mouseX - this.length / 2, p.mouseY);
+                let y = p.createVector(p.mouseX + this.length / 2, p.mouseY);
+
+                let xDir = p5.Vector.sub(x, center);
+                xDir.rotate(this.rotation);
+
+                let yDir = p5.Vector.sub(y, center);
+                yDir.rotate(this.rotation);
+
+                let xOffset = p5.Vector.add(center, xDir);
+                let yOffset = p5.Vector.add(center, yDir);
+
+                p.line(xOffset.x, xOffset.y, yOffset.x, yOffset.y);
+                this.fixedLine = true;
+                this.rotation = 0;
+                this.lines = [new Line(xOffset, yOffset)];
             }
         }
     }
 
     setStop() {
-        super.setStop();
         this.lines = [];
         this.lines.push(
             new Line(
@@ -113,11 +118,13 @@ export class LevyCCurveConfigurable extends Fractal {
                 new p5.Vector(this.width / 2 + this.length / 2, this.height / 2)
             )
         );
+        this.iter = 0;
+        super.setStop();
     }
-
+            
     setLength(obj: any, value: number) {
         obj.length = value;
-        obj.stop();
+        obj.setStop();
     }
 
     setConfigurables(p: any) {
@@ -129,22 +136,49 @@ export class LevyCCurveConfigurable extends Fractal {
     setFixedLine(obj: any, value: number): void {
         obj.fixedLine = value;
         obj.setup = false;
-        obj.stop();
+        obj.setStop();
     }
 
     setDirection(obj: any, direction: number): void {
         obj.direction = direction;
         obj.stop();
     }
+
+    setAngle(obj: any, angle: number): void {
+        obj.angle = angle * Math.PI / 180;
+        obj.setStop();
+    }
 }
 
 class Line {
-    public a: p5.Vector;
-    public b: p5.Vector;
+    public A: p5.Vector;
+    public B: p5.Vector;
+    public length: number;
 
-    constructor(a: p5.Vector, b: p5.Vector) {
-        this.a = a;
-        this.b = b;
+    constructor(A: p5.Vector, B: p5.Vector) {
+        this.A = A;
+        this.B = B;
+        this.length = p5.Vector.dist(this.A, this.B);
+    }
+
+    expand(p: any, direction: number, angle: number): Line[] {
+        let alpha = 180 - 2 * p.degrees(angle);
+        let sideLength = this.length * p.sin(angle) / p.sin(p.radians(alpha));
+
+        let dir = p5.Vector.sub(this.B, this.A);
+        dir.rotate(direction * angle);
+        let offset = p5.Vector.add(this.A, dir);
+        let adjOffset = p5.Vector.lerp(this.A, offset, sideLength / p5.Vector.dist(this.A, offset));
+
+        let lines = [];
+        lines.push(new Line(this.A, adjOffset));
+        lines.push(new Line(adjOffset, this.B));
+
+        return lines;
+    }
+
+    draw(p: any) {
+        p.line(this.A.x, this.A.y, this.B.x, this.B.y);
     }
 }
 
