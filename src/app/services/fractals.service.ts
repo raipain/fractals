@@ -49,7 +49,7 @@ export class FractalsService {
             minValue: 1,
             maxValue: 200,
             step: 1,
-            func: this.sierpinskiTriangleConfigurable.setSpeed
+            func: this.sierpinskiTriangleConfigurable.setFrameRate
           },
           {
             name: "Pontvastagság",
@@ -122,12 +122,21 @@ export class FractalsService {
           minValue: 1,
           maxValue: 60,
           step: 1,
-          func: this.sierpinskiCarpetConfigurable.setSpeed
+          func: this.sierpinskiCarpetConfigurable.setFrameRate
         },
         {
           name: "Szín",
           type: "colorpicker",
           func: this.sierpinskiCarpetConfigurable.setColor
+        },
+        {
+          name: "Négyzet mérete",
+          type: "slider",
+          value: 300,
+          minValue: 100,
+          maxValue: 600,
+          step: 1,
+          func: this.sierpinskiCarpetConfigurable.setRectSize
         }
       ]
     });
@@ -144,7 +153,7 @@ export class FractalsService {
           minValue: 1,
           maxValue: 60,
           step: 1,
-          func: this.levyCCurveConfigurable.setSpeed
+          func: this.levyCCurveConfigurable.setFrameRate
         },
         {
           name: "Szín",
@@ -214,7 +223,7 @@ export class FractalsService {
           minValue: 1,
           maxValue: 60,
           step: 1,
-          func: this.pythagorasTreeConfigurable.setSpeed
+          func: this.pythagorasTreeConfigurable.setFrameRate
         },
         {
           name: "Fixált szög",
@@ -257,7 +266,7 @@ export class FractalsService {
           minValue: 1,
           maxValue: 60,
           step: 1,
-          func: this.kochCurveConfigurable.setSpeed
+          func: this.kochCurveConfigurable.setFrameRate
         },
         {
           name: "Szín",
@@ -327,7 +336,7 @@ export class FractalsService {
           minValue: 1,
           maxValue: 200,
           step: 1,
-          func: this.hTreeConfigurable.setSpeed
+          func: this.hTreeConfigurable.setFrameRate
         },
         {
           name: "Vonalvastagság",

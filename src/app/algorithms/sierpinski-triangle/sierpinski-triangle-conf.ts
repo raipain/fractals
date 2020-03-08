@@ -1,9 +1,9 @@
 import * as p5 from 'p5';
-import { Fractal } from '../fractal';
-import { BehaviorSubject } from 'rxjs';
+import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
+import { Point } from './point';
 
-export class SierpinskiTriangleConfigurable extends Fractal {
+export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
   private fixedPoints;
   private customPoints;
   private fixedRefPoint;
@@ -36,6 +36,14 @@ export class SierpinskiTriangleConfigurable extends Fractal {
   init(parentId: string, width: number, height: number, canvasColor: string) {
     super.init(parentId, width, height, canvasColor);
     this.createCanvas();
+
+    this.fixedPoints.push(new p5.Vector(this.width / 2, 5));
+    this.fixedPoints.push(new p5.Vector(5, this.height - 5));
+    this.fixedPoints.push(new p5.Vector(this.width - 5, this.height - 5));
+    this.fixedRefPoint = new p5.Vector(this.width / 2, this.height / 2);
+
+    this.points = this.fixedPoints;
+    this.refPoint = this.fixedRefPoint;
   }
 
   sketch(p: any) {
@@ -47,15 +55,7 @@ export class SierpinskiTriangleConfigurable extends Fractal {
       p.background(this.canvasColor);
       p.stroke(this.color);
       p.strokeWeight(this.strokeWeight);
-      p.frameRate(this.frameRate);
-
-      this.fixedPoints.push(p.createVector(this.width / 2, 5));
-      this.fixedPoints.push(p.createVector(5, this.height - 5));
-      this.fixedPoints.push(p.createVector(this.width - 5, this.height - 5));
-      this.fixedRefPoint = p.createVector(this.width / 2, this.height / 2);
-
-      this.points = this.fixedPoints;
-      this.refPoint = this.fixedRefPoint;
+      p.frameRate(this.frameRate); 
     };
 
     p.draw = () => {
@@ -172,14 +172,4 @@ export class SierpinskiTriangleConfigurable extends Fractal {
   }  
 }
 
-class Point {
-  public point: p5.Vector;
 
-  constructor(point: p5.Vector) {
-    this.point = point;
-  }
-
-  draw(p: any) {
-    p.point(this.point.x, this.point.y);
-  }
-}

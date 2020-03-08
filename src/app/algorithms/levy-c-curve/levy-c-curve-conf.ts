@@ -1,15 +1,15 @@
 import * as p5 from 'p5';
-import { Fractal } from '../fractal';
+import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
+import { Line } from './line';
 
-export class LevyCCurveConfigurable extends Fractal {
+export class LevyCCurveConfigurable extends ConfigurableFractal {
     private lines: Line[];
     private length: number;
     private direction: number;
     private fixedLine: boolean;
     private rotation: number;
     private angle: number;
-    private iter: number;
     
     constructor(animationStateManagerService: AnimationStateManagerService) {
         super(animationStateManagerService);
@@ -26,8 +26,8 @@ export class LevyCCurveConfigurable extends Fractal {
         this.length = this.width / 3;
         this.lines.push(
             new Line(
-                new p5.Vector(this.width / 2 - this.length / 2, this.height / 2), 
-                new p5.Vector(this.width / 2 + this.length / 2, this.height / 2)
+                new p5.Vector(this.width / 2 - this.length / 2, this.height / 1.5), 
+                new p5.Vector(this.width / 2 + this.length / 2, this.height / 1.5)
             )
         );
         this.createCanvas();
@@ -180,37 +180,3 @@ export class LevyCCurveConfigurable extends Fractal {
     }
     //#endregion
 }
-
-//#region Line
-class Line {
-    public A: p5.Vector;
-    public B: p5.Vector;
-    public length: number;
-
-    constructor(A: p5.Vector, B: p5.Vector) {
-        this.A = A;
-        this.B = B;
-        this.length = p5.Vector.dist(this.A, this.B);
-    }
-
-    expand(p: any, direction: number, angle: number): Line[] {
-        let alpha = 180 - 2 * p.degrees(angle);
-        let sideLength = this.length * p.sin(angle) / p.sin(p.radians(alpha));
-
-        let dir = p5.Vector.sub(this.B, this.A);
-        dir.rotate(direction * angle);
-        let offset = p5.Vector.add(this.A, dir);
-        let adjOffset = p5.Vector.lerp(this.A, offset, sideLength / p5.Vector.dist(this.A, offset));
-
-        let lines = [];
-        lines.push(new Line(this.A, adjOffset));
-        lines.push(new Line(adjOffset, this.B));
-
-        return lines;
-    }
-
-    draw(p: any) {
-        p.line(this.A.x, this.A.y, this.B.x, this.B.y);
-    }
-}
-//#endregion

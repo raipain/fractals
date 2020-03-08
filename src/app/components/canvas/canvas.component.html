@@ -1,17 +1,28 @@
 <div class="container">
     <app-list-panel></app-list-panel>
     <app-configuration-panel></app-configuration-panel>
-    <h1>{{title}}</h1>
-    <div id="canvas" #canvas></div>
-    <div class="button-container" fxLayout fxLayoutAlign="space-between center">
-        <div class="slidecontainer">
-            <input #slider (click)="rollBack(slider.value)" type="range" min="1" max="{{sliderLength}}" value="{{sliderLength}}" class="slider" id="myRange">
+    <div class="inner-container" [style.width]="canvasWidth + 'px'">
+        <div class="header" fxLayout fxLayoutAlign="space-between center">
+            <div class="title" fxLayout fxLayoutAlign="center center" fxLayoutGap=".25em">
+                <h3>{{title}}</h3>
+                <i class="material-icons">info</i>
+            </div>
+            <div class="home" (click)="homepage()" fxLayout fxLayoutAlign="center center" fxLayoutGap=".25em">
+                <i class="material-icons">home</i>
+                <h5>Vissza a kezdőlapra</h5>
+            </div>
         </div>
-        <div>
-            <i *ngIf="!animationState" (click)="togglePlay()" class="material-icons control-btn">play_arrow</i>
-            <i *ngIf="animationState" (click)="togglePlay()" class="material-icons control-btn">pause</i>
-            <i (click)="stop()" class="material-icons control-btn">stop</i>
+        <div id="canvas" #canvas [style.height]="canvasHeight + 'px'"></div>
+        <div class="button-container" fxLayout fxLayoutAlign="space-between center">
+            <div class="slider-container">
+                <input #slider (click)="rollBack(slider.value)" type="range" min="1" max="{{sliderLength}}" value="{{sliderLength}}" class="slider" id="myRange">
+            </div>
+            <div>
+                <i *ngIf="!animationState" (click)="togglePlay()" class="material-icons control-btn">play_arrow</i>
+                <i *ngIf="animationState" (click)="togglePlay()" class="material-icons control-btn">pause</i>
+                <i (click)="stop()" class="material-icons control-btn">stop</i>
+            </div>
+            <button mat-stroked-button (click)="save()">Mentés képként</button>
         </div>
-        <button mat-stroked-button (click)="save()">Mentés képként</button>
     </div>
 </div>

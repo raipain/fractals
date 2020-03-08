@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FractalsService } from 'src/app/services/fractals.service';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { IFractalList } from 'src/app/models/fractal-list';
@@ -8,18 +8,31 @@ import { IFractalList } from 'src/app/models/fractal-list';
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss']
 })
-export class CanvasComponent implements OnInit {
-
+export class CanvasComponent implements OnInit, AfterViewInit {
+  
   @ViewChild('canvas', {read: ElementRef, static: false}) container: ElementRef;
+  @Output() home: EventEmitter<void> = new EventEmitter<void>();
+
+  private canvasWidth;
+  private canvasHeight;
   private fractalList: IFractalList[];
   private selectedFractal: number;
-  private title: string = "Kérlek válassz algoritmust!";
+  private title: string;
   private play: boolean = false;
   private sliderLength: number;
   private animationState: boolean;
 
   constructor(private fractalService: FractalsService, private animationStateManagerService: AnimationStateManagerService) {
     this.fractalList = fractalService.getList();
+  }
+
+  ngOnInit() {
+    this.canvasHeight = window.innerHeight * 0.7;
+    this.canvasWidth = window.innerWidth * 0.75 ;
+    this.animationStateManagerService.getState().subscribe((state: boolean) => { this.animationState = state });
+  }
+
+  ngAfterViewInit(): void {
     this.fractalService.getSelectedFractal().subscribe((index: number) => {
       if(index != null) {
         if(this.selectedFractal != null) {
@@ -27,16 +40,12 @@ export class CanvasComponent implements OnInit {
         }
         this.selectedFractal = index;
         this.title = this.fractalList[this.selectedFractal].name;
-        this.fractalList[this.selectedFractal].algorithm.init("canvas", this.container.nativeElement.offsetWidth, this.container.nativeElement.offsetHeight, "#f3f3f3");
+        this.fractalList[this.selectedFractal].algorithm.init("canvas", this.canvasWidth, this.canvasHeight, "#f3f3f3");
         this.fractalList[this.selectedFractal].algorithm.getObservable().subscribe(ret => {
           this.sliderLength = ret.length;
         })
       }
     });
-  }
-
-  ngOnInit() {
-    this.animationStateManagerService.getState().subscribe((state: boolean) => { this.animationState = state });
   }
 
   setSpeed(speed: number): void {
@@ -61,6 +70,10 @@ export class CanvasComponent implements OnInit {
 
   rollBack(value: number) {
     this.fractalList[this.selectedFractal].algorithm.setUpRollBack(value);
+  }
+
+  homepage() {
+    this.home.emit();
   }
 
 }

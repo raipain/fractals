@@ -5,6 +5,16 @@ import { Component } from '@angular/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent {
-  title = 'fractals';
+  title: string = 'fractals';
+  home: boolean = true;
+
+  homepage() {
+    this.home = true;
+  }
+
+  canvas() {
+    this.home = false;
+  }
 }

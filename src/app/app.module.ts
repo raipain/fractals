@@ -5,44 +5,35 @@ import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { StarterPageComponent } from './components/starter-page/starter-page.component';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { PresentationComponent } from './components/presentation/presentation.component';
-import { SliderComponent } from './components/presentation/slider/slider.component';
-import { IntroComponent } from './components/presentation/slides/intro/intro.component';
-import { SlidesComponent } from './components/presentation/slides/slides.component';
-import { UsageComponent } from './components/presentation/slides/usage/usage.component';
-
 import { MaterialModule } from './material.module';
-import { SierpinskiTrianglePreview } from './algorithms/sierpinski-triangle/sierpinski-triangle-preview';
-import { SierpinskiCarpetPreview } from './algorithms/sierpinski-carpet/sierpinski-carpet-prev';
-import { SierpinskiCarpetConfigurable } from './algorithms/sierpinski-carpet/sierpinski-carpet-conf';
-import { SierpinskiTriangleConfigurable } from './algorithms/sierpinski-triangle/sierpinski-triangle-conf';
+
+import { HomeComponent } from './components/home/home.component';
 import { CanvasComponent } from './components/canvas/canvas.component';
 import { ListPanelComponent } from './components/canvas/list-panel/list-panel.component';
 import { ConfigurationPanelComponent } from './components/canvas/configuration-panel/configuration-panel.component';
+
+import { SierpinskiTrianglePreview } from './algorithms/sierpinski-triangle/sierpinski-triangle-preview';
+import { SierpinskiTriangleConfigurable } from './algorithms/sierpinski-triangle/sierpinski-triangle-conf';
+import { SierpinskiCarpetPreview } from './algorithms/sierpinski-carpet/sierpinski-carpet-prev';
+import { SierpinskiCarpetConfigurable } from './algorithms/sierpinski-carpet/sierpinski-carpet-conf';
 import { LevyCCurvePreview } from './algorithms/levy-c-curve/levy-c-curve-preview';
-import { PythagorasTreePreview } from './algorithms/pythagoras-tree/pythagoras-tree-preview';
-import { KochCurvePreview } from './algorithms/koch-curve/koch-curve-preview';
 import { LevyCCurveConfigurable } from './algorithms/levy-c-curve/levy-c-curve-conf';
-import { KochCurveConfigurable } from './algorithms/koch-curve/koch-curve-conf';
+import { PythagorasTreePreview } from './algorithms/pythagoras-tree/pythagoras-tree-preview';
 import { PythagorasTreeConfigurable } from './algorithms/pythagoras-tree/pythagoras-tree-conf';
+import { KochCurvePreview } from './algorithms/koch-curve/koch-curve-preview';
+import { KochCurveConfigurable } from './algorithms/koch-curve/koch-curve-conf';
 import { HTreePreview } from './algorithms/h-tree/h-tree-preview';
 import { HTreeConfigurable } from './algorithms/h-tree/h-tree-conf';
 
 @NgModule({
   declarations: [
     AppComponent,
-    StarterPageComponent,
-    PresentationComponent,
-    SliderComponent,
-    IntroComponent,
-    SlidesComponent,
-    UsageComponent,
     CanvasComponent,
     ListPanelComponent,
-    ConfigurationPanelComponent
+    ConfigurationPanelComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

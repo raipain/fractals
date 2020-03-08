@@ -1,0 +1,32 @@
+<div class="about" fxLayout fxLayoutAlign="center center" fxLayoutGap="5em">
+    <div class="about-box" fxLayout="column" fxLayoutAlign="center center">
+        <img src="assets/icons/algorithm.svg" height="50px">
+        <h5>Nyolc algoritmus</h5>
+    </div>
+    <div class="about-box" fxLayout="column" fxLayoutAlign="center center">
+        <img src="assets/icons/config.svg" height="50px" style="transform: rotate(90deg)">
+        <h5>Konfigurálhatóság</h5>
+    </div>
+    <div class="about-box" fxLayout="column" fxLayoutAlign="center center">
+        <img src="assets/icons/export.svg" height="50px">
+        <h5>Exportálás</h5>
+    </div>
+</div>
+<p>Egy keretrendszer, ahol fraktálokat generálhatsz előre megírt algoritmusok alapján, ezeket az algoritmusokat konfigurálhatod, majd az eredményt képként exportálhatod.</p>
+<h2>Mik azok a fraktálok?</h2>
+<p>Tulajdonképpen fraktálnak nevezhető minden olyan motívum,
+    melyről a részleteket felnagyítva összetettebb, bonyolultabb képet kapunk,
+    amely sok esetben az eredeti alakzatra emlékeztet; és nagyítása a végtelenségig folytatható. "Minél közelebbről nézzük, annál több részletet látunk."
+    Ebben térnek el igazán az euklideszi formáktól, hiszen azok közelebbről nézve
+    egyre egyszerűbbnek, simábbnak tűnnek, görbületeik egyenes vonalnak vagy
+    síknak látszódnak. Az analízis nyelvére fordítva: simák. Mondhatjuk azt is,
+    hogy az euklideszi inkább az ember alkotta, a fraktál geometria pedig a természet alkotta objektumok leírására szolgál. Nemsokára erre is láthatunk példát.</p>
+<div class="bottom">
+    <h2>A kezdéshez válassz algoritmust</h2>
+    <div class="algorithms" fxLayout fxLayoutAlign="center center" fxLayoutGap="4em">
+        <div class="algorithm-box" (click)="selectAlgorithm(i)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of algorithms; let i = index;">
+            <div [id]="algorithm.previewId"></div>
+            <h5 class="title">{{algorithm.name}}</h5>
+        </div>
+    </div>
+</div>

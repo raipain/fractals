@@ -1,67 +1,53 @@
 import * as p5 from 'p5';
+import { Fractal } from '../fractal';
+import { Point } from './point';
 
-var width: number;
-var height: number;
-var canvasColor: string
-var parentId: string;
-var points;
-var refPoint;
-var iter: number;
-var maxIter: number;
+export class SierpinskiTrianglePreview extends Fractal {
+  private roots: Point[];
+  private refPoint: Point;
 
-export class SierpinskiTrianglePreview {
-  private p5;
+  constructor() {
+    super();
+  }
 
-  constructor() { }
-
-  init(pId: string, w: number, h: number, cc: string, mI: number) {
-    width = w;
-    height = h;
-    canvasColor = cc;
-    parentId = pId;
-    points = [];
-    iter = 0;
-    maxIter = mI;
+  init(parentId: string, width: number, height: number, canvasColor: string) {
+    super.init(parentId, width, height, canvasColor);
     this.createCanvas();
-  }
-  
-  createCanvas() {
-    this.p5 = new p5(this.sketch);
-  }
-  
-  private sketch(p: any) {    
-    p.setup = () => {
-      let canvas = p.createCanvas(width, height);
-      canvas.parent(parentId);
 
-      p.background(canvasColor);
+    this.roots = [];
+    this.roots.push(new Point(new p5.Vector(this.width / 2, 5)));
+    this.roots.push(new Point(new p5.Vector(5, this.height - 5)));
+    this.roots.push(new Point(new p5.Vector(this.width - 5, this.height - 5)));
+    this.refPoint = (new Point(new p5.Vector(this.width / 2, this.height / 2)));
+  }
+
+  sketch(p: any) {    
+    p.setup = () => {
+      this.canvas = p.createCanvas(this.width, this.height);
+      this.canvas.parent(this.parentId);
+
+      p.background(this.canvasColor);
       p.stroke(0);
       p.strokeWeight(3);
       p.frameRate(100);
 
-      refPoint = p.createVector(width / 2, height / 2);
-
-      points.push(p.createVector(width / 2, 5));
-      points.push(p.createVector(5, height - 5));
-      points.push(p.createVector(width - 5, height - 5));
-    
-      p.point(points[0].x, points[0].y);
-      p.point(points[1].x, points[1].y);
-      p.point(points[2].x, points[2].y);
-      p.point(refPoint.x, refPoint.y);
+      p.point(this.roots[0].point.x, this.roots[0].point.y);
+      p.point(this.roots[1].point.x, this.roots[1].point.y);
+      p.point(this.roots[2].point.x, this.roots[2].point.y);
+      p.point(this.refPoint.point.x, this.refPoint.point.y);
     };
   
     p.draw = () => {
-      if(iter < maxIter) {
+      if(this.iter < 100) {
         let rand = p.floor(p.random(3));
-        let newPoint = p5.Vector.lerp(points[rand], refPoint, 0.5);
-        p.point(newPoint.x, newPoint.y);   
-        refPoint = newPoint;
-        iter++;
+
+        let newPoint = p5.Vector.lerp(this.roots[rand].point, this.refPoint.point, 0.5);
+        p.point(newPoint.x, newPoint.y);
+        this.refPoint = new Point(newPoint);
+        this.iter++;
       }
       else {
-        points = [];
-        iter = 0;
+        this.iter = 0;
         p.setup();
       }
     }

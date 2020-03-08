@@ -1,52 +1,43 @@
 import * as p5 from 'p5';
+import { Fractal } from '../fractal';
 
-var detail = 1;
-var width;
-var height;
-var padding;
-var parentId;
+export class SierpinskiCarpetPreview extends Fractal {
+  private detail: number;
 
-export class SierpinskiCarpetPreview  {
+  constructor() {
+    super();
+    this.detail = 1;
+  }
 
-  private p5;
-
-  constructor() { }
-
-  init(pId, h, w, p) {
-    parentId = pId;
-    height = h;
-    width = w;
+  init(parentId: string, width: number, height: number, canvasColor: string) {
+    super.init(parentId, width, height, canvasColor);
     this.createCanvas();
   }
   
-  createCanvas() {
-    this.p5 = new p5(this.sketch);
-  }
-  
-  private sketch(p: any) {
-       
+  sketch(p: any) {     
     p.setup = () => {
-      let canvas = p.createCanvas(width, height);
-      canvas.parent(parentId);
+      this.canvas = p.createCanvas(this.width, this.height);
+      this.canvas.parent(this.parentId);
+      
       p.rectMode(p.CENTER);
-      p.fill(0);
+      p.fill(this.color);
       p.noStroke();
       p.translate(p.smallDim() / 2, p.smallDim() / 2);
-      p.squares(0, 0, p.smallDim() / 3, p.smallDim() / 3, width / 3, 1);
+      p.squares(0, 0, p.smallDim() / 3, p.smallDim() / 3, this.width / 3, 1);
       p.frameRate(0.8);
     };
   
     p.draw = () => {
-      detail++;
-      if (detail > 6) {
-        detail = 1;
+      this.detail++;
+      if (this.detail > 6) {
+        this.detail = 1;
       }
       p.setup();
     };
 
     p.squares = (x, y, w, h, td, it) => {
       p.rect(x, y, w, h);
-      if (it < detail) {
+      if (it < this.detail) {
         var dnom = 3;
         var tnom = 3;
         p.squares(x - td, y, w / dnom, h / dnom, td / tnom, it + 1);
@@ -61,7 +52,7 @@ export class SierpinskiCarpetPreview  {
     }
 
     p.smallDim = () => {
-      return width;
+      return this.width;
     };
   }
 

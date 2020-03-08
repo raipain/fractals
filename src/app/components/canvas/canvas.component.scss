@@ -1,31 +1,23 @@
 .container {
     position: relative;
-    text-align: center;
     padding: 5px;
 }
 
-h1 {
-    margin: 0;
-    padding: 0;
-    margin-bottom: 40px;
-    margin-top: 10px;
+.inner-container {
+    margin: 0 auto;
 }
 
 #canvas {
     background-color: #f3f3f3;
-    height: 75vh;
-    width: 70vw;
     box-shadow: 2px 2px 12px -2px rgba(0,0,0,0.75);
     margin: 0 auto;
 }
 
 .button-container {
-    width: 70vw;
-    margin: 0 auto;
     margin-top: 20px;
 }
 
-.slidecontainer {
+.slider-container {
     width: 80%; 
 }
 
@@ -55,10 +47,10 @@ h1 {
 }
 
 .slider::-moz-range-thumb {
-    width: 20px; /* Set a specific slider handle width */
-    height: 30px; /* Slider handle height */
-    background: rgba(0, 0, 0, .8);; /* Green background */
-    cursor: pointer; /* Cursor on hover */
+    width: 20px; 
+    height: 30px; 
+    background: rgba(0, 0, 0, .8);; 
+    cursor: pointer; 
 }
 
 .control-btn {

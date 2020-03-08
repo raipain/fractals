@@ -1,8 +1,8 @@
 import * as p5 from 'p5';
-import { Fractal } from '../fractal';
+import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 
-export class SierpinskiCarpetConfigurable extends Fractal  {
+export class SierpinskiCarpetConfigurable extends ConfigurableFractal  {
   private detail: number;
   private maxDetail: number;
   private rectSize: number;
@@ -11,11 +11,11 @@ export class SierpinskiCarpetConfigurable extends Fractal  {
     super(animationStateManagerService);
     this.detail = 0;
     this.maxDetail = 6;
-    this.rectSize = 300;
   }
 
   init(parentId: string, width: number, height: number, canvasColor: string) {
     super.init(parentId, width, height, canvasColor);
+    this.rectSize = Math.min(this.height / 3, this.width / 3);
     this.createCanvas();
   }
 
@@ -29,13 +29,16 @@ export class SierpinskiCarpetConfigurable extends Fractal  {
       p.noStroke();
       p.frameRate(this.frameRate);
       p.translate(this.width / 2, this.height / 2);
-      p.squares(0, 0, this.rectSize / 3, this.rectSize / 3, this.rectSize / 3, 1);
+      p.squares(0, 0, this.rectSize, this.rectSize, this.rectSize, 1);
     };
   
     p.draw = () => {
       this.setConfigurables(p);
-      
-      if(this.play) {
+
+      if(this.stop) {
+        p.setup();
+      }
+      else if(this.play) {
         this.detail++;
         if (this.detail > this.maxDetail) {
           this.detail = 1;
@@ -69,6 +72,11 @@ export class SierpinskiCarpetConfigurable extends Fractal  {
   setStop() {
     super.setStop();
     this.detail = 0;
+  }
+
+  setRectSize(obj: any, rectSize: number): void {
+    obj.rectSize = rectSize;
+    obj.setStop();
   }
 }
 
