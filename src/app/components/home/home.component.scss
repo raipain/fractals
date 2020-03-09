@@ -4,7 +4,7 @@ $blue: #437a99;
 
 p {
     display: block;
-    margin: 0 auto;
+    margin: 40px auto;
     width: 60%;
     text-align: justify;
 }
@@ -24,12 +24,9 @@ h2 {
 }
 
 .bottom {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 350px;
     background-color: $blue;
+    padding-top: 20px;
+    padding-bottom: 40px;
 }
 
 .bottom h2 {

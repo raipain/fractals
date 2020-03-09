@@ -21,10 +21,16 @@
     egyre egyszerűbbnek, simábbnak tűnnek, görbületeik egyenes vonalnak vagy
     síknak látszódnak. Az analízis nyelvére fordítva: simák. Mondhatjuk azt is,
     hogy az euklideszi inkább az ember alkotta, a fraktál geometria pedig a természet alkotta objektumok leírására szolgál. Nemsokára erre is láthatunk példát.</p>
-<div class="bottom">
+<div class="bottom" fxLayout="column" fxLayoutGap="2em">
     <h2>A kezdéshez válassz algoritmust</h2>
-    <div class="algorithms" fxLayout fxLayoutAlign="center center" fxLayoutGap="4em">
-        <div class="algorithm-box" (click)="selectAlgorithm(i)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of algorithms; let i = index;">
+    <div class="algorithms" fxLayoutAlign="center center" fxLayoutGap="6em">
+        <div class="algorithm-box" (click)="selectAlgorithm(i)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of firstRowAlgorithms; let i = index;">
+            <div [id]="algorithm.previewId"></div>
+            <h5 class="title">{{algorithm.name}}</h5>
+        </div>
+    </div>
+    <div class="algorithms" fxLayoutAlign="center center" fxLayoutGap="6em">
+        <div class="algorithm-box" (click)="selectAlgorithm(i + 4)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of secondRowAlgorithms; let i = index;">
             <div [id]="algorithm.previewId"></div>
             <h5 class="title">{{algorithm.name}}</h5>
         </div>

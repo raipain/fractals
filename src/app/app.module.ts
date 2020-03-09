@@ -28,6 +28,8 @@ import { HTreePreview } from './algorithms/h-tree/h-tree-preview';
 import { HTreeConfigurable } from './algorithms/h-tree/h-tree-conf';
 import { FractalTreePreview } from './algorithms/fractal-tree/fractal-tree-preview';
 import { FractalTreeConfigurable } from './algorithms/fractal-tree/fractal-tree-conf';
+import { HilbertCurvePreview } from './algorithms/hilbert-curve/hilbert-curve-prev';
+import { HilbertCurveConfigurable } from './algorithms/hilbert-curve/hilbert-curve-conf';
 
 @NgModule({
   declarations: [
@@ -59,7 +61,9 @@ import { FractalTreeConfigurable } from './algorithms/fractal-tree/fractal-tree-
     HTreePreview,
     HTreeConfigurable,
     FractalTreePreview,
-    FractalTreeConfigurable
+    FractalTreeConfigurable,
+    HilbertCurvePreview,
+    HilbertCurveConfigurable
   ],
   bootstrap: [AppComponent],
   entryComponents: []

@@ -15,6 +15,8 @@ import { HTreePreview } from '../algorithms/h-tree/h-tree-preview';
 import { HTreeConfigurable } from '../algorithms/h-tree/h-tree-conf';
 import { FractalTreePreview } from '../algorithms/fractal-tree/fractal-tree-preview';
 import { FractalTreeConfigurable } from '../algorithms/fractal-tree/fractal-tree-conf';
+import { HilbertCurvePreview } from '../algorithms/hilbert-curve/hilbert-curve-prev';
+import { HilbertCurveConfigurable } from '../algorithms/hilbert-curve/hilbert-curve-conf';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +40,9 @@ export class FractalsService {
               private kochCurvePreview: KochCurvePreview,
               private kochCurveConfigurable: KochCurveConfigurable,
               private hTreePreview: HTreePreview,
-              private hTreeConfigurable: HTreeConfigurable)
+              private hTreeConfigurable: HTreeConfigurable,
+              private hilbertCurvePreview: HilbertCurvePreview,
+              private hilbertCurveConfigurable: HilbertCurveConfigurable)
   {
       this.list.push({
         name: "Sierpinszki háromszög",
@@ -408,6 +412,15 @@ export class FractalsService {
           func: this.fractalTreeConfigurable.setLength
         },
         {
+          name: "Ágak száma",
+          type: "slider",
+          value: 2,
+          minValue: 2,
+          maxValue: 3,
+          step: 1,
+          func: this.fractalTreeConfigurable.setBranches
+        },
+        {
           name: "Elforgatási szög",
           type: "slider",
           value: 45,
@@ -430,6 +443,47 @@ export class FractalsService {
           type: "checkbox",
           value: 1,
           func: this.fractalTreeConfigurable.setUseFixedRoot
+        },
+        {
+          name: "Szín",
+          type: "colorpicker",
+          func: this.fractalTreeConfigurable.setColor
+        }
+      ]
+    });
+
+    this.list.push({
+      name: "Hilbert görbe",
+      previewId: "hilbert-curve-preview",
+      preview: this.hilbertCurvePreview,
+      algorithm: this.hilbertCurveConfigurable,
+      configurations: [
+        {
+          name: "Gyorsaság",
+          type: "slider",
+          value: 20,
+          minValue: 1,
+          maxValue: 60,
+          step: 1,
+          func: this.hilbertCurveConfigurable.setFrameRate
+        },
+        {
+          name: "Vonalvastagság",
+          type: "slider",
+          value: 1,
+          minValue: 1,
+          maxValue: 10,
+          step: 1,
+          func: this.hilbertCurveConfigurable.setStrokeWeight
+        },
+        {
+          name: "Iteráció",
+          type: "slider",
+          value: 5,
+          minValue: 1,
+          maxValue: 20,
+          step: 1,
+          func: this.hilbertCurveConfigurable.setOrder
         },
         {
           name: "Szín",

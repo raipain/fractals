@@ -2,6 +2,7 @@ import * as p5 from 'p5';
 import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { Line } from './line';
+import { templateJitUrl } from '@angular/compiler';
 
 export class FractalTreeConfigurable extends ConfigurableFractal {
     private root: Line;
@@ -11,6 +12,7 @@ export class FractalTreeConfigurable extends ConfigurableFractal {
     private lerpPercentage: number;
     private useFixedRoot: boolean;
     private rotation: number;
+    private branches: number;
 
     constructor(animationStateManagerService: AnimationStateManagerService) {
         super(animationStateManagerService);
@@ -18,6 +20,7 @@ export class FractalTreeConfigurable extends ConfigurableFractal {
         this.angle = Math.PI / 4;
         this.lerpPercentage = 0.8;
         this.rotation = 0;
+        this.branches = 2;
     }
 
     init(parentId: string, width: number, height: number, canvasColor: string) {
@@ -73,6 +76,13 @@ export class FractalTreeConfigurable extends ConfigurableFractal {
                     for(let i = this.iter; i < this.list.length; i++) {
                         this.list[i].draw(p);
                         tempLines = tempLines.concat(this.list[i].branch(p, this.angle, this.lerpPercentage));
+
+                        if(this.branches == 3) {
+                            let dir = p5.Vector.sub(this.list[i].A, this.list[i].B);
+                            let offset = p5.Vector.add(this.list[i].A, dir);
+                            let adjOffset = p5.Vector.lerp(this.list[i].A, offset, this.lerpPercentage);
+                            tempLines.push(new Line(adjOffset, this.list[i].A));
+                        }
                     }
                     this.iter = this.list.length;
                     this.rollBackList$.next(this.list);
@@ -157,6 +167,11 @@ export class FractalTreeConfigurable extends ConfigurableFractal {
 
     setLerpPercentage(obj: any, percentage: number): void {
         obj.lerpPercentage = percentage / 100;
+        obj.setStop();
+    }
+
+    setBranches(obj: any, branches: number) {
+        obj.branches = branches;
         obj.setStop();
     }
 }

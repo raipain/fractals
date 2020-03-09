@@ -21,7 +21,7 @@ export class HTreeConfigurable extends ConfigurableFractal {
     init(parentId: string, width: number, height: number, canvasColor: string) {
         super.init(parentId, width, height, canvasColor);
         
-        this.length = this.width / 2;
+        this.length = this.width / 3
         this.fixedRoot = new Line(
             new p5.Vector(this.width / 2 - this.length / 2, this.height / 2), 
             new p5.Vector(this.width / 2 + this.length / 2, this.height / 2)
