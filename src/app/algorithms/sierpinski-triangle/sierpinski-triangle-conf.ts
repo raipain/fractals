@@ -85,8 +85,8 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
         p.point(newPoint.x, newPoint.y);
         this.refPoint = newPoint;
 
-        this.list.push(new Point(newPoint));
         this.rollBackList$.next(this.list);
+        this.list.push(new Point(newPoint));
       }
     }
 

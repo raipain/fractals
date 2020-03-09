@@ -26,6 +26,8 @@ import { KochCurvePreview } from './algorithms/koch-curve/koch-curve-preview';
 import { KochCurveConfigurable } from './algorithms/koch-curve/koch-curve-conf';
 import { HTreePreview } from './algorithms/h-tree/h-tree-preview';
 import { HTreeConfigurable } from './algorithms/h-tree/h-tree-conf';
+import { FractalTreePreview } from './algorithms/fractal-tree/fractal-tree-preview';
+import { FractalTreeConfigurable } from './algorithms/fractal-tree/fractal-tree-conf';
 
 @NgModule({
   declarations: [
@@ -55,7 +57,9 @@ import { HTreeConfigurable } from './algorithms/h-tree/h-tree-conf';
     KochCurvePreview,
     KochCurveConfigurable,
     HTreePreview,
-    HTreeConfigurable
+    HTreeConfigurable,
+    FractalTreePreview,
+    FractalTreeConfigurable
   ],
   bootstrap: [AppComponent],
   entryComponents: []

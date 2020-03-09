@@ -13,6 +13,8 @@ import { KochCurveConfigurable } from '../algorithms/koch-curve/koch-curve-conf'
 import { PythagorasTreeConfigurable } from '../algorithms/pythagoras-tree/pythagoras-tree-conf';
 import { HTreePreview } from '../algorithms/h-tree/h-tree-preview';
 import { HTreeConfigurable } from '../algorithms/h-tree/h-tree-conf';
+import { FractalTreePreview } from '../algorithms/fractal-tree/fractal-tree-preview';
+import { FractalTreeConfigurable } from '../algorithms/fractal-tree/fractal-tree-conf';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +33,8 @@ export class FractalsService {
               private levyCCurveConfigurable: LevyCCurveConfigurable,
               private pythTree: PythagorasTreePreview,
               private pythagorasTreeConfigurable: PythagorasTreeConfigurable,
+              private fractalTreePreview: FractalTreePreview,
+              private fractalTreeConfigurable: FractalTreeConfigurable,
               private kochCurvePreview: KochCurvePreview,
               private kochCurveConfigurable: KochCurveConfigurable,
               private hTreePreview: HTreePreview,
@@ -366,6 +370,71 @@ export class FractalsService {
           name: "Szín",
           type: "colorpicker",
           func: this.sierpinskiTriangleConfigurable.setColor
+        }
+      ]
+    });
+
+    this.list.push({
+      name: "Fraktál fa",
+      previewId: "fractal-tree-preview",
+      preview: this.fractalTreePreview,
+      algorithm: this.fractalTreeConfigurable,
+      configurations: [
+        {
+          name: "Gyorsaság",
+          type: "slider",
+          value: 1,
+          minValue: 1,
+          maxValue: 200,
+          step: 1,
+          func: this.fractalTreeConfigurable.setFrameRate
+        },
+        {
+          name: "Vonalvastagság",
+          type: "slider",
+          value: 3,
+          minValue: 1,
+          maxValue: 10,
+          step: 1,
+          func: this.fractalTreeConfigurable.setStrokeWeight
+        },
+        {
+          name: "Vonalhosszúság",
+          type: "slider",
+          value: 200,
+          minValue: 50,
+          maxValue: 500,
+          step: 1,
+          func: this.fractalTreeConfigurable.setLength
+        },
+        {
+          name: "Elforgatási szög",
+          type: "slider",
+          value: 45,
+          minValue: 0,
+          maxValue: 90,
+          step: 1,
+          func: this.fractalTreeConfigurable.setAngle
+        },
+        {
+          name: "Ág mérete (%)",
+          type: "slider",
+          value: 80,
+          minValue: 0,
+          maxValue: 100,
+          step: 1,
+          func: this.fractalTreeConfigurable.setLerpPercentage
+        },
+        {
+          name: "Fixált kezdővonal",
+          type: "checkbox",
+          value: 1,
+          func: this.fractalTreeConfigurable.setUseFixedRoot
+        },
+        {
+          name: "Szín",
+          type: "colorpicker",
+          func: this.fractalTreeConfigurable.setColor
         }
       ]
     });
