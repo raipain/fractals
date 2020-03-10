@@ -20,7 +20,6 @@ export class HilbertCurvePreview extends Fractal {
     init(parentId: string, width: number, height: number, canvasColor: string) {
         super.init(parentId, width, height, canvasColor);
         this.length = Math.min(this.width, this.height) / this.squares;
-        console.log(this.length);
         this.counter = 0;
         this.path = [];
         this.createCanvas();

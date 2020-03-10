@@ -7,11 +7,11 @@
             <div [id]="fractal.previewId"></div>
         </div>
     </div>
-    <span class="arrow" 
-        (click)="toggleListPanelAnimation()"
-        [style.transform]="listPanelHideAnimationStatus == 'hide' ? 'rotate(180deg)' : 'rotate(0)'">
-    </span>
 </div>
+<span class="arrow" [@arrowHideAnimation]="listPanelHideAnimationStatus"
+    (click)="toggleListPanelAnimation()"
+    [style.transform]="listPanelHideAnimationStatus == 'hide' ? 'rotate(180deg)' : 'rotate(0)'">
+</span>
 
 
 

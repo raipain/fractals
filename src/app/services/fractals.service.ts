@@ -26,6 +26,7 @@ export class FractalsService {
 
   list = new Array<IFractalList>();
   activeFractal = new BehaviorSubject<number>(null);
+  activeAlgorithmIndex: number;
 
   constructor(private sierpinskiTrianglePreview: SierpinskiTrianglePreview,
               private sierpinskiTriangleConfigurable: SierpinskiTriangleConfigurable,
@@ -494,7 +495,7 @@ export class FractalsService {
     });
   }
 
-  public getList() {
+  public getList(): IFractalList[] {
     return this.list;
   }
 
@@ -502,7 +503,12 @@ export class FractalsService {
     return this.activeFractal;
   }
 
-  public selectFractal(index: number) {
+  public selectFractal(index: number): void {
+    if(this.activeAlgorithmIndex != null) {
+      this.list[this.activeAlgorithmIndex].algorithm.removeCanvas();
+    }
+    this.activeAlgorithmIndex = index;
+    localStorage.setItem("index", this.activeAlgorithmIndex + "");
     this.activeFractal.next(index);
   }
 }

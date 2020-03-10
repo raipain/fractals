@@ -15,7 +15,7 @@
         <div id="canvas" #canvas [style.height]="canvasHeight + 'px'"></div>
         <div class="button-container" fxLayout fxLayoutAlign="space-between center">
             <div class="slider-container">
-                <input #slider (click)="rollBack(slider.value)" type="range" min="1" max="{{sliderLength}}" value="{{sliderLength}}" class="slider" id="myRange">
+                <input #slider (click)="rollBack(slider.value)" type="range" min="1" [max]="sliderLength" [value]="sliderLength" class="slider" id="myRange">
             </div>
             <div>
                 <i *ngIf="!animationState" (click)="togglePlay()" class="material-icons control-btn">play_arrow</i>

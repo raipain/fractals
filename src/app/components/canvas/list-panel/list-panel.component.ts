@@ -9,19 +9,28 @@ import { IFractalList } from 'src/app/models/fractal-list';
   styleUrls: ['./list-panel.component.scss'],
   animations: [
     trigger('listPanelHideAnimation', [
-      state('hide', style({ transform: "translateX(-75%)" })),
+      state('hide', style({ transform: "translateX(-90%)" })),
       state('show', style({ transform: "translateX(0)" })),
+      transition('show <=> hide', animate('275ms ease-in-out'))
+    ]),
+    trigger('arrowHideAnimation', [
+      state('hide', style({ left: 0 })),
+      state('show', style({ left: "175px" })),
       transition('show <=> hide', animate('275ms ease-in-out'))
     ])
   ]
 })
 export class ListPanelComponent implements OnInit {
 
-  listPanelHideAnimationStatus: string = "show";
+  listPanelHideAnimationStatus: string = "hide";
   fractalList: IFractalList[];
   selectedFractal: number;
   
-  constructor(private fractalService: FractalsService) { }
+  constructor(private fractalService: FractalsService) {
+    if(localStorage.getItem("index") != null) {
+      this.selectedFractal = +localStorage.getItem("index");
+    }
+  }
 
   ngOnInit() {
     this.fractalList = this.fractalService.getList();

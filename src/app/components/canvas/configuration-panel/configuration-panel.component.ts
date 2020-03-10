@@ -17,7 +17,7 @@ import { IFractalList } from 'src/app/models/fractal-list';
 })
 export class ConfigurationPanelComponent implements OnInit {
 
-  private configurationPanelHideAnimationStatus: string = "show";
+  private configurationPanelHideAnimationStatus: string = "hide";
   private fractalList: IFractalList[];
   private selectedFractal: number;
   private color: string = "#000";
@@ -28,7 +28,12 @@ export class ConfigurationPanelComponent implements OnInit {
   ngOnInit() {
     this.fractalList = this.fractalService.getList();
     this.fractalService.getSelectedFractal().subscribe((index: number) => {
-      this.selectedFractal = index
+      if(index == null) {
+        this.selectedFractal = +localStorage.getItem("index");
+      }
+      else {
+        this.selectedFractal = index
+      }
       this.color = "#000";
     });
   }
@@ -45,5 +50,4 @@ export class ConfigurationPanelComponent implements OnInit {
   setValue(func, value): void {
     func(this.fractalList[this.selectedFractal].algorithm, value);
   }
-
 }
