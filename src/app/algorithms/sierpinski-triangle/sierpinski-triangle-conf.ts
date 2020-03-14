@@ -1,50 +1,121 @@
 import * as p5 from 'p5';
+import { Point } from './point';
 import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
-import { Point } from './point';
+import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configurations';
 
 export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
-
-    private fixedPoints;
-    private customPoints;
-    private fixedRefPoint;
-    private customRefPoint;
-    private points;
-    private refPoint;
-    private setup: boolean;
-    private lerpValue: number;
+    private fixedPoints: p5.Vector[];
+    private customPoints: p5.Vector[];
+    private fixedRefPoint: p5.Vector;
+    private customRefPoint: p5.Vector;
+    private points: p5.Vector[];
+    private refPoint: p5.Vector;
     private useFixedPoints: boolean;
+    private lerpValue: number;
     private customColors: boolean;
     private color1: string;
     private color2: string;
     private color3: string;
     private maxPoints: number;
-    private currentPoints: number;
+
+    readonly CONFIGURATIONS: IAlgorithmConfiguration[] = [
+        {
+            name: "Gyorsaság",
+            type: "slider",
+            value: 60,
+            minValue: 1,
+            maxValue: 60,
+            step: 1,
+            func: this.setFrameRate
+        },
+        {
+            name: "Pontvastagság",
+            type: "slider",
+            value: 3,
+            minValue: 1,
+            maxValue: 10,
+            step: 1,
+            func: this.setStrokeWeight
+        },
+        {
+            name: "Pontok közötti távolság",
+            type: "slider",
+            value: 0.5,
+            minValue: 0.1,
+            maxValue: 1,
+            step: 0.1,
+            func: this.setLerpValue
+        },
+        {
+            name: "Fixált kezdőpontok",
+            type: "checkbox",
+            value: 1,
+            func: this.setUseFixedPoints
+        },
+        {
+            name: "Háromszög részeinek kijelölése",
+            type: "checkbox-tree",
+            value: 0,
+            func: this.setCustomColors,
+            configurations: [
+                {
+                    name: "Szín 1",
+                    type: "colorpicker",
+                    color: "#000",
+                    func: this.setColor1
+                },
+                {
+                    name: "Szín 2",
+                    type: "colorpicker",
+                    color: "#000",
+                    func: this.setColor2
+                },
+                {
+                    name: "Szín 3",
+                    type: "colorpicker",
+                    color: "#000",
+                    func: this.setColor3
+                }
+            ]
+        },
+        {
+            name: "Szín",
+            type: "colorpicker",
+            color: "#000",
+            func: this.setColor
+        }
+    ];
 
     constructor(animationStateManagerService: AnimationStateManagerService) {
         super(animationStateManagerService);
-        this.useFixedPoints = true;
         this.maxPoints = 3;
-        this.currentPoints = 0;
-        this.lerpValue = 0.5;
-        this.customPoints = [];
-        this.fixedPoints = [];
-        this.setup = false;
-        this.strokeWeight = 3;
-        this.frameRate = 60;
     }
-
+    
     init(parentId: string, width: number, height: number, canvasColor: string) {
         super.init(parentId, width, height, canvasColor);
-        this.createCanvas();
-
+        
+        this.useFixedPoints = true;
+        this.strokeWeight = 3;
+        this.frameRate = 60;
+        this.lerpValue = 0.5;
+        this.fixedPoints = [];
+        this.customPoints = [];
+        this.customRefPoint = null;
+        this.customColors = false;
+        this.color1 = "#000000";
+        this.color2 = "#000000";
+        this.color3 = "#000000";
+        
         this.fixedPoints.push(new p5.Vector(this.width / 2, 5));
         this.fixedPoints.push(new p5.Vector(5, this.height - 5));
         this.fixedPoints.push(new p5.Vector(this.width - 5, this.height - 5));
         this.fixedRefPoint = new p5.Vector(this.width / 2, this.height / 2);
-
+        
         this.points = this.fixedPoints;
         this.refPoint = this.fixedRefPoint;
+        
+        this.createCanvas();
     }
 
     sketch(p: any) {
@@ -65,111 +136,105 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
             if (this.rollBack) {
                 this._rollBack(p);
             }
-            if (this.play && !this.useFixedPoints && !this.setup) {
-                p.setUpCustomPoints();
-            }
-            else if (this.play && this.useFixedPoints && !this.setup) {
-                p.point(this.fixedPoints[0].x, this.fixedPoints[0].y);
-                p.point(this.fixedPoints[1].x, this.fixedPoints[1].y);
-                p.point(this.fixedPoints[2].x, this.fixedPoints[2].y);
-                p.point(this.fixedRefPoint.x, this.fixedRefPoint.y);
-                this.setup = true;
+            else if (this.stop) {
+                p.background(this.canvasColor);
+                for (let i = 0; i < this.points.length; i++) {
+                    p.point(this.points[i].x, this.points[i].y);
+                }
+                if(this.refPoint != null) {
+                    p.point(this.refPoint.x, this.refPoint.y);
+                }
             }
             else if (this.play) {
-                let rand = p.floor(p.random(3));
+                if (!this.useFixedPoints && (this.customPoints.length < 3 || this.customRefPoint == null)) {
+                    p.background(this.canvasColor);
+                    p.point(p.mouseX, p.mouseY);
+                    for (let i = 0; i < this.customPoints.length; i++) {
+                        p.point(this.customPoints[i].x, this.customPoints[i].y);
+                    }
+                }
+                else {
+                    let rand = p.floor(p.random(3));
 
-                if (this.customColors && rand == 0) p.stroke(this.color1);
-                else if (this.customColors && rand == 1) p.stroke(this.color2);
-                else if (this.customColors && rand == 2) p.stroke(this.color3);
+                    if (this.customColors && rand == 0) p.stroke(this.color1);
+                    else if (this.customColors && rand == 1) p.stroke(this.color2);
+                    else if (this.customColors && rand == 2) p.stroke(this.color3);
 
-                let newPoint = p5.Vector.lerp(this.points[rand], this.refPoint, this.lerpValue);
-                p.point(newPoint.x, newPoint.y);
-                this.refPoint = newPoint;
+                    let newPoint = p5.Vector.lerp(this.points[rand], this.refPoint, this.lerpValue);
+                    p.point(newPoint.x, newPoint.y);
+                    this.refPoint = newPoint;
 
-                this.rollBackList$.next(this.list);
-                this.list.push(new Point(newPoint));
-            }
-        }
-
-        p.setUpCustomPoints = () => {
-            p.background(this.canvasColor);
-            p.point(p.mouseX, p.mouseY);
-
-            for (let i = 0; i < this.customPoints.length; i++) {
-                p.point(this.customPoints[i].x, this.customPoints[i].y);
-            }
-
-            if (this.maxPoints + 1 == this.currentPoints) {
-                this.setup = true;
-                this.points = this.customPoints;
-                this.refPoint = this.customRefPoint;
+                    this.rollBackList$.next(this.list);
+                    this.list.push(new Point(newPoint));
+                }
             }
         }
 
         p.handleMousePressed = () => {
-            if (this.play && !this.useFixedPoints && this.currentPoints < this.maxPoints + 1) {
-                this.currentPoints++;
+            if (this.play && !this.useFixedPoints && this.customPoints.length < this.maxPoints + 1) {
                 p.point(p.mouseX, p.mouseY);
 
-                if (this.currentPoints <= this.maxPoints) {
+                if (this.customPoints.length < this.maxPoints) {
                     this.customPoints.push(p.createVector(p.mouseX, p.mouseY));
                 }
-                else if (this.currentPoints == this.maxPoints + 1) {
+                else if (this.customPoints.length == this.maxPoints) {
                     this.customRefPoint = p.createVector(p.mouseX, p.mouseY);
+                    this.points = this.customPoints;
+                    this.refPoint = this.customRefPoint;
                 }
             }
         }
     };
 
-    public setCustomColors(obj: any, value: boolean) {
-        obj.customColors = value
+    setCustomColors(obj: SierpinskiTriangleConfigurable, value: boolean): void {
+        obj.customColors = value;
+        obj.setStop();
     }
 
-    setColor1(obj: any, color: string) {
+    setColor1(obj: SierpinskiTriangleConfigurable, color: string): void {
         obj.color1 = color;
+        obj.setStop();
     }
 
-    setColor2(obj: any, color: string) {
+    setColor2(obj: SierpinskiTriangleConfigurable, color: string): void {
         obj.color2 = color;
+        obj.setStop();
     }
 
-    setColor3(obj: any, color: string) {
+    setColor3(obj: SierpinskiTriangleConfigurable, color: string): void {
         obj.color3 = color;
+        obj.setStop();
     }
 
-    setLerpValue(obj: any, value: number) {
+    setLerpValue(obj: SierpinskiTriangleConfigurable, value: number): void {
         obj.lerpValue = value;
+        obj.setStop();
     }
 
-    setUseFixedPoints(obj: any, value: boolean) {
+    setUseFixedPoints(obj: SierpinskiTriangleConfigurable, value: boolean): void {
         obj.useFixedPoints = value;
-        obj.clearCanvas();
-        obj.currentPoints = 0;
+        obj.customRefPoint = null;
         obj.customPoints = [];
-        obj.setup = false;
-
-        if (value) {
-            obj.points = obj.fixedPoints;
-            obj.refPoint = obj.fixedRefPoint
-        }
-        else {
-            obj.points = [];
-            obj.refPoint = null;
-        }
+        obj.setStop();
     }
 
-    setConfigurables(p: any) {
+    setConfigurables(p: any): void {
         p.frameRate(this.frameRate);
         p.stroke(this.color);
         p.strokeWeight(this.strokeWeight);
     }
 
-    setStop() {
+    setStop(): void {
+        this.list = [];
+        if (this.useFixedPoints) {
+            this.points = this.fixedPoints;
+            this.refPoint = this.fixedRefPoint;
+        }
+        else {
+            this.refPoint = this.customRefPoint;
+            this.points = this.customPoints;
+        }
         super.setStop();
-        this.setup = false;
-        this.customPoints = [];
-        this.customRefPoint = null;
-        this.currentPoints = 0;
     }
 }
 

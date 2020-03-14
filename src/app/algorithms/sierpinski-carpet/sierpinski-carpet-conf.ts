@@ -1,18 +1,49 @@
 import * as p5 from 'p5';
 import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
+import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configurations';
 import { Rectangle } from './rectangle';
 
-export class SierpinskiCarpetConfigurable extends ConfigurableFractal  {
+export class SierpinskiCarpetConfigurable extends ConfigurableFractal {
     private root: Rectangle;
+    private rectSize: number;
+
+    readonly CONFIGURATIONS: IAlgorithmConfiguration[] = [
+        {
+            name: "Gyorsaság",
+            type: "slider",
+            value: 1,
+            minValue: 1,
+            maxValue: 60,
+            step: 1,
+            func: this.setFrameRate
+        },
+        {
+            name: "Szín",
+            type: "colorpicker",
+            func: this.setColor
+        },
+        {
+            name: "Négyzet mérete",
+            type: "slider",
+            value: 100,
+            minValue: 100,
+            maxValue: 600,
+            step: 1,
+            func: this.setRectSize
+        }
+    ];
 
     constructor(animationStateManagerService: AnimationStateManagerService) {
         super(animationStateManagerService);
     }
 
-    init(parentId: string, width: number, height: number, canvasColor: string) {
+    init(parentId: string, width: number, height: number, canvasColor: string): void {
         super.init(parentId, width, height, canvasColor);
-        this.root = new Rectangle(new p5.Vector(this.width / 2, this.height / 2), Math.min(this.width, this.height) / 3);
+
+        this.rectSize = Math.min(this.width, this.height) / 3;
+        this.root = new Rectangle(new p5.Vector(this.width / 2, this.height / 2), this.rectSize);
+
         this.list = [this.root];
         this.rollBackList$.next(this.list);
 
@@ -24,24 +55,27 @@ export class SierpinskiCarpetConfigurable extends ConfigurableFractal  {
             this.canvas = p.createCanvas(this.width, this.height);
             this.canvas.parent(this.parentId);
 
+            p.frameRate(this.frameRate);
             p.rectMode(p.CENTER);
             p.fill(this.color);
             p.noStroke();
-            p.frameRate(this.frameRate);
         }
 
         p.draw = () => {
             this.setConfigurables(p);
 
-            if(this.rollBack) {
+            if (this.rollBack) {
                 this._rollBack(p);
             }
-            else if(this.stop) {
-                p.setup();
+            else if (this.stop) {
+                p.background(this.canvasColor);
+                this.root.draw(p);
             }
-            else if(this.play) {
+            else if (this.play) {
+                console.log(1323)
                 let newRectangles: Rectangle[] = [];
-                for(let i = this.iter; i < this.list.length; i++) {
+
+                for (let i = this.iter; i < this.list.length; i++) {
                     this.list[i].draw(p);
                     newRectangles = newRectangles.concat(this.list[i].divide());
                 }
@@ -53,17 +87,19 @@ export class SierpinskiCarpetConfigurable extends ConfigurableFractal  {
         }
     }
 
-    setConfigurables(p: any) {
+    setConfigurables(p: any): void {
         p.frameRate(this.frameRate);
         p.fill(this.color);
     }
 
-    setStop() {
+    setStop(): void {
+        this.root = new Rectangle(new p5.Vector(this.width / 2, this.height / 2), this.rectSize);
         this.list = [this.root];
+        this.iter = 0;
         super.setStop();
     }
 
-    setRectSize(obj: any, rectSize: number): void {
+    setRectSize(obj: SierpinskiCarpetConfigurable, rectSize: number): void {
         obj.rectSize = rectSize;
         obj.setStop();
     }

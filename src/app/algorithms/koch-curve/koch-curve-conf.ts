@@ -2,33 +2,103 @@ import * as p5 from 'p5';
 import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { Line } from './line';
+import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configurations';
 
-export class KochCurveConfigurable extends ConfigurableFractal { 
+export class KochCurveConfigurable extends ConfigurableFractal {
     private length: number;
     private lines: Line[];
     private root: Line;
-    private fixedLine: boolean;
+    private fixedRoot: Line;
+    private customRoot: Line;
+    private useFixedRoot: boolean;
     private direction: number;
     private angle: number;
     private rotation: number;
-    
+
+    readonly CONFIGURATIONS: IAlgorithmConfiguration[] = [
+        {
+            name: "Gyorsaság",
+            type: "slider",
+            value: 1,
+            minValue: 1,
+            maxValue: 60,
+            step: 1,
+            func: this.setFrameRate
+        },
+        {
+            name: "Szín",
+            type: "colorpicker",
+            func: this.setColor
+        },
+        {
+            name: "Vonalvastagság",
+            type: "slider",
+            value: 1,
+            minValue: 1,
+            maxValue: 10,
+            step: 1,
+            func: this.setStrokeWeight
+        },
+        {
+            name: "Vonalhosszúság",
+            type: "slider",
+            value: 200,
+            minValue: 1,
+            maxValue: 500,
+            step: 1,
+            func: this.setLength
+        },
+        {
+            name: "Szög",
+            type: "slider",
+            value: 60,
+            minValue: 20,
+            maxValue: 80,
+            step: 1,
+            func: this.setAngle
+        },
+        {
+            name: "Fixált kezdővonal",
+            type: "checkbox",
+            value: 1,
+            func: this.setUseFixedRoot
+        },
+        {
+            name: "Irány",
+            type: "combobox",
+            values: [
+                {
+                    name: "Fel",
+                    value: 1
+                },
+                {
+                    name: "Le",
+                    value: -1
+                }
+            ],
+            func: this.setDirection
+        }
+    ]
+
     constructor(animationStateManagerService: AnimationStateManagerService) {
         super(animationStateManagerService);
-        this.lines = [];
-        this.direction = -1;
-        this.fixedLine = true;
-        this.iter = 0;
-        this.angle = Math.PI / 3;
-        this.rotation = 0;
     }
 
     init(parentId: string, width: number, height: number, canvasColor: string) {
         super.init(parentId, width, height, canvasColor);
-        
-        this.length = this.width / 2;
-        this.root = new Line(new p5.Vector(this.width / 2 - this.length / 2, this.height / 2), 
-                            new p5.Vector(this.width /2 + this.length / 2, this.height / 2));
 
+        this.customRoot = null;
+        this.useFixedRoot = true;
+        this.direction = -1;
+        this.angle = Math.PI / 3;
+        this.rotation = 0;
+
+        this.length = this.width / 2;
+        this.fixedRoot = new Line(
+            new p5.Vector(this.width / 2 - this.length / 2, this.height / 2),
+            new p5.Vector(this.width / 2 + this.length / 2, this.height / 2));
+
+        this.root = this.fixedRoot;
         this.lines = [this.root];
 
         this.createCanvas();
@@ -39,27 +109,29 @@ export class KochCurveConfigurable extends ConfigurableFractal {
             this.canvas = p.createCanvas(this.width, this.height);
             this.canvas.parent(this.parentId);
             this.canvas.mousePressed(p.handleMousePressed);
-            
+
             p.frameRate(this.frameRate);
             p.background(this.canvasColor);
             p.stroke(this.color);
             p.strokeWeight(this.strokeWeight);
         }
-        
+
         p.draw = () => {
             this.setConfigurables(p);
 
-            if(this.rollBack) {
+            if (this.rollBack) {
                 this._rollBack(p);
             }
-            else if(this.stop) {
+            else if (this.stop) {
                 p.background(this.canvasColor);
-                this.root.draw(p);
+                if(this.root != null) {
+                    this.root.draw(p);
+                }
             }
-            else if(this.play) {
+            else if (this.play) {
                 p.background(this.canvasColor);
 
-                if(!this.fixedLine) {
+                if (!this.useFixedRoot && this.customRoot == null) {
                     p.push();
                     p.frameRate(60);
                     p.translate(p.mouseX, p.mouseY);
@@ -69,26 +141,25 @@ export class KochCurveConfigurable extends ConfigurableFractal {
                 }
                 else {
                     let newLines = [];
-                    
-                    this.list.push(this.lines.length);
-                    this.rollBackList$.next(this.list);
 
-                    for(let i = this.iter; i < this.lines.length; i++) {
+                    for (let i = this.iter; i < this.lines.length; i++) {
                         this.lines[i].draw(p);
-                        
+
                         let left = this.lines[i].expandLeft(p, this.direction, this.angle);
                         let right = this.lines[i].expandRight(p, this.direction, this.angle);
                         newLines = newLines.concat(left, right);
                     }
 
+                    this.list.push(this.lines.length);
+                    this.rollBackList$.next(this.list);
                     this.iter = this.lines.length;
-                    this.lines = this.lines.concat(newLines); 
-                }         
-            } 
+                    this.lines = this.lines.concat(newLines);
+                }
+            }
         }
 
         p.handleMousePressed = () => {
-            if(this.play && !this.fixedLine) {
+            if (this.play && !this.useFixedRoot && this.customRoot == null) {
                 let center = p.createVector(p.mouseX, p.mouseY);
                 let x = p.createVector(p.mouseX - this.length / 2, p.mouseY);
                 let y = p.createVector(p.mouseX + this.length / 2, p.mouseY);
@@ -102,20 +173,19 @@ export class KochCurveConfigurable extends ConfigurableFractal {
                 let xOffset = p5.Vector.add(center, xDir);
                 let yOffset = p5.Vector.add(center, yDir);
 
-                p.line(xOffset.x, xOffset.y, yOffset.x, yOffset.y);
-                this.fixedLine = true;
-                this.rotation = 0;
-                this.lines = [new Line(xOffset, yOffset)];
+                this.customRoot = new Line(xOffset, yOffset);
+                this.root = this.customRoot;
+                this.lines = [this.root];
             }
         }
 
         p.mouseWheel = (event) => {
-            if(this.play && !this.fixedLine) {
+            if (this.play && !this.useFixedRoot && this.customRoot == null) {
                 event.preventDefault();
-                if(event.delta > 0) {
+                if (event.delta > 0) {
                     this.rotation += 0.1;
                 }
-                else if(event.delta < 0 ) {
+                else if (event.delta < 0) {
                     this.rotation -= 0.1;
                 }
             }
@@ -125,31 +195,42 @@ export class KochCurveConfigurable extends ConfigurableFractal {
     _rollBack(p: any) {
         let from = this.list[this.rollBackTo - 2];
         let to = this.list[this.rollBackTo - 1];
-        if(from == null) {
+        if (from == null) {
             from = 0;
         }
 
-        if(this.rollBack) {
-            if(this.play) {
-                for(let i = this.rollBackTo; i < this.lines.length; i++) {
+        if (this.rollBack) {
+            if (this.play) {
+                for (let i = this.rollBackTo; i < this.lines.length; i++) {
                     this.lines[i].draw(p);
                 }
                 this.rollBack = false;
             }
             else {
                 p.background(this.canvasColor);
-                for(let i = from; i < to; i++) {
+                for (let i = from; i < to; i++) {
                     this.lines[i].draw(p);
                 }
             }
         }
     }
-     
+
     //#region Setters
     setStop() {
-        super.setStop();
+        this.fixedRoot = new Line(
+            new p5.Vector(this.width / 2 - this.length / 2, this.height / 2),
+            new p5.Vector(this.width / 2 + this.length / 2, this.height / 2)
+        );
+        if (this.useFixedRoot) {
+            this.root = this.fixedRoot;
+        }
+        else {
+            this.root = this.customRoot;
+        }
         this.lines = [this.root];
+        this.list = [];
         this.iter = 0;
+        super.setStop();
     }
 
     setConfigurables(p: any) {
@@ -165,8 +246,6 @@ export class KochCurveConfigurable extends ConfigurableFractal {
 
     setLength(obj: any, length: number): void {
         obj.length = length;
-        obj.root = new Line(new p5.Vector(obj.width / 2 - obj.length / 2, obj.height / 2), 
-                            new p5.Vector(obj.width /2 + obj.length / 2, obj.height / 2));
         obj.setStop();
     }
 
@@ -175,8 +254,9 @@ export class KochCurveConfigurable extends ConfigurableFractal {
         obj.setStop();
     }
 
-    setFixedLine(obj: any, value: number): void {
+    setUseFixedRoot(obj: any, value: number): void {
         obj.fixedLine = value;
+        obj.rotation = 0;
         obj.setStop();
     }
     //#endregion

@@ -40,8 +40,8 @@ export class PythagorasTreePreview extends Fractal {
                 let newRects: Rectangle[] = [];
                 for(let i = 0; i < this.rectangles.length; i++) {
                     this.rectangles[i].draw(p);
-                    let left = this.rectangles[i].expandLeft(p);
-                    let right = this.rectangles[i].expandRight(p);
+                    let left = this.rectangles[i].expandLeft(p, p.PI / 2);
+                    let right = this.rectangles[i].expandRight(p, p.PI / 2);
                     newRects.push(left);
                     newRects.push(right);
                 }
