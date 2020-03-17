@@ -5,7 +5,7 @@
         <div class="header" fxLayout fxLayoutAlign="space-between center">
             <div class="title" fxLayout fxLayoutAlign="center center" fxLayoutGap=".25em">
                 <h3>{{title}}</h3>
-                <i class="material-icons">info</i>
+                <i (click)="about()" class="material-icons about">info</i>
             </div>
             <div class="home" (click)="homepage()" fxLayout fxLayoutAlign="center center" fxLayoutGap=".25em">
                 <i class="material-icons">home</i>

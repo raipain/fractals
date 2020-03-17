@@ -1,0 +1,21 @@
+div {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+
+h1 {
+    text-align: center;
+}
+
+p {
+    text-align: justify;
+    font-size: 1.2em;
+}
+
+button {
+    position: absolute;
+    margin-top: 50px;
+    bottom: 20px;
+    right: 20px;
+}

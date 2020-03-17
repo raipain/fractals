@@ -5,6 +5,6 @@ export interface IAlgorithmList {
     previewId: string;
     preview: any;
     algorithm: any;
-    observable?: Function;
     configurations: IAlgorithmConfiguration[];
+    about?: string;
 }

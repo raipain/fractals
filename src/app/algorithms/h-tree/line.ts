@@ -12,8 +12,7 @@ export class Line {
     }
 
     expandLeft(p: any) {
-        let distance = p5.Vector.dist(this.A, this.B);
-        let lerpAmount = ((distance / Math.sqrt(2)) / distance) / 2;
+        let lerpAmount = ((this.length / Math.sqrt(2)) / this.length) / 2;
 
         let dir = p5.Vector.sub(this.A, this.B);
         dir.rotate(p.PI / 2);
@@ -28,8 +27,7 @@ export class Line {
     }
 
     expandRight(p: any): Line {
-        let distance = p5.Vector.dist(this.A, this.B);
-        let lerpAmount = ((distance / Math.sqrt(2)) / distance) / 2;
+        let lerpAmount = ((this.length / Math.sqrt(2)) / this.length) / 2;
 
         let dir = p5.Vector.sub(this.B, this.A);
         dir.rotate(p.PI / 2);

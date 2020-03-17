@@ -30,6 +30,7 @@ import { FractalTreePreview } from './algorithms/fractal-tree/fractal-tree-previ
 import { FractalTreeConfigurable } from './algorithms/fractal-tree/fractal-tree-conf';
 import { HilbertCurvePreview } from './algorithms/hilbert-curve/hilbert-curve-prev';
 import { HilbertCurveConfigurable } from './algorithms/hilbert-curve/hilbert-curve-conf';
+import { AboutComponent } from './components/about/about.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { HilbertCurveConfigurable } from './algorithms/hilbert-curve/hilbert-cur
     CanvasComponent,
     ListPanelComponent,
     ConfigurationPanelComponent,
-    HomeComponent
+    HomeComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
@@ -66,6 +68,6 @@ import { HilbertCurveConfigurable } from './algorithms/hilbert-curve/hilbert-cur
     HilbertCurveConfigurable
   ],
   bootstrap: [AppComponent],
-  entryComponents: []
+  entryComponents: [AboutComponent]
 })
 export class AppModule { }

@@ -3,6 +3,8 @@ import { AlgorithmService } from 'src/app/services/algorithm.service';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { IAlgorithmList } from 'src/app/models/algorithm-list';
 import { Subscription } from 'rxjs';
+import { AboutComponent } from '../about/about.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
 	selector: 'app-canvas',
@@ -13,7 +15,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	@ViewChild('canvas', { read: ElementRef, static: false }) container: ElementRef;
 	@Output() home: EventEmitter<void> = new EventEmitter<void>();
-	
+
 	private activeAlgorithmSubscription: Subscription;
 	private animationStateSubscription: Subscription
 	private rollBackSubscription: Subscription;
@@ -25,12 +27,14 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 	private sliderLength: number;
 	private animationState: boolean;
 
-	constructor(private algorithmService: AlgorithmService, private animationStateManagerService: AnimationStateManagerService, private cdr: ChangeDetectorRef) {
+	constructor(private algorithmService: AlgorithmService,
+		private animationStateManagerService: AnimationStateManagerService,
+		private cdr: ChangeDetectorRef,
+		private dialog: MatDialog) { }
+
+	ngOnInit(): void {
 		this.animationState = false;
 		this.sliderLength = 1;
-	}
-	
-	ngOnInit(): void {
 		this.algorithmList = this.algorithmService.getList();
 		this.canvasHeight = window.innerHeight * 0.7;
 		this.canvasWidth = window.innerWidth * 0.75;
@@ -41,7 +45,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.animationStateSubscription.unsubscribe();
 		this.rollBackSubscription.unsubscribe();
 	}
-	
+
 	ngAfterViewInit(): void {
 		this.activeAlgorithmSubscription = this.algorithmService.getSelectedAlgorithm().subscribe((index: number) => {
 			this.activeAlgorithm = index;
@@ -59,19 +63,30 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.animationStateManagerService.setState(!this.animationState);
 		this.algorithmList[this.activeAlgorithm].algorithm.togglePlay();
 	}
-	
+
 	stop(): void {
 		this.animationStateManagerService.setState(false);
 		this.algorithmList[this.activeAlgorithm].algorithm.setStop();
 	}
-	
+
 	save(): void {
 		this.algorithmList[this.activeAlgorithm].algorithm.saveCanvas();
 	}
-	
+
 	rollBack(value: number): void {
 		this.animationStateManagerService.setState(false);
 		this.algorithmList[this.activeAlgorithm].algorithm.setUpRollBack(value);
+	}
+
+	about(): void {
+		let dialogRef = this.dialog.open(AboutComponent, {
+			height: '400px',
+			width: '800px',
+			data: {
+				title: this.title,
+				about: this.algorithmList[this.activeAlgorithm].about
+			}
+		});
 	}
 
 	homepage(): void {

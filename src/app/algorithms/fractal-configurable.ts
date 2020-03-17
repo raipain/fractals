@@ -80,6 +80,7 @@ export abstract class ConfigurableFractal extends Fractal {
 
     setColor(obj: any, color: string): void {
         obj.color = color;
+        obj.rainbowMode = false;
         obj.setStop();
     }
 
