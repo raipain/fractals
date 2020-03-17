@@ -18,6 +18,7 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
     private color2: string;
     private color3: string;
     private maxPoints: number;
+    private randomStrokeWeight: boolean;
 
     readonly CONFIGURATIONS: IAlgorithmConfiguration[] = [
         {
@@ -37,6 +38,12 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
             maxValue: 10,
             step: 1,
             func: this.setStrokeWeight
+        },
+        {
+            name: "Véletlenszerű pontvastagság",
+            type: "checkbox",
+            value: 0,
+            func: this.setRandomStrokeWeight
         },
         {
             name: "Pontok közötti távolság",
@@ -112,6 +119,7 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
         this.color1 = "#000000";
         this.color2 = "#000000";
         this.color3 = "#000000";
+        this.randomStrokeWeight = false;
         
         this.fixedPoints.push(new p5.Vector(this.width / 2, 5));
         this.fixedPoints.push(new p5.Vector(5, this.height - 5));
@@ -120,6 +128,10 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
         
         this.points = this.fixedPoints;
         this.refPoint = this.fixedRefPoint;
+
+        this.points.forEach(point => { this.list.push(new Point(point)) });
+        this.list.push(new Point(this.refPoint));
+        this.rollBackList$.next(this.list);
         
         this.createCanvas();
     }
@@ -161,7 +173,11 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
                     }
                 }
                 else {
+                    console.log(this.list.length);
                     let rand = p.floor(p.random(3));
+                    if(this.randomStrokeWeight) {
+                        p.strokeWeight(p.random(0, 10));
+                    }
 
                     if(this.rainbowMode) {
                         let h = p.map(p.floor(p.random(this.list.length)), 0, this.list.length, 0, 360);
@@ -170,13 +186,13 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
                     else if (this.customColors && rand == 0) p.stroke(this.color1);
                     else if (this.customColors && rand == 1) p.stroke(this.color2);
                     else if (this.customColors && rand == 2) p.stroke(this.color3);
-
+   
                     let newPoint = p5.Vector.lerp(this.points[rand], this.refPoint, this.lerpValue);
                     p.point(newPoint.x, newPoint.y);
                     this.refPoint = newPoint;
-
-                    this.rollBackList$.next(this.list);
+                    
                     this.list.push(new Point(newPoint));
+                    this.rollBackList$.next(this.list);
                 }
             }
         }
@@ -192,10 +208,33 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
                     this.customRefPoint = p.createVector(p.mouseX, p.mouseY);
                     this.points = this.customPoints;
                     this.refPoint = this.customRefPoint;
+
+                    this.list = [];
+
+                    this.points.forEach(point => { this.list.push(new Point(point)) });
+                    this.list.push(new Point(this.refPoint));
+                    this.rollBackList$.next(this.list);
                 }
             }
         }
     };
+
+    _rollBack(p: any) {
+        if (this.rollBack) {
+            if (this.play) {
+                for (let i = this.rollBackTo; i < this.list.length; i++) {
+                    this.list[i].draw(p);
+                }
+                this.rollBack = false;
+            }
+            else {
+                p.background(this.canvasColor);
+                for (let i = 0; i < this.rollBackTo; i++) {
+                    this.list[i].draw(p);
+                }
+            }
+        }
+    }
 
     setCustomColors(obj: SierpinskiTriangleConfigurable, value: boolean): void {
         obj.customColors = value;
@@ -229,6 +268,11 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
         obj.setStop();
     }
 
+    setRandomStrokeWeight(obj: SierpinskiTriangleConfigurable, value: boolean): void {
+        obj.randomStrokeWeight = value;
+        obj.setStop();
+    }
+
     setConfigurables(p: any): void {
         p.frameRate(this.frameRate);
         p.stroke(this.color);
@@ -245,6 +289,9 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
             this.refPoint = this.customRefPoint;
             this.points = this.customPoints;
         }
+
+        this.points.forEach(point => { this.list.push(new Point(point)) });
+        this.list.push(new Point(this.refPoint));
         super.setStop();
     }
 }

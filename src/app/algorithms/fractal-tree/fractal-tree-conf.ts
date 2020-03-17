@@ -14,6 +14,8 @@ export class FractalTreeConfigurable extends ConfigurableFractal {
     private lerpPercentage: number;
     private rotation: number;
     private branches: number;
+    private randomAngle: boolean;
+    private randomLerp: boolean;
 
     readonly CONFIGURATIONS: IAlgorithmConfiguration[] = [
         {
@@ -71,6 +73,12 @@ export class FractalTreeConfigurable extends ConfigurableFractal {
             func: this.setLerpPercentage
         },
         {
+            name: "Véletlenszerű szög",
+            type: "checkbox",
+            value: 0,
+            func: this.setRandomAngle
+        },
+        {
             name: "Fixált kezdővonal",
             type: "checkbox",
             value: 1,
@@ -103,6 +111,8 @@ export class FractalTreeConfigurable extends ConfigurableFractal {
         this.lerpPercentage = 0.8;
         this.rotation = 0;
         this.branches = 2;
+        this.randomAngle = false;
+        this.randomLerp = false;
 
         this.fixedRoot = new Line(
             new p5.Vector(this.width / 2, this.height - this.length),
@@ -159,7 +169,14 @@ export class FractalTreeConfigurable extends ConfigurableFractal {
                             p.stroke(h, 255, 255);
                         }
                         this.list[i].draw(p);
-                        tempLines = tempLines.concat(this.list[i].branch(p, this.angle, this.lerpPercentage));
+                        if(!this.randomAngle) {
+                            tempLines = tempLines.concat(this.list[i].branch(p, this.angle, this.angle, this.lerpPercentage));
+                        }
+                        else {
+                            let angleLeft = p.radians(p.random(90));
+                            let angleRight = p.radians(p.random(90));
+                            tempLines = tempLines.concat(this.list[i].branch(p, angleLeft, angleRight, this.lerpPercentage));
+                        }
 
                         if (this.branches == 3) {
                             let dir = p5.Vector.sub(this.list[i].A, this.list[i].B);
@@ -234,7 +251,22 @@ export class FractalTreeConfigurable extends ConfigurableFractal {
 
     setLength(obj: FractalTreeConfigurable, value: number) {
         obj.length = value;
-        obj.setStop();
+        obj.fixedRoot = new Line(
+            new p5.Vector(obj.width / 2, obj.height - obj.length),
+            new p5.Vector(obj.width / 2, obj.height)
+        );
+        obj.recalculateCustomRoot();
+
+        console.log(123)
+        if (obj.useFixedRoot) {
+            obj.root = obj.fixedRoot;
+        }
+        else {
+            obj.root = obj.customRoot;
+        }
+        if(!obj.play) {
+            obj.list = [obj.root];
+        }
     }
 
     setUseFixedRoot(obj: FractalTreeConfigurable, value: boolean): void {
@@ -256,5 +288,29 @@ export class FractalTreeConfigurable extends ConfigurableFractal {
     setBranches(obj: FractalTreeConfigurable, branches: number) {
         obj.branches = branches;
         obj.setStop();
+    }
+
+    setRandomAngle(obj: FractalTreeConfigurable, value: boolean) {
+        obj.randomAngle = value;
+        obj.setStop();
+    }
+
+    recalculateCustomRoot() {
+        if(this.customRoot != null) {
+            let center = p5.Vector.lerp(this.customRoot.A, this.customRoot.B, .5);
+            let x = new p5.Vector(center.x, center.y - this.length / 2);
+            let y = new p5.Vector(center.x, center.y + this.length / 2);
+    
+            let xDir = p5.Vector.sub(x, center);
+            xDir.rotate(this.rotation);
+    
+            let yDir = p5.Vector.sub(y, center);
+            yDir.rotate(this.rotation);
+    
+            let xOffset = p5.Vector.add(center, xDir);
+            let yOffset = p5.Vector.add(center, yDir);
+    
+            this.customRoot = new Line(xOffset, yOffset);
+        }
     }
 }

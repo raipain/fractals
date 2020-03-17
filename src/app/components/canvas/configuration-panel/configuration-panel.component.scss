@@ -3,6 +3,7 @@
     height: 100vh;
     width: 300px;
     padding: 5px;
+    padding-left: 1em;
     z-index: 1;
     right: 0;
     top: 0;
@@ -55,6 +56,10 @@ p {
     text-align: left;
 }
 
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+}
+
 ::ng-deep .mat-accent .mat-slider-thumb {
     background-color: black;
 } 
@@ -67,4 +72,18 @@ p {
 
 ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-accent .mat-pseudo-checkbox-checked, .mat-accent .mat-pseudo-checkbox-indeterminate, .mat-pseudo-checkbox-checked, .mat-pseudo-checkbox-indeterminate {
     background-color: black !important; /* Red background for example */
+}
+
+::ng-deep .mat-radio-outer-circle {
+    .mat-radio-checked & {
+        border-color: black !important;
+    }
+}
+
+::ng-deep .mat-radio-inner-circle {
+    background-color: black !important;
+}
+
+::ng-deep .mat-radio-ripple .mat-ripple-element {
+    background-color: black !important;
 }

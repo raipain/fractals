@@ -45,6 +45,9 @@ export class ListPanelComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        for (let i = 0; i < this.algorithmList.length; i++) {
+            this.algorithmList[i].preview.removeCanvas();
+        }
         this.activeAlgorithmSubscription.unsubscribe();
     }
 

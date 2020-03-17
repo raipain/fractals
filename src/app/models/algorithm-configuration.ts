@@ -6,6 +6,7 @@ export interface IAlgorithmConfiguration {
     maxValue?: number;
     minValue?: number;
     step?: number;
+    default?: boolean;
     func?: Function;
     values?: IAlgorithmConfiguration[];
     configurations?: IAlgorithmConfiguration[];

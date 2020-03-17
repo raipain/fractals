@@ -261,7 +261,16 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
             new p5.Vector(obj.width / 2 + obj.rectSize / 2, obj.height / 1.25));
 
         obj.recalculateCustomRoot();
-        obj.setStop();
+
+        if (obj.useFixedRoot) {
+            obj.root = obj.fixedRoot;
+        }
+        else {
+            obj.root = obj.customRoot;
+        }
+        if(!obj.play) {
+            obj.list = [obj.root];
+        }
     }
 
     setFixedAngle(obj: any, value: boolean) {

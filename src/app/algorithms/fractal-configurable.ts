@@ -26,7 +26,7 @@ export abstract class ConfigurableFractal extends Fractal {
     _rollBack(p: any) {
         if (this.rollBack) {
             if (this.play) {
-                for (let i = this.rollBackTo; i < this.list.length; i++) {
+                for (let i = 0; i < this.list.length; i++) {
                     this.list[i].draw(p);
                 }
                 this.rollBack = false;
@@ -53,6 +53,7 @@ export abstract class ConfigurableFractal extends Fractal {
         if (this.play) {
             this.stop = false;
         }
+        this.animationStateManagerService.setState(this.play);
     }
 
     setStop(): void {
@@ -86,7 +87,11 @@ export abstract class ConfigurableFractal extends Fractal {
 
     setStrokeWeight(obj: any, value: number): void {
         obj.strokeWeight = value;
+        let temp = obj.play;
         obj.setStop();
+        if(temp) {
+            obj.togglePlay();
+        }
     }
     
     setRainbowMode(obj: any, value: boolean): void {

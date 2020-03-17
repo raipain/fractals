@@ -40,8 +40,8 @@ export class KochCurvePreview extends Fractal {
                 for(let i = 0; i < this.lines.length; i++) {
                     this.lines[i].draw(p);
                     
-                    let left = this.lines[i].expandLeft(p, -1, p.radians(65));
-                    let right = this.lines[i].expandRight(p, -1, p.radians(65));
+                    let left = this.lines[i].expandLeft(p, -1, 1/3, p.radians(65));
+                    let right = this.lines[i].expandRight(p, -1, 1/3, p.radians(65));
                     newLines = newLines.concat(left, right);
                 }
 

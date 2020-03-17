@@ -34,7 +34,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	ngOnInit(): void {
 		this.animationState = false;
-		this.sliderLength = 1;
+		this.sliderLength = 0;
 		this.algorithmList = this.algorithmService.getList();
 		this.canvasHeight = window.innerHeight * 0.7;
 		this.canvasWidth = window.innerWidth * 0.75;

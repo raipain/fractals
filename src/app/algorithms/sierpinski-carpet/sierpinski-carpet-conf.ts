@@ -19,11 +19,6 @@ export class SierpinskiCarpetConfigurable extends ConfigurableFractal {
             func: this.setFrameRate
         },
         {
-            name: "Szín",
-            type: "colorpicker",
-            func: this.setColor
-        },
-        {
             name: "Négyzet mérete",
             type: "slider",
             value: 100,
@@ -31,6 +26,11 @@ export class SierpinskiCarpetConfigurable extends ConfigurableFractal {
             maxValue: 600,
             step: 1,
             func: this.setRectSize
+        },
+        {
+            name: "Szín",
+            type: "colorpicker",
+            func: this.setColor
         },
         {
             name: "Szivárvány mód",

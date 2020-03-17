@@ -13,6 +13,7 @@ export class KochCurveConfigurable extends ConfigurableFractal {
     private useFixedRoot: boolean;
     private direction: number;
     private angle: number;
+    private lerp: number;
     private rotation: number;
 
     readonly CONFIGURATIONS: IAlgorithmConfiguration[] = [
@@ -58,6 +59,15 @@ export class KochCurveConfigurable extends ConfigurableFractal {
             func: this.setAngle
         },
         {
+            name: "Háromszög alapjának mérete (%)",
+            type: "slider",
+            value: 33,
+            minValue: 10,
+            maxValue: 90,
+            step: 1,
+            func: this.setLerp
+        },
+        {
             name: "Fixált kezdővonal",
             type: "checkbox",
             value: 1,
@@ -65,15 +75,17 @@ export class KochCurveConfigurable extends ConfigurableFractal {
         },
         {
             name: "Irány",
-            type: "combobox",
+            type: "radio",
             values: [
                 {
                     name: "Fel",
-                    value: 1
+                    value: 1,
+                    default: false
                 },
                 {
                     name: "Le",
-                    value: -1
+                    value: -1,
+                    default: true
                 }
             ],
             func: this.setDirection
@@ -98,6 +110,7 @@ export class KochCurveConfigurable extends ConfigurableFractal {
         this.direction = -1;
         this.angle = Math.PI / 3;
         this.rotation = 0;
+        this.lerp = 1/3;
 
         this.length = this.width / 2;
         this.fixedRoot = new Line(
@@ -156,8 +169,8 @@ export class KochCurveConfigurable extends ConfigurableFractal {
                         }
                         this.lines[i].draw(p);
 
-                        let left = this.lines[i].expandLeft(p, this.direction, this.angle);
-                        let right = this.lines[i].expandRight(p, this.direction, this.angle);
+                        let left = this.lines[i].expandLeft(p, this.direction, this.lerp, this.angle);
+                        let right = this.lines[i].expandRight(p, this.direction, this.lerp, this.angle);
                         newLines = newLines.concat(left, right);
                     }
 
@@ -250,25 +263,65 @@ export class KochCurveConfigurable extends ConfigurableFractal {
         p.strokeWeight(this.strokeWeight);
     }
 
-    setDirection(obj: any, direction: number): void {
+    setDirection(obj: KochCurveConfigurable, direction: number): void {
         obj.direction = direction;
         obj.setStop();
     }
 
-    setLength(obj: any, length: number): void {
+    setLength(obj: KochCurveConfigurable, length: number): void {
         obj.length = length;
-        obj.setStop();
+        obj.fixedRoot = new Line(
+            new p5.Vector(obj.width / 2 - obj.length / 2, obj.height / 2),
+            new p5.Vector(obj.width / 2 + obj.length / 2, obj.height / 2)
+        );
+        obj.recalculateCustomRoot();
+
+        if (obj.useFixedRoot) {
+            obj.root = obj.fixedRoot;
+        }
+        else {
+            obj.root = obj.customRoot;
+        }
+        if(!obj.play) {
+            obj.lines = [obj.root];
+        }
     }
 
-    setAngle(obj: any, angle: number): void {
+    setAngle(obj: KochCurveConfigurable, angle: number): void {
         obj.angle = angle * Math.PI / 180;
         obj.setStop();
     }
 
-    setUseFixedRoot(obj: any, value: number): void {
-        obj.fixedLine = value;
+    setUseFixedRoot(obj: KochCurveConfigurable, value: boolean): void {
+        obj.useFixedRoot = value;
+        obj.customRoot = null;
         obj.rotation = 0;
         obj.setStop();
+    }
+
+    setLerp(obj: KochCurveConfigurable, value: number): void {
+        obj.lerp = value / 100;
+        console.log(obj.lerp)
+        obj.setStop();
+    }
+
+    recalculateCustomRoot() {
+        if(this.customRoot != null) {
+            let center = p5.Vector.lerp(this.customRoot.A, this.customRoot.B, .5);
+            let x = new p5.Vector(center.x - this.length / 2, center.y);
+            let y = new p5.Vector(center.x + this.length / 2, center.y);
+    
+            let xDir = p5.Vector.sub(x, center);
+            xDir.rotate(this.rotation);
+    
+            let yDir = p5.Vector.sub(y, center);
+            yDir.rotate(this.rotation);
+    
+            let xOffset = p5.Vector.add(center, xDir);
+            let yOffset = p5.Vector.add(center, yDir);
+    
+            this.customRoot = new Line(xOffset, yOffset);
+        }
     }
     //#endregion
 }

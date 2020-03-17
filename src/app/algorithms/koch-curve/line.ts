@@ -11,12 +11,12 @@ export class Line {
         this.length = p5.Vector.dist(this.A, this.B);
     }
 
-    expandLeft(p: any, direction: number, angle: number): Line[] {
-        let len = this.length / 3;
+    expandLeft(p: any, direction: number, lerp: number, angle: number): Line[] {
+        let len = this.length * lerp;
         let alpha = 180 - 2 * p.degrees(angle);
-        let sideLength = (this.length - 2 * len) * p.sin(angle) / p.sin(p.radians(alpha));
+        let sideLength = len * p.sin(angle) / p.sin(p.radians(alpha));
 
-        let lerpAmount = len / this.length;
+        let lerpAmount = (1 - lerp) / 2;
 
         let a = p5.Vector.lerp(this.A, this.B, lerpAmount);
         let dir = p5.Vector.sub(this.B, this.A);
@@ -32,12 +32,12 @@ export class Line {
         return newLines;
     }
 
-    expandRight(p: any, direction: number, angle: number): Line[] {
-        let len = this.length / 3;
+    expandRight(p: any, direction: number, lerp: number, angle: number): Line[] {
+        let len = this.length * lerp;
         let alpha = 180 - 2 * p.degrees(angle);
-        let sideLength = (this.length - 2 * len) * p.sin(angle) / p.sin(p.radians(alpha));
+        let sideLength = len * p.sin(angle) / p.sin(p.radians(alpha));
 
-        let lerpAmount = len / this.length;
+        let lerpAmount = (1 - lerp) / 2;
 
         let b = p5.Vector.lerp(this.B, this.A, lerpAmount);
         let dir = p5.Vector.sub(this.A, this.B);

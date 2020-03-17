@@ -64,15 +64,17 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
         },
         {
             name: "Irány",
-            type: "combobox",
+            type: "radio",
             values: [
                 {
                     name: "Fel",
-                    value: -1
+                    value: -1,
+                    default: true
                 },
                 {
                     name: "Le",
-                    value: 1
+                    value: 1,
+                    default: false
                 }
             ],
             func: this.setDirection
@@ -243,7 +245,21 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
 
     setLength(obj: any, value: number) {
         obj.length = value;
-        obj.setStop();
+        obj.fixedRoot = new Line(
+            new p5.Vector(obj.width / 2 - obj.length / 2, obj.height - 100),
+            new p5.Vector(obj.width / 2 + obj.length / 2, obj.height - 100)
+        );
+        obj.recalculateCustomRoot();
+
+        if (obj.useFixedRoot) {
+            obj.root = obj.fixedRoot;
+        }
+        else {
+            obj.root = obj.customRoot;
+        }
+        if(!obj.play) {
+            obj.lines = [obj.root];
+        }
     }
 
     setConfigurables(p: any) {
@@ -254,6 +270,7 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
 
     setUseFixedRoot(obj: LevyCCurveConfigurable, value: boolean): void {
         obj.useFixedRoot = value;
+        obj.customRoot = null;
         obj.rotation = 0;
         obj.setStop();
     }
@@ -266,6 +283,25 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
     setAngle(obj: any, angle: number): void {
         obj.angle = angle * Math.PI / 180;
         obj.setStop();
+    }
+
+    recalculateCustomRoot() {
+        if(this.customRoot != null) {
+            let center = p5.Vector.lerp(this.customRoot.A, this.customRoot.B, .5);
+            let x = new p5.Vector(center.x - this.length / 2, center.y);
+            let y = new p5.Vector(center.x + this.length / 2, center.y);
+    
+            let xDir = p5.Vector.sub(x, center);
+            xDir.rotate(this.rotation);
+    
+            let yDir = p5.Vector.sub(y, center);
+            yDir.rotate(this.rotation);
+    
+            let xOffset = p5.Vector.add(center, xDir);
+            let yOffset = p5.Vector.add(center, yDir);
+    
+            this.customRoot = new Line(xOffset, yOffset);
+        }
     }
     //#endregion
 }

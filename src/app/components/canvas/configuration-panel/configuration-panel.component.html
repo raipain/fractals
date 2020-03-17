@@ -22,12 +22,12 @@
             <div *ngIf="conf.type == 'colorpicker'">
                 <label>{{conf.name}}</label><input class="color-picker" [(colorPicker)]="color" [style.background]="color" [cpAlphaChannel]="'disabled'" [cpPosition]="'left'" (colorPickerChange)="setValue(conf.func, color)"/>
             </div>
-            <mat-form-field *ngIf="conf.type == 'combobox'">
-                <mat-label>{{conf.name}}</mat-label>
-                <mat-select #select (selectionChange)="setValue(conf.func, select.value)">
-                  <mat-option *ngFor="let option of conf.values" value="{{option.value}}" >{{option.name}}</mat-option>   
-                </mat-select>
-              </mat-form-field>
+            <div *ngIf="conf.type == 'radio'">
+                <mat-label>{{conf.name}}&nbsp;</mat-label>
+                <mat-radio-group>
+                    <mat-radio-button *ngFor="let option of conf.values" [checked]="option.default" [value]="option.value" (click)="setValue(conf.func, option.value)">{{option.name}}</mat-radio-button>
+                </mat-radio-group>
+            </div>
         </div>
     </div>
     <span class="arrow" 

@@ -5,21 +5,23 @@ import { Line } from './line';
 export class HTreePreview extends Fractal {
     private lines: Line[];
     private length: number;
-    private root;
+    private root: Line;
+    private lerp: number;
 
     constructor() {
         super();
-        this.lines = [];
     }
-
+    
     init(parentId: string, width: number, height: number, canvasColor: string) {
         super.init(parentId, width, height, canvasColor);
+        
         this.length = this.width / 3;
         this.root = new Line(
             new p5.Vector(this.width / 2 - this.length / 2, this.height / 2), 
             new p5.Vector(this.width / 2 + this.length / 2, this.height / 2)
         );
         this.lines = [this.root];
+        this.lerp =  (this.length / Math.sqrt(2)) / this.length;
 
         this.createCanvas();
     }
@@ -44,8 +46,8 @@ export class HTreePreview extends Fractal {
                 for(let i = 0; i < this.lines.length; i++) {
                     this.lines[i].draw(p);
                     
-                    let left = this.lines[i].expandLeft(p);
-                    let right = this.lines[i].expandRight(p);
+                    let left = this.lines[i].expandLeft(p, this.lerp);
+                    let right = this.lines[i].expandRight(p, this.lerp);
                     
                     tempLines.push(left);
                     tempLines.push(right);

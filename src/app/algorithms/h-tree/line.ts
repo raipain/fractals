@@ -11,32 +11,28 @@ export class Line {
         this.length = p5.Vector.dist(this.A, this.B);
     }
 
-    expandLeft(p: any) {
-        let lerpAmount = ((this.length / Math.sqrt(2)) / this.length) / 2;
-
+    expandLeft(p: any, lerp: number) {
         let dir = p5.Vector.sub(this.A, this.B);
         dir.rotate(p.PI / 2);
         let xOffset = p5.Vector.add(this.A, dir)
-        let x = p5.Vector.lerp(this.A, xOffset, lerpAmount);
+        let x = p5.Vector.lerp(this.A, xOffset, lerp / 2);
 
         dir.rotate(-p.PI);
         let yOffset = p5.Vector.add(this.A, dir);
-        let y = p5.Vector.lerp(this.A, yOffset, lerpAmount);
+        let y = p5.Vector.lerp(this.A, yOffset, lerp / 2);
 
         return new Line(x, y);
     }
 
-    expandRight(p: any): Line {
-        let lerpAmount = ((this.length / Math.sqrt(2)) / this.length) / 2;
-
+    expandRight(p: any, lerp: number): Line {
         let dir = p5.Vector.sub(this.B, this.A);
         dir.rotate(p.PI / 2);
         let xOffset = p5.Vector.add(this.B, dir);
-        let x = p5.Vector.lerp(this.B, xOffset, lerpAmount);
+        let x = p5.Vector.lerp(this.B, xOffset, lerp / 2);
 
         dir.rotate(-p.PI);
         let yOffset = p5.Vector.add(this.B, dir);
-        let y = p5.Vector.lerp(this.B, yOffset, lerpAmount);
+        let y = p5.Vector.lerp(this.B, yOffset, lerp / 2);
 
         return new Line(x, y);
     }

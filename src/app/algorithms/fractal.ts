@@ -22,7 +22,7 @@ export abstract class Fractal {
     }
 
     init(parentId: string, width: number, height: number, canvasColor: string): void {
-        this.removeCanvas();
+        //this.removeCanvas();
         this.parentId = parentId;
         this.width = width;
         this.height = height;

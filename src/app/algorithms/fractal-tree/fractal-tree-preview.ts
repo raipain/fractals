@@ -38,7 +38,7 @@ export class FractalTreePreview extends Fractal {
 
                 for(let i = 0; i < this.lines.length; i++) {
                     this.lines[i].draw(p);
-                    tempLines = tempLines.concat(this.lines[i].branch(p, p.PI / 4, 0.8));
+                    tempLines = tempLines.concat(this.lines[i].branch(p, p.PI / 4, p.PI / 4, 0.7));
                 }
                 this.lines = tempLines;   
                 this.iter++;

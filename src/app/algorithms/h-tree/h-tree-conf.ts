@@ -11,6 +11,7 @@ export class HTreeConfigurable extends ConfigurableFractal {
     private customRoot: Line;
     private useFixedRoot: boolean;
     private rotation: number;
+    private lerp: number;
 
     readonly CONFIGURATIONS: IAlgorithmConfiguration[] = [
         {
@@ -41,6 +42,15 @@ export class HTreeConfigurable extends ConfigurableFractal {
             func: this.setLength
         },
         {
+            name: "Ág hosszúság (%)",
+            type: "slider",
+            value: 1,
+            minValue: 1,
+            maxValue: 100,
+            step: 1,
+            func: this.setLerpPercentage
+        },
+        {
             name: "Fixált kezdővonal",
             type: "checkbox",
             value: 1,
@@ -69,6 +79,7 @@ export class HTreeConfigurable extends ConfigurableFractal {
         this.useFixedRoot = true;
         this.length = this.width / 3;
         this.rotation = 0;
+        this.lerp =  (this.length / Math.sqrt(2)) / this.length;
 
         this.fixedRoot = new Line(
             new p5.Vector(this.width / 2 - this.length / 2, this.height / 2),
@@ -126,8 +137,8 @@ export class HTreeConfigurable extends ConfigurableFractal {
                         }
                         this.list[i].draw(p);
 
-                        let left = this.list[i].expandLeft(p);
-                        let right = this.list[i].expandRight(p);
+                        let left = this.list[i].expandLeft(p, this.lerp);
+                        let right = this.list[i].expandRight(p, this.lerp);
 
                         tempLines.push(left);
                         tempLines.push(right);
@@ -196,15 +207,54 @@ export class HTreeConfigurable extends ConfigurableFractal {
         super.setStop();
     }
 
-    setLength(obj: any, length: number): void {
+    setLength(obj: HTreeConfigurable, length: number): void {
         obj.length = length;
+        obj.fixedRoot = new Line(
+            new p5.Vector(obj.width / 2 - obj.length / 2, obj.height / 2),
+            new p5.Vector(obj.width / 2 + obj.length / 2, obj.height / 2)
+        );
+        obj.recalculateCustomRoot();
+
+        if (obj.useFixedRoot) {
+            obj.root = obj.fixedRoot;
+        }
+        else {
+            obj.root = obj.customRoot;
+        }
+        if(!obj.play) {
+            obj.list = [obj.root];
+        }
+    }
+
+    setUseFixedRoot(obj: HTreeConfigurable, value: boolean): void {
+        obj.useFixedRoot = value;
+        obj.customRoot = null;
+        obj.rotation = 0;
         obj.setStop();
     }
 
-    setUseFixedRoot(obj: any, value: number): void {
-        obj.useFixedRoot = value;
-        obj.rotation = 0;
+    setLerpPercentage(obj: HTreeConfigurable, value: number): void {
+        obj.lerp = value / 100;
         obj.setStop();
+    }
+
+    recalculateCustomRoot() {
+        if(this.customRoot != null) {
+            let center = p5.Vector.lerp(this.customRoot.A, this.customRoot.B, .5);
+            let x = new p5.Vector(center.x - this.length / 2, center.y);
+            let y = new p5.Vector(center.x + this.length / 2, center.y);
+
+            let xDir = p5.Vector.sub(x, center);
+            xDir.rotate(this.rotation);
+
+            let yDir = p5.Vector.sub(y, center);
+            yDir.rotate(this.rotation);
+
+            let xOffset = p5.Vector.add(center, xDir);
+            let yOffset = p5.Vector.add(center, yDir);
+
+            this.customRoot = new Line(xOffset, yOffset);
+        }
     }
 }
 
