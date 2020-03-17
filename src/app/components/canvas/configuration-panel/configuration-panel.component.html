@@ -1,7 +1,7 @@
 <div class="panel" [@configurationPanelHideAnimation]="configurationPanelHideAnimationStatus">
     <h5>Konfiguráció</h5>
-    <div *ngIf="selectedFractal != null" fxLayout="column" fxLayoutAlign="start start">
-        <div *ngFor="let conf of fractalList[selectedFractal].configurations; let i = index">
+    <div *ngIf="activeAlgorithm != null" fxLayout="column" fxLayoutAlign="start start">
+        <div *ngFor="let conf of algorithmList[activeAlgorithm].configurations; let i = index">
             <div *ngIf="conf.type == 'slider'">
                 <p>{{conf.name}}</p>
                 <mat-slider #slider thumbLabel min="{{conf.minValue}}" max="{{conf.maxValue}}" step="{{conf.step}}" value="{{conf.value}}" (change)="setValue(conf.func, slider.value)"></mat-slider>

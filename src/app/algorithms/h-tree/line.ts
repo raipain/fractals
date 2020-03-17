@@ -1,12 +1,14 @@
 import * as p5 from 'p5';
 
 export class Line {
-    public A;
-    public B;
+    public A: p5.Vector;
+    public B: p5.Vector;
+    public length: number;
 
-    constructor(A, B) {
+    constructor(A: p5.Vector, B: p5.Vector) {
         this.A = A;
         this.B = B;
+        this.length = p5.Vector.dist(this.A, this.B);
     }
 
     expandLeft(p: any) {

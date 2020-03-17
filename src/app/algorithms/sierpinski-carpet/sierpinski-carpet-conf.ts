@@ -1,7 +1,7 @@
 import * as p5 from 'p5';
 import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
-import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configurations';
+import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configuration';
 import { Rectangle } from './rectangle';
 
 export class SierpinskiCarpetConfigurable extends ConfigurableFractal {
@@ -31,6 +31,12 @@ export class SierpinskiCarpetConfigurable extends ConfigurableFractal {
             maxValue: 600,
             step: 1,
             func: this.setRectSize
+        },
+        {
+            name: "Szivárvány mód",
+            type: "checkbox",
+            value: 0,   
+            func: this.setRainbowMode
         }
     ];
 
@@ -55,6 +61,7 @@ export class SierpinskiCarpetConfigurable extends ConfigurableFractal {
             this.canvas = p.createCanvas(this.width, this.height);
             this.canvas.parent(this.parentId);
 
+            p.colorMode(p.HSB, 360, 255, 255);
             p.frameRate(this.frameRate);
             p.rectMode(p.CENTER);
             p.fill(this.color);
@@ -76,6 +83,10 @@ export class SierpinskiCarpetConfigurable extends ConfigurableFractal {
                 let newRectangles: Rectangle[] = [];
 
                 for (let i = this.iter; i < this.list.length; i++) {
+                    if(this.rainbowMode) {
+                        let h = p.map(i, this.iter, this.list.length, 0, 360);
+                        p.fill(h, 255, 255);
+                    }
                     this.list[i].draw(p);
                     newRectangles = newRectangles.concat(this.list[i].divide());
                 }

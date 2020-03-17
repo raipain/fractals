@@ -77,6 +77,12 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
             ],
             func: this.setDirection
         },
+        {
+            name: "Szivárvány mód",
+            type: "checkbox",
+            value: 0,   
+            func: this.setRainbowMode
+        }
     ]
 
     constructor(animationStateManagerService: AnimationStateManagerService) {
@@ -95,8 +101,8 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
         this.length = this.width / 3;
 
         this.fixedRoot = new Line(
-            new p5.Vector(this.width / 2 - this.length / 2, this.height / 1.5),
-            new p5.Vector(this.width / 2 + this.length / 2, this.height / 1.5)
+            new p5.Vector(this.width / 2 - this.length / 2, this.height - 100),
+            new p5.Vector(this.width / 2 + this.length / 2, this.height - 100)
         );
         this.root = this.fixedRoot;
         this.lines = [this.root];
@@ -110,6 +116,7 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
             this.canvas.parent(this.parentId);
             this.canvas.mousePressed(p.handleMousePressed);
 
+            p.colorMode(p.HSB, 360, 255, 255);
             p.background(this.canvasColor);
             p.frameRate(this.frameRate);
             p.stroke(this.color);
@@ -143,6 +150,10 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
                     let tempLines: Line[] = [];
 
                     for (let i = this.iter; i < this.lines.length; i++) {
+                        if(this.rainbowMode) {
+                            let h = p.map(i, this.iter, this.lines.length, 0, 360);
+                            p.stroke(h, 255, 255);
+                        }
                         this.lines[i].draw(p);
                         tempLines = tempLines.concat(this.lines[i].expand(p, this.direction, this.angle));
                     }
@@ -215,8 +226,8 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
     //#region Setters
     setStop() {
         this.fixedRoot = new Line(
-            new p5.Vector(this.width / 2 - this.length / 2, this.height / 2),
-            new p5.Vector(this.width / 2 + this.length / 2, this.height / 2)
+            new p5.Vector(this.width / 2 - this.length / 2, this.height - 100),
+            new p5.Vector(this.width / 2 + this.length / 2, this.height - 100)
         );
         if (this.useFixedRoot) {
             this.root = this.fixedRoot;

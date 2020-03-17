@@ -9,6 +9,7 @@ export abstract class ConfigurableFractal extends Fractal {
     protected rollBack: boolean;
     protected rollBackTo: number;
     protected rollBackList$: BehaviorSubject<Array<any>>;
+    protected rainbowMode: boolean;
 
     constructor(protected animationStateManagerService: AnimationStateManagerService) {
         super();
@@ -16,24 +17,25 @@ export abstract class ConfigurableFractal extends Fractal {
         this.stop = true;
         this.rollBack = false;
         this.list = [];
+        this.rainbowMode = false;
         this.rollBackList$ = new BehaviorSubject<Array<any>>(this.list);
     }
 
     abstract sketch(p: any): void;
 
     _rollBack(p: any) {
-        if(this.rollBack) {
-            if(this.play) {
-              for(let i = this.rollBackTo; i < this.list.length; i++) {
-                this.list[i].draw(p);
-              }
-              this.rollBack = false;
+        if (this.rollBack) {
+            if (this.play) {
+                for (let i = this.rollBackTo; i < this.list.length; i++) {
+                    this.list[i].draw(p);
+                }
+                this.rollBack = false;
             }
             else {
-              p.background(this.canvasColor);
-              for(let i = 0; i < this.rollBackTo; i++) {
-                this.list[i].draw(p);
-              }
+                p.background(this.canvasColor);
+                for (let i = 0; i < this.rollBackTo; i++) {
+                    this.list[i].draw(p);
+                }
             }
         }
     }
@@ -43,12 +45,12 @@ export abstract class ConfigurableFractal extends Fractal {
     }
 
     getStatus(): boolean {
-      return this.play;
+        return this.play;
     }
 
     togglePlay(): void {
         this.play = !this.play;
-        if(this.play) {
+        if (this.play) {
             this.stop = false;
         }
     }
@@ -70,5 +72,23 @@ export abstract class ConfigurableFractal extends Fractal {
 
     getObservable() {
         return this.rollBackList$;
+    }
+
+    setFrameRate(obj: any, speed: number): void {
+        obj.frameRate = speed;
+    }
+
+    setColor(obj: any, color: string): void {
+        obj.color = color;
+        obj.setStop();
+    }
+
+    setStrokeWeight(obj: any, value: number): void {
+        obj.strokeWeight = value;
+        obj.setStop();
+    }
+    
+    setRainbowMode(obj: any, value: boolean): void {
+        obj.rainbowMode = value;
     }
 }

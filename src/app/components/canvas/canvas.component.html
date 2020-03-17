@@ -12,7 +12,7 @@
                 <h5>Vissza a kezdőlapra</h5>
             </div>
         </div>
-        <div id="canvas" #canvas [style.height]="canvasHeight + 'px'"></div>
+        <div id="canvas" [style.width]="canvasWidth" [style.height]="canvasHeight"></div>
         <div class="button-container" fxLayout fxLayoutAlign="space-between center">
             <div class="slider-container">
                 <input #slider (click)="rollBack(slider.value)" type="range" min="1" [max]="sliderLength" [value]="sliderLength" class="slider" id="myRange">

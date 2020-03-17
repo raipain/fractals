@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SierpinskiTrianglePreview } from '../algorithms/sierpinski-triangle/sierpinski-triangle-preview';
 import { SierpinskiCarpetPreview } from '../algorithms/sierpinski-carpet/sierpinski-carpet-prev';
-import { IFractalList } from '../models/fractal-list';
+import { IAlgorithmList } from '../models/algorithm-list';
 import { SierpinskiCarpetConfigurable } from '../algorithms/sierpinski-carpet/sierpinski-carpet-conf';
 import { SierpinskiTriangleConfigurable } from '../algorithms/sierpinski-triangle/sierpinski-triangle-conf';
 import { LevyCCurvePreview } from '../algorithms/levy-c-curve/levy-c-curve-preview';
@@ -22,11 +22,11 @@ import { HilbertCurveConfigurable } from '../algorithms/hilbert-curve/hilbert-cu
 	providedIn: 'root'
 })
 
-export class FractalsService {
+export class AlgorithmService {
 
-	list = new Array<IFractalList>();
-	activeFractal = new BehaviorSubject<number>(null);
-	activeAlgorithmIndex: number;
+	public list: IAlgorithmList[];
+	public active: BehaviorSubject<number>;
+	private activeIndex: number;
 
 	constructor(private sierpinskiTrianglePreview: SierpinskiTrianglePreview,
 		private sierpinskiTriangleConfigurable: SierpinskiTriangleConfigurable,
@@ -44,7 +44,7 @@ export class FractalsService {
 		private hTreeConfigurable: HTreeConfigurable,
 		private hilbertCurvePreview: HilbertCurvePreview,
 		private hilbertCurveConfigurable: HilbertCurveConfigurable) {
-		this.list.push(
+		this.list = [
 			{
 				name: "Sierpinszki háromszög",
 				previewId: "sierpinski-triangle-preview",
@@ -100,23 +100,28 @@ export class FractalsService {
 				preview: this.hilbertCurvePreview,
 				algorithm: this.hilbertCurveConfigurable,
 				configurations: this.hilbertCurveConfigurable.CONFIGURATIONS
-			});
+			}
+		];
+		if (localStorage.getItem("index") != null) {
+			this.activeIndex = +localStorage.getItem("index");
+		}
+		this.active = new BehaviorSubject<number>(this.activeIndex);
 	}
 
-	public getList(): IFractalList[] {
+	public getList(): IAlgorithmList[] {
 		return this.list;
 	}
 
-	public getSelectedFractal(): Observable<number> {
-		return this.activeFractal;
+	public getSelectedAlgorithm(): Observable<number> {
+		return this.active;
 	}
 
-	public selectFractal(index: number): void {
-		if (this.activeAlgorithmIndex != null) {
-			this.list[this.activeAlgorithmIndex].algorithm.removeCanvas();
+	public selectAlgorithm(index: number): void {
+		if (this.activeIndex != null) {
+			this.list[this.activeIndex].algorithm.removeCanvas();
 		}
-		this.activeAlgorithmIndex = index;
-		localStorage.setItem("index", this.activeAlgorithmIndex + "");
-		this.activeFractal.next(index);
+		this.activeIndex = index;
+		localStorage.setItem("index", this.activeIndex + "");
+		this.active.next(index);
 	}
 }

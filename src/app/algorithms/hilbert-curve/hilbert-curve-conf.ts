@@ -2,7 +2,7 @@ import * as p5 from 'p5';
 import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { Line } from './line';
-import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configurations';
+import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configuration';
 
 export class HilbertCurveConfigurable extends ConfigurableFractal {
     private order: number;
@@ -11,6 +11,7 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
     private counter: number;
     private length: number;
     private path: Array<any>;
+    private root: Line;
 
     readonly CONFIGURATIONS: IAlgorithmConfiguration[] = [
         {
@@ -44,13 +45,19 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
             name: "Szín",
             type: "colorpicker",
             func: this.setColor
+        },
+        {
+            name: "Szivárvány mód",
+            type: "checkbox",
+            value: 0,
+            func: this.setRainbowMode
         }
     ];
 
     constructor(animationStateManagerService: AnimationStateManagerService) {
         super(animationStateManagerService);
     }
-    
+
     init(parentId: string, width: number, height: number, canvasColor: string) {
         super.init(parentId, width, height, canvasColor);
 
@@ -58,16 +65,18 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
         this.frameRate = 20;
         this.counter = 2;
         this.path = [];
+        this.root = null;
         this.setup();
 
         this.createCanvas();
     }
-    
+
     sketch(p: any): void {
         p.setup = () => {
             this.canvas = p.createCanvas(this.width, this.height);
             this.canvas.parent(this.parentId);
-            /*p.colorMode(p.HSB, 360, 255, 255);*/
+            
+            p.colorMode(p.HSB, 360, 255, 255);
             p.background(this.canvasColor);
             p.frameRate(this.frameRate);
         }
@@ -75,24 +84,30 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
         p.draw = () => {
             this.setConfigurables(p);
 
-            if(this.rollBack) {
+            if (this.rollBack) {
                 this._rollBack(p);
             }
-            else if(this.play) {
+            else if (this.stop) {
+                p.background(this.canvasColor); 
+                this.root.draw(p);
+            }
+            else if (this.play) {
                 for (let i = this.counter - 1; i < this.counter; i++) {
-                    if(i < this.path.length) {
+                    if (i < this.path.length) {
+                        if(this.rainbowMode) {
+                            let h = p.map(i, 0, this.path.length, 0, 360);
+                            p.stroke(h, 255, 255);
+                        }
                         let line = new Line(
-                            new p5.Vector(this.path[i].x, this.path[i].y), 
+                            new p5.Vector(this.path[i].x, this.path[i].y),
                             new p5.Vector(this.path[i - 1].x, this.path[i - 1].y)
                         );
                         this.list.push(line);
                         this.rollBackList$.next(this.list);
                         line.draw(p);
                     }
-                    /*let h = p.map(i, 0, this.path.length, 0, 360);
-                    p.stroke(h, 255, 255);*/
                 }
-    
+
                 this.counter += 1;
                 if (this.counter > this.path.length) {
                     this.play = false;
@@ -110,6 +125,8 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
             this.path[i].mult(this.length);
             this.path[i].add(this.length / 2, this.length / 2);
         }
+        this.root = new Line(new p5.Vector(this.path[0].x, this.path[0].y),
+            new p5.Vector(this.path[1].x, this.path[1].y));
     }
 
     hilbert(i: number): p5.Vector {
@@ -151,12 +168,12 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
         p.stroke(this.color);
         p.strokeWeight(this.strokeWeight);
     }
-    
+
     setStop(): void {
         this.counter = 2;
         this.path = [];
         this.setup();
-        this.list = []; 
+        this.list = [];
         super.setStop();
     }
 

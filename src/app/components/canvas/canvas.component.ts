@@ -1,75 +1,81 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, AfterViewInit } from '@angular/core';
-import { FractalsService } from 'src/app/services/fractals.service';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { AlgorithmService } from 'src/app/services/algorithm.service';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
-import { IFractalList } from 'src/app/models/fractal-list';
+import { IAlgorithmList } from 'src/app/models/algorithm-list';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-canvas',
 	templateUrl: './canvas.component.html',
 	styleUrls: ['./canvas.component.scss']
 })
-export class CanvasComponent implements OnInit, AfterViewInit {
+export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	@ViewChild('canvas', { read: ElementRef, static: false }) container: ElementRef;
 	@Output() home: EventEmitter<void> = new EventEmitter<void>();
-
-	private canvasWidth;
-	private canvasHeight;
-	private fractalList: IFractalList[];
-	private selectedFractal: number;
+	
+	private activeAlgorithmSubscription: Subscription;
+	private animationStateSubscription: Subscription
+	private rollBackSubscription: Subscription;
+	private canvasWidth: number;
+	private canvasHeight: number;
+	private algorithmList: IAlgorithmList[];
+	private activeAlgorithm: number;
 	private title: string;
-	private play: boolean = false;
-	private sliderLength: number = 1;
+	private sliderLength: number;
 	private animationState: boolean;
 
-	constructor(private fractalService: FractalsService, private animationStateManagerService: AnimationStateManagerService) {
-		this.fractalList = fractalService.getList();
-		this.fractalService.getSelectedFractal().subscribe((index: number) => {
-			if (index == null) {
-				this.selectedFractal = +localStorage.getItem("index");
-			}
-			else {
-				this.selectedFractal = index;
-			}
-			this.title = this.fractalList[this.selectedFractal].name;
-			this.fractalList[this.selectedFractal].algorithm.getObservable().subscribe(ret => {
-				this.sliderLength = ret.length;
-			});
-		});
-		this.animationStateManagerService.getState().subscribe((state: boolean) => { this.animationState = state });
+	constructor(private algorithmService: AlgorithmService, private animationStateManagerService: AnimationStateManagerService, private cdr: ChangeDetectorRef) {
+		this.animationState = false;
+		this.sliderLength = 1;
 	}
-
-	ngOnInit() {
+	
+	ngOnInit(): void {
+		this.algorithmList = this.algorithmService.getList();
 		this.canvasHeight = window.innerHeight * 0.7;
 		this.canvasWidth = window.innerWidth * 0.75;
 	}
 
+	ngOnDestroy(): void {
+		this.activeAlgorithmSubscription.unsubscribe();
+		this.animationStateSubscription.unsubscribe();
+		this.rollBackSubscription.unsubscribe();
+	}
+	
 	ngAfterViewInit(): void {
-		this.fractalList[this.selectedFractal].algorithm.init("canvas", this.canvasWidth, this.canvasHeight, "#f3f3f3");
+		this.activeAlgorithmSubscription = this.algorithmService.getSelectedAlgorithm().subscribe((index: number) => {
+			this.activeAlgorithm = index;
+			this.title = this.algorithmList[this.activeAlgorithm].name;
+			this.algorithmList[this.activeAlgorithm].algorithm.init("canvas", this.canvasWidth, this.canvasHeight, "#f3f3f3");
+			this.rollBackSubscription = this.algorithmList[this.activeAlgorithm].algorithm.getObservable().subscribe(ret => {
+				this.sliderLength = ret.length;
+			});
+		});
+		this.animationStateSubscription = this.animationStateManagerService.getState().subscribe((state: boolean) => { this.animationState = state });
+		this.cdr.detectChanges();
 	}
 
 	togglePlay(): void {
 		this.animationStateManagerService.setState(!this.animationState);
-		this.fractalList[this.selectedFractal].algorithm.togglePlay();
-		this.play = !this.play;
+		this.algorithmList[this.activeAlgorithm].algorithm.togglePlay();
 	}
-
+	
 	stop(): void {
 		this.animationStateManagerService.setState(false);
-		this.fractalList[this.selectedFractal].algorithm.setStop();
-		this.play = false;
+		this.algorithmList[this.activeAlgorithm].algorithm.setStop();
 	}
-
+	
 	save(): void {
-		this.fractalList[this.selectedFractal].algorithm.saveCanvas();
+		this.algorithmList[this.activeAlgorithm].algorithm.saveCanvas();
+	}
+	
+	rollBack(value: number): void {
+		this.animationStateManagerService.setState(false);
+		this.algorithmList[this.activeAlgorithm].algorithm.setUpRollBack(value);
 	}
 
-	rollBack(value: number) {
-		this.fractalList[this.selectedFractal].algorithm.setUpRollBack(value);
-	}
-
-	homepage() {
-		//this.fractalList[this.selectedFractal].algorithm.removeCanvas();
+	homepage(): void {
+		this.algorithmList[this.activeAlgorithm].algorithm.removeCanvas();
 		this.home.emit();
 	}
 

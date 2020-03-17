@@ -1,53 +1,58 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { FractalsService } from 'src/app/services/fractals.service';
-import { IFractalList } from 'src/app/models/fractal-list';
+import { AlgorithmService } from 'src/app/services/algorithm.service';
+import { IAlgorithmList } from 'src/app/models/algorithm-list';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-configuration-panel',
-  templateUrl: './configuration-panel.component.html',
-  styleUrls: ['./configuration-panel.component.scss'],
-  animations: [
-    trigger('configurationPanelHideAnimation', [
-      state('hide', style({ transform: "translateX(95%)" })),
-      state('show', style({ transform: "translateX(0)" })),
-      transition('show <=> hide', animate('275ms ease-in-out'))
-    ])
-  ]
+    selector: 'app-configuration-panel',
+    templateUrl: './configuration-panel.component.html',
+    styleUrls: ['./configuration-panel.component.scss'],
+    animations: [
+        trigger('configurationPanelHideAnimation', [
+            state('hide', style({ transform: "translateX(95%)" })),
+            state('show', style({ transform: "translateX(0)" })),
+            transition('show <=> hide', animate('275ms ease-in-out'))
+        ])
+    ]
 })
 export class ConfigurationPanelComponent implements OnInit {
 
-  private configurationPanelHideAnimationStatus: string = "hide";
-  private fractalList: IFractalList[];
-  private selectedFractal: number;
-  private color: string = "#000";
-  private subColors: string[] = ["#000", "#000", "#000"];
+    private activeAlgorithmSubscription: Subscription;
+    private activeAlgorithm: number;
+    private algorithmList: IAlgorithmList[];
+    private configurationPanelHideAnimationStatus: string;
+    private color: string;
+    private subColors: string[];
 
-  constructor(private fractalService: FractalsService) { }
-
-  ngOnInit() {
-    this.fractalList = this.fractalService.getList();
-    this.fractalService.getSelectedFractal().subscribe((index: number) => {
-      if(index == null) {
-        this.selectedFractal = +localStorage.getItem("index");
-      }
-      else {
-        this.selectedFractal = index
-      }
-      this.color = "#000";
-    });
-  }
-
-  toggleConfigurationPanelAnimation(): void {
-    if(this.configurationPanelHideAnimationStatus == "show") {
-      this.configurationPanelHideAnimationStatus = "hide";
+    constructor(private algorithmService: AlgorithmService) {
+        this.configurationPanelHideAnimationStatus = "hide";
+        this.color = "#000";
+        this.subColors = ["#000", "#000", "#000"];
     }
-    else {
-      this.configurationPanelHideAnimationStatus = "show";
-    }
-  }
 
-  setValue(func, value): void {
-    func(this.fractalList[this.selectedFractal].algorithm, value);
-  }
+    ngOnInit(): void {
+        this.algorithmList = this.algorithmService.getList();
+        this.activeAlgorithmSubscription = this.algorithmService.getSelectedAlgorithm().subscribe((index: number) => {
+            this.activeAlgorithm = index;
+            this.color = "#000";
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.activeAlgorithmSubscription.unsubscribe();
+    }
+
+    toggleConfigurationPanelAnimation(): void {
+        if (this.configurationPanelHideAnimationStatus == "show") {
+            this.configurationPanelHideAnimationStatus = "hide";
+        }
+        else {
+            this.configurationPanelHideAnimationStatus = "show";
+        }
+    }
+
+    setValue(func, value): void {
+        func(this.algorithmList[this.activeAlgorithm].algorithm, value);
+    }
 }

@@ -1,10 +1,10 @@
 <div class="panel" [@listPanelHideAnimation]="listPanelHideAnimationStatus">
     <h5>Algoritmusok</h5>
-    <div class="item" *ngFor="let fractal of fractalList; let i = index" (click)="selectFractal(i)">
-        <div class="highlight" [class.active]="i == selectedFractal"></div>
+    <div class="item" *ngFor="let algorithm of algorithmList; let i = index" (click)="selectAlgorithm(i)">
+        <div class="highlight" [class.active]="i == activeAlgorithm"></div>
         <div fxLayout="column" fxLayoutAlign="center center">
-            <h5>{{fractal.name}}</h5>
-            <div [id]="fractal.previewId"></div>
+            <h5>{{algorithm.name}}</h5>
+            <div [id]="algorithm.previewId"></div>
         </div>
     </div>
 </div>

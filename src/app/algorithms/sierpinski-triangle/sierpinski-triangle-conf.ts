@@ -2,7 +2,7 @@ import * as p5 from 'p5';
 import { Point } from './point';
 import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
-import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configurations';
+import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configuration';
 
 export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
     private fixedPoints: p5.Vector[];
@@ -84,6 +84,12 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
             type: "colorpicker",
             color: "#000",
             func: this.setColor
+        },
+        {
+            name: "Szivárvány mód",
+            type: "checkbox",
+            value: 0,   
+            func: this.setRainbowMode
         }
     ];
 
@@ -124,6 +130,7 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
             this.canvas.parent(this.parentId);
             this.canvas.mousePressed(p.handleMousePressed);
 
+            p.colorMode(p.HSB, 360, 255, 255);
             p.background(this.canvasColor);
             p.stroke(this.color);
             p.strokeWeight(this.strokeWeight);
@@ -156,7 +163,11 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
                 else {
                     let rand = p.floor(p.random(3));
 
-                    if (this.customColors && rand == 0) p.stroke(this.color1);
+                    if(this.rainbowMode) {
+                        let h = p.map(p.floor(p.random(this.list.length)), 0, this.list.length, 0, 360);
+                        p.stroke(h, 255, 255);
+                    }
+                    else if (this.customColors && rand == 0) p.stroke(this.color1);
                     else if (this.customColors && rand == 1) p.stroke(this.color2);
                     else if (this.customColors && rand == 2) p.stroke(this.color3);
 

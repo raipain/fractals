@@ -2,7 +2,7 @@ import * as p5 from 'p5';
 import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { Rectangle } from './rectangle';
-import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configurations';
+import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configuration';
 
 export class PythagorasTreeConfigurable extends ConfigurableFractal {
     private root: Rectangle;
@@ -51,6 +51,12 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
             name: "Szín",
             type: "colorpicker",
             func: this.setColor
+        },
+        {
+            name: "Szivárvány mód",
+            type: "checkbox",
+            value: 0,   
+            func: this.setRainbowMode
         }
     ];
 
@@ -89,6 +95,7 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
             this.canvas.parent(this.parentId);
             this.canvas.mousePressed(p.handleMousePressed);
 
+            p.colorMode(p.HSB, 360, 255, 255);
             p.frameRate(this.frameRate);
             p.background(this.canvasColor);
             p.fill(this.color);
@@ -139,6 +146,10 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
                 else {
                     let newRects: Rectangle[] = [];
                     for (let i = this.iter; i < this.list.length; i++) {
+                        if(this.rainbowMode) {
+                            let h = p.map(i, this.iter, this.list.length, 0, 360);
+                            p.fill(h, 255, 255);
+                        }
                         this.list[i].draw(p);
                         let left = this.list[i].expandLeft(p, this.angle);
                         let right = this.list[i].expandRight(p, this.angle);

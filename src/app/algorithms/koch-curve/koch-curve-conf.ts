@@ -2,7 +2,7 @@ import * as p5 from 'p5';
 import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { Line } from './line';
-import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configurations';
+import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configuration';
 
 export class KochCurveConfigurable extends ConfigurableFractal {
     private length: number;
@@ -77,6 +77,12 @@ export class KochCurveConfigurable extends ConfigurableFractal {
                 }
             ],
             func: this.setDirection
+        },
+        {
+            name: "Szivárvány mód",
+            type: "checkbox",
+            value: 0,   
+            func: this.setRainbowMode
         }
     ]
 
@@ -110,6 +116,7 @@ export class KochCurveConfigurable extends ConfigurableFractal {
             this.canvas.parent(this.parentId);
             this.canvas.mousePressed(p.handleMousePressed);
 
+            p.colorMode(p.HSB, 360, 255, 255);
             p.frameRate(this.frameRate);
             p.background(this.canvasColor);
             p.stroke(this.color);
@@ -143,6 +150,10 @@ export class KochCurveConfigurable extends ConfigurableFractal {
                     let newLines = [];
 
                     for (let i = this.iter; i < this.lines.length; i++) {
+                        if(this.rainbowMode) {
+                            let h = p.map(i, this.iter, this.lines.length, 0, 360);
+                            p.stroke(h, 255, 255);
+                        }
                         this.lines[i].draw(p);
 
                         let left = this.lines[i].expandLeft(p, this.direction, this.angle);
