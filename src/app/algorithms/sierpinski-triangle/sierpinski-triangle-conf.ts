@@ -173,7 +173,6 @@ export class SierpinskiTriangleConfigurable extends ConfigurableFractal {
                     }
                 }
                 else {
-                    console.log(this.list.length);
                     let rand = p.floor(p.random(3));
                     if(this.randomStrokeWeight) {
                         p.strokeWeight(p.random(0, 10));

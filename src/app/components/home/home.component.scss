@@ -9,13 +9,16 @@ p {
     text-align: justify;
 }
 
+.about-box {
+    width: 250px;
+}
+
 h2 {
     text-align: center;
     color: $blue;
 }
 
 .about {
-    margin: 0 auto;
     padding-top: 2em;
 }
 
@@ -33,7 +36,13 @@ h2 {
     color: whitesmoke;
 }
 
+.algorithms {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
 .algorithm-box {
+    margin: 3em;
     position: relative;
     padding: 1.25em;
     transition: .5s;

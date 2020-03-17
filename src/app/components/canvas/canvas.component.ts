@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, AfterViewInit, OnDestroy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { AlgorithmService } from 'src/app/services/algorithm.service';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { IAlgorithmList } from 'src/app/models/algorithm-list';
@@ -9,7 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
 	selector: 'app-canvas',
 	templateUrl: './canvas.component.html',
-	styleUrls: ['./canvas.component.scss']
+	styleUrls: ['./canvas.component.scss'],
+	host: {'(window:resize)': 'onResize($event)'}
 })
 export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -57,6 +58,13 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 		});
 		this.animationStateSubscription = this.animationStateManagerService.getState().subscribe((state: boolean) => { this.animationState = state });
 		this.cdr.detectChanges();
+	}
+
+	onResize(event) {
+		this.canvasHeight = window.innerHeight * 0.7;
+		this.canvasWidth = window.innerWidth * 0.75;
+		this.algorithmList[this.activeAlgorithm].algorithm.removeCanvas();
+		this.algorithmList[this.activeAlgorithm].algorithm.init("canvas", this.canvasWidth, this.canvasHeight, "#f3f3f3");
 	}
 
 	togglePlay(): void {

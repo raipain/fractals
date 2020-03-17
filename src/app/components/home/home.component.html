@@ -1,4 +1,4 @@
-<div class="about" fxLayout fxLayoutAlign="center center" fxLayoutGap="5em">
+<div class="about" fxLayout="row wrap" fxLayoutAlign="center space-evenly">
     <div class="about-box" fxLayout="column" fxLayoutAlign="center center">
         <img src="assets/icons/algorithm.svg" height="50px">
         <h5>Nyolc algoritmus</h5>
@@ -21,18 +21,24 @@
     egyre egyszerűbbnek, simábbnak tűnnek, görbületeik egyenes vonalnak vagy
     síknak látszódnak. Az analízis nyelvére fordítva: simák. Mondhatjuk azt is,
     hogy az euklideszi inkább az ember alkotta, a fraktál geometria pedig a természet alkotta objektumok leírására szolgál. Nemsokára erre is láthatunk példát.</p>
-<div class="bottom" fxLayout="column" fxLayoutGap="2em">
+<div class="bottom">
     <h2>A kezdéshez válassz algoritmust</h2>
-    <div class="algorithms" fxLayoutAlign="center center" fxLayoutGap="6em">
+    <div class="algorithms" fxLayout="row wrap" fxLayoutAlign="center space-evenly">
+        <div class="algorithm-box" (click)="selectAlgorithm(i + 4)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of algorithmList; let i = index;">
+            <div [id]="algorithm.previewId"></div>
+            <h5 class="title">{{algorithm.name}}</h5>
+        </div>
+    </div>
+    <!--<div class="algorithms" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="6em">
         <div class="algorithm-box" (click)="selectAlgorithm(i)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of firstRowAlgorithms; let i = index;">
             <div [id]="algorithm.previewId"></div>
             <h5 class="title">{{algorithm.name}}</h5>
         </div>
     </div>
-    <div class="algorithms" fxLayoutAlign="center center" fxLayoutGap="6em">
+    <div class="algorithms" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="6em">
         <div class="algorithm-box" (click)="selectAlgorithm(i + 4)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of secondRowAlgorithms; let i = index;">
             <div [id]="algorithm.previewId"></div>
             <h5 class="title">{{algorithm.name}}</h5>
         </div>
-    </div>
+    </div>-->
 </div>
