@@ -24,21 +24,9 @@
 <div class="bottom">
     <h2>A kezdéshez válassz algoritmust</h2>
     <div class="algorithms" fxLayout="row wrap" fxLayoutAlign="center space-evenly">
-        <div class="algorithm-box" (click)="selectAlgorithm(i + 4)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of algorithmList; let i = index;">
+        <div class="algorithm-box" (click)="selectAlgorithm(i)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of algorithmList; let i = index;">
             <div [id]="algorithm.previewId"></div>
             <h5 class="title">{{algorithm.name}}</h5>
         </div>
     </div>
-    <!--<div class="algorithms" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="6em">
-        <div class="algorithm-box" (click)="selectAlgorithm(i)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of firstRowAlgorithms; let i = index;">
-            <div [id]="algorithm.previewId"></div>
-            <h5 class="title">{{algorithm.name}}</h5>
-        </div>
-    </div>
-    <div class="algorithms" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="6em">
-        <div class="algorithm-box" (click)="selectAlgorithm(i + 4)" fxLayout="column" fxLayoutAlign="center center" *ngFor="let algorithm of secondRowAlgorithms; let i = index;">
-            <div [id]="algorithm.previewId"></div>
-            <h5 class="title">{{algorithm.name}}</h5>
-        </div>
-    </div>-->
 </div>

@@ -88,7 +88,6 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	about(): void {
 		let dialogRef = this.dialog.open(AboutComponent, {
-			height: '400px',
 			width: '800px',
 			data: {
 				title: this.title,
