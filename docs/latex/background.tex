@@ -1,0 +1,19 @@
+\chapter*{Háttér}
+\addcontentsline{toc}{section}{Háttér}
+\spacing{1.5}
+Az alkalmazás elkészítése előtt kiválasztottam azokat a fraktál generáló algoritmusokat, amelyeket implementálni szerettem volna. Nyolc algoritmust választottam, ezek a következők: 
+\begin{itemize}
+	\item Sierpiński- háromszög
+	\item Sierpiński-szőnyeg
+	\item Fraktál-fa
+	\item Pitagorasz-fa
+	\item Lévy C-görbe
+	\item Koch-görbe
+	\item Hilbert-görbe
+	\item H-fa
+\end{itemize}
+Választáskor többek között figyelembe vettem az algoritmusok bonyolultságát, milyen, és mennyi konfigurációs lehetőséggel tudom felruházni az adott algoritmust, valamint a fraktálok fajtáját. A választott algoritmusok között vannak helykitöltő algoritmusok is, mint például a Hilbert-görbe és a H-fa. Ezek az algoritmusok nagyjából kivétel nélkül már mások által implementálva van, a forráskódjuk bárki számára elérhető az interneten, viszont ezek az algoritmusok egyike sem támogatja a konfigurálhatóságot, ami az én alkalmazásom egyik alapköve. 
+\par Az implementáció elkezdése előtt utánanéztem olyan webes alkalmazásoknak, amik hasonlóak, mint az én tervezett alkalmazásom. Találtam hasonlót, ahol egy-egy fraktál generáló algoritmus valamilyen szinten konfigurálható, viszont ezeken az alkalmazások jellemzően csak egy-egy fraktállal foglalkoznak különösebben, így csak az adott fraktál generálására van lehetőségünk, és kevesebb konfigurálási lehetőséggel rendekeznek, ha egyáltalán rendelkeznek, mint az én tervezett webalakalmazásom, valamint nem támogatnak kiexportálási és visszatekerési lehetőséget. Az algoritmusok konfigurálása ezekben az alkalmazásokban egyszerű, jelölönégyzettel, vagy szám típusú beviteli mezőkkel történik, hasonlóan, mint ahogyan én is terveztem. 
+\par Az interneten való keresgélést követően kiválasztottam azt a technológiát, amellyel magát a keretrendszert implementálni szerettem volna. Mivel ez egy webes alkalmazás, a választás az Angular keretrendszerre esett, pontosabban az Angular 8-as verziójára. Ez nem a legfrissebb verziója az Angular keretrendszernek, viszont korábban is használtam, és stabilitás szempontjából ez az egyik legjobb, ugyanis vannak olyan különböző API-k, amelyek még nem teljesen kompatibilisek az Angular legújabb verziójával. A fontosabb Angular API-k, amiket használtam a fejlesztés során a következők: Angular Material, Angular Flex Layout és Rxjs. Az Angular egy TypeScript keretrendszer, amellyel, a benne található csomagok segítségével, rendkívül kényelmesen és könnyen készíthetünk Single Page webalkalmazásokat. Ezen kívül a JavaScript-es könyvtárak nagyon nagy részével kompatibilis, ami nagyon nagy előny volt számomra, hiszen az algoritmusokat P5.js-ben implementáltam, ami egy nyílt forráskódú, vászon alapú rajzolásra alkalmas JavaScript könyvtár. Az alapok nagyon könnyen elsajátíthatóak, és a közismert alakzatok nagy részének a rajzolása előre definiált függvények segítségével történik, ami rendkívül kényelmessé teszi a használatát. Ezen kívül vektorok használatát is támogatja, a vektorműveletek már előre definiálva vannak benne, amelyeket az algoritmusok implementálásakor előszeretettel használtam. Egyik funkcionalitása, ami még nagyon sokat segített az algoritmusok implementálásakor, az a translate függvény, amely segítségével a vászon koordinátarendszerének origóját tudjuk eltolni. Ez egy rendkívül hasznos függvény, különböző rotációknál, és olyan alakzatok rajzolásánál, amelyek pozíciója az egérmutató pozicíójától függ. Ezek a műveletek a függvénynek köszönhetően sokkal kevesebb számolással kivitelezhetőek.
+\par
+A fejlesztés Windows 10 operációs rendszer alatt történt. A programozáshoz, futtatáshoz, teszteléshez a Visual Studio Code fejlesztői környezetet használtam. A szoftver verziókövetése, illetve a fájlok tárolása GitHub repository-n keresztül valósult meg.

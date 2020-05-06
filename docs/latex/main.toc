@@ -1,0 +1,24 @@
+\select@language {magyar} \contentsline {section}{Feladatkiírás}{3}%
+\select@language {magyar} \contentsline {section}{Tartalmi összefoglaló}{4}%
+\select@language {magyar} \contentsline {section}{Bevezetés}{5}%
+\select@language {magyar} \contentsline {section}{Háttér}{7}%
+\select@language {magyar} \contentsline {section}{Az alkalmazás alapfunkciói}{10}%
+\select@language {magyar} \contentsline {section}{Az alkalmazás alapfunkciói}{16}%
+\select@language {magyar} \contentsline {section}{\numberline {0.1}Sierpiński-háromszög}{16}%
+\select@language {magyar} \contentsline {subsection}{\numberline {0.1.1}Implementáció}{17}%
+\select@language {magyar} \contentsline {section}{\numberline {0.2}Sierpinski-szőnyeg}{20}%
+\select@language {magyar} \contentsline {subsection}{\numberline {0.2.1}Implementáció}{21}%
+\select@language {magyar} \contentsline {section}{\numberline {0.3}Koch-görbe}{24}%
+\select@language {magyar} \contentsline {subsection}{\numberline {0.3.1}Implementáció}{25}%
+\select@language {magyar} \contentsline {section}{\numberline {0.4}Levy-C Görbe}{28}%
+\select@language {magyar} \contentsline {section}{\numberline {0.5}Hilbert görbe}{28}%
+\select@language {magyar} \contentsline {subsection}{\numberline {0.5.1}Implementáció}{29}%
+\select@language {magyar} \contentsline {section}{\numberline {0.6}Pitagorasz-fa}{30}%
+\select@language {magyar} \contentsline {subsection}{\numberline {0.6.1}Implementáció}{31}%
+\select@language {magyar} \contentsline {section}{\numberline {0.7}Fraktál fa}{33}%
+\select@language {magyar} \contentsline {subsection}{\numberline {0.7.1}Implementáció}{34}%
+\select@language {magyar} \contentsline {section}{\numberline {0.8}H-fa}{36}%
+\select@language {magyar} \contentsline {subsection}{\numberline {0.8.1}Implementáció}{36}%
+\select@language {magyar} \ 
+\select@language {magyar} \contentsline {section}{Nyilatkozat}{38}%
+\select@language {magyar} \contentsline {section}{Köszönetnyilvánítás}{39}%

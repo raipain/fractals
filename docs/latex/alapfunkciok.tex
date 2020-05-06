@@ -1,0 +1,102 @@
+\chapter*{Az alkalmazás alapfunkciói}
+\addcontentsline{toc}{section}{Az alkalmazás alapfunkciói}
+\spacing{1.5}
+A alábbi fejezetben az elkészült alkalmazás főbb funkcióit mutatom be, fejtem ki részletesen, külön kitérve a fontosabb, érdekesebb részekre.
+\section*{Lejátszást vezérlő funkciók}
+A fraktál generáló algoritmusok futását három gombbal tudjuk vezérelni, ezek a Play, Pause és Start gombok. Mivel az alkalmazást megpróbáltam minél több komponensre bontani, így kellett egy külön szolgáltatás, amelynek a feladata az volt, hogy az egyes eseményeket, amelyeket a felhasználók a gombok megnyomásával váltanak ki, közvetítse az algoritmusnak, amely a fraktál generálására szolgál. Így az algoritmus tudni fogja mikor kell szünetelni, mikor kell rajzolni, és mikor kell újrakezdeni. A szolgáltatás kódja a következőképpen néz ki:
+\begin{lstlisting}[language=typescript]
+export class AnimationStateManagerService {
+	private state: BehaviorSubject<boolean>;
+
+	constructor() {
+		this.state = new BehaviorSubject<boolean>(false);
+	}
+	
+	setState(state: boolean): void {
+		this.state.next(state);
+	}
+	
+	getState(): Observable<boolean> {
+		return this.state;
+	}
+}
+\end{lstlisting}
+A szolgáltatás alapja tehát egy {\it BehaviorSubject} objektum, amely {\it boolean} típusú adatot tud közvetíteni a feliratkozóknak. Amikor a felhasználó a lejátszást vezérlő gombok egyikével interakcióba lép, a szolgálatás {\it setState()} metódusa hívódik meg, amelynek a paramétere egy igaz-hamis adat, attól függően, hogy az algoritmus futása szünetel-e vagy sem. Amikor ez a metódus meghívódik, akkor a szolgáltatás a paraméterként kapott változó értéket közvetíti a feliratkozóknak, így azok tudni fogják, hogy a felhasználó interakcióba lépett a vezérlő gombok valamelyikével. A feliratkozó ebben az esetben az algoritmus, amely az adott fraktált generálja.  
+\section*{Algoritmus lista és konfigurációs panelek}
+A webalkalmazás két oldalsó panellel rendelkezik. Bal oldalon a fraktál generáló algoritmusok egy oszlopba rendezett listáját tekinthetjük meg. Az algoritmusok mindegyike rendelkezik előnézettel, tehát aki nem ismerné valamelyik algoritmust, láthatja, hogy az adott algoritmus milyen fraktált generál. Ezek az előnézetek maguknak az algoritmusoknak egy lebutított változatai, konfigurációs lehetőségek nélkül, az adott algoritmusok paraméterei alapértékekre vannak állítva. Minden algoritmus előnézete egy bizonyos szintig iterál, majd ha ezt a szintet elérte, újraindul. 
+\par Jobb oldalon a konfigurációs panel található. Ennek a tartalma dinamikus, aszerint generálódik, hogy az adott algoritmusnak milyen konfigurációs lehetőségei vannak. A konfigurálás három féle módon történhet:
+\begin{itemize}
+	\item  csúszka segítségével állíthatunk be értéket az adott algoritmus valamely paraméterének, egy megadott értékkészleten belül
+	\item jelölőnégyzet ki-be pipálásával tudjuk jelezni, hogy az adott konfigurációs lehetőséget használni szeretnénk-e
+	\item színpaletta segítségével tudjuk a fraktál színét beállítani
+\end{itemize}
+\par Az algoritmusok listáját egy külön szolgáltatás tárolja. Minden komponens, amelynek szüksége van erre a listára, mint például a fent említett két panel, ettől a szolgáltatástól kéri el. Az algoritmusok listájának modellje a következőképpen néz ki:
+\begin{lstlisting}[language=typescript]
+export interface IAlgorithmList {
+	name: string;
+	previewId: string;
+	preview: any;
+	algorithm: any;
+	configurations: IAlgorithmConfiguration[];
+	about: string;
+}
+\end{lstlisting}
+Az algoritmusok listájában tárolódik tehát minden algoritmus
+\begin{itemize}
+	\item neve
+	\item előnézetének azonosítója, amely az előnézet megjelenítéséhez kell
+	\item a fraktál előnézetét kirajzoló algoritmus referenciája, amely a tényleges algoritmus egy lebutított változata
+	\item a tényleges algoritmus referenciája, amely már konfigurációs lehetőségekkel rendelkezik
+	\item az adott algoritmus konfigurációs lehetőségei, tömbben tárolva
+	\item egy pár mondatos ismertető az adott algoritmusról, ez egy külön funkció lételeme, amelyről a későbbiekben lesz szó
+\end{itemize}
+A lista panelnek az algoritmusok előnézet azonosítójára, és az előnézet algoritmus referenciájára van szüksége, a konfigurációs panelnek pedig az algoritmusok konfigurációs lehetőségeire, amelyek tömbben tárolódnak. Ezen kívül mindkét panel eltüntethető és előhozható egy-egy gomb segítségével, ezzel is növelve az alkalmazás kompaktságát. Az eltüntetés és előhozás animációval történik, amely abból áll, hogy gomb megnyomásra, CSS szinten tolom a panelek pozicíóját X tengelyen jobb vagy balra, attól függően, hogy előhozni, vagy eltüntetni szeretnénk a paneleket. Az animáció megvalósítására az Angular Animations API-ját használtam. Ennek a menete, hogy a CSS animációkat egy tömbben definiáltam, majd hozzákötöttem az adott panelekhez egy boolean változó segítségével. A boolean változó értéke a gomb nyomására változik, így fogja tudni az alkalmazás, hogy eltüntetni, vagy megjeleníteni kell.
+\section*{Visszatekerés funkció}
+A visszatekerés funkció egy sajátos funkciója az alkalmazásomnak, hiszen egy hasonló alkalmazás sem rendelkezik ilyen lehetőséggel. Alapja egy csúszka, ami, ha a felhasználó interakcióba lép vele, az algoritmust visszatekerő módba helyezi. A csúszka kódja az alábbi módon néz ki:
+\begin{lstlisting}
+<div class="slider-container">
+<input #slider (click)="rollBack(slider.value)" type="range" min="0" [max]="sliderLength" [value]="sliderLength" class="slider" id="myRange">
+</div>
+\end{lstlisting}
+Lényegében ez egy egyéni stílusú, range típusú input mező, amelynek a max és a value direktivákkal lehet értéket beállítani. A value paraméter mondja meg, hogy a csúszka éppen hol áll, ez alapértelmezetten 0-ra van állítva. A max paraméter azt adja meg, hogy a csúszka milyen hosszúságú, ennek az értéke az algoritmus futásával párhuzamosan változik, amit egy BehaviourSubject típusú változóval oldottam meg. Lényegében, amikor az algoritmus egy új iterációját rajzolja le a fraktálnak, ez a BehaviorSubject objektum egy új értéket közvetít a feliratkozóknak, aki jelen esetben a csúszka, így annak a hossza mindig a megfelelő értékre lesz beállítva. Ha a csúszkára kattint a felhasználó, az adott algoritmus visszatekerő módba kerül, és meghívódik a rollBack metódusa, amellyel minden algoritmus rendelkezik. A visszatekeró mód annyit jelent, hogy beállítódnak azok az értékek, amelyeket kiolvasva, az algoritmus tudni fogja meddig kell visszatekerni a fraktált. Ennek a kódja így néz ki:
+\begin{lstlisting}
+rollBack(p: any) {
+	if (this.rollBack) {
+		if (this.play) {
+			for (let i = 0; i < this.list.length; i++) {
+				this.list[i].draw(p);
+			}
+			this.rollBack = false;
+		}
+		else {
+			p.background(this.canvasColor);
+			for (let i = 0; i < this.rollBackTo; i++) {
+				this.list[i].draw(p);
+			}
+		}
+	}
+}
+\end{lstlisting}
+Ez a függvény minden képfrissítéskor újrarajzolja a hátteret, ennek köszönhetően eddig megrajzolt alakzat törlődik a vászonról. Ezután a függvény végigiterál azon a listán, amelyben az algoritmus tárolja a visszatekerés előtt még megrajzolt alakzatokat, és ez alapján rajzolja vissza azokat az elemeket, amelyek szükségesek. Minden algoritmus rendelkezik ilyen listával, hiszen ez a visszatekerés funkciójának egy fontos alapeleme.
+\section*{Fraktál leírás funkció}
+Mindegyik fraktált generáló algoritmus rendelkezik egy leírással. Ebben a leírásban egy rövid ismeretőt olvashatunk az adott fraktálról, ki fedezte fel, hol használják, jellegzetes tulajdonságok megemlítése. A leírást egy előugró ablak tartalmazza. Ez az előugró ablak egy globális komponens, minden algoritmus esetén ugyanaz az ablak ugrik elő, csupán a tartalma változik dinamikusan. Az ablakot egy gomb megnyomásával hívhatjuk elő. Az ablak HTML kódja így néz ki:
+\begin{lstlisting}
+<div>
+	<h1>{{data.title}}</h1>
+	<p>{{data.about}}</p>
+	<button (click)="close()" mat-button>Bezár</button>
+</div>
+\end{lstlisting}
+Ez egy eléggé rövid kódsor, azonban látszik, hogy a címet és magát a leírást a data változó tartalmazza. A data változó akkor definiálódik, amikor az ablakot előhozó gombra kattint a felhasználó, az értéke pedig az algoritmus listából olvasódik ki, attól függően, hogy éppen melyik fraktál generáló algoritmus aktív. A gomb megnyomására a következő függvény fut le:
+\begin{lstlisting}
+about(): void {
+	let dialogRef = this.dialog.open(AboutComponent, {
+		width: '800px',
+		data: {
+			title: this.title,
+			about: this.algorithmList[this.activeAlgorithm].about
+		}
+	});
+}
+\end{lstlisting}
+A width property értelemszerűen az előugró ablak szélességét adja meg, ebben az esetben az ablak 800 pixel széles lesz. Magasságot azért nem definiáltam, hogy különböző hosszúságú szövegek esetén se csússzon szét az ablak, a data változóról pedig pár sorral fentebb volt szó.
