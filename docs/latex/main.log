@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7350 64-bit) (preloaded format=pdflatex 2020.3.23)  6 MAY 2020 16:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7350 64-bit) (preloaded format=pdflatex 2020.3.23)  6 MAY 2020 23:00
 entering extended mode
 **./main.tex
 (main.tex
@@ -823,37 +823,24 @@ I'm forgetting what you said and using zero instead.
 
 \openout2 = `algoritmusok.aux'.
 
-(algoritmusok.tex
+(algoritmusok.tex [16
 
-! Package inputenc Error: Unicode character â‰ˆ (U+2248)
-(inputenc)                not set up for use with LaTeX.
 
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.8 Hausdorff-dimenziÃ³ja log(3)/log(2) â‰ˆ
-                                            1,585.
-You may provide a definition with
-\DeclareUnicodeCharacter 
 
-<SierpinskiTriangle.png, id=80, 360.59718pt x 304.88907pt>
-File: SierpinskiTriangle.png Graphic file (type png)
-<use SierpinskiTriangle.png>
-Package pdftex.def Info: SierpinskiTriangle.png  used on input line 19.
+]
+<img/SierpinskiTriangle.png, id=83, 360.59718pt x 304.88907pt>
+File: img/SierpinskiTriangle.png Graphic file (type png)
+<use img/SierpinskiTriangle.png>
+Package pdftex.def Info: img/SierpinskiTriangle.png  used on input line 19.
 (pdftex.def)             Requested size: 213.39566pt x 180.42729pt.
 
-Overfull \hbox (7.31546pt too wide) in paragraph at lines 25--26
-\T1/ptm/m/n/12 A Sierpinszki-háromszög imp-le-men-tá-ci-ó-já-hoz, el®-ször egy 
-se-géd-osz-tályt ír-tam, mint ahogy
+Overfull \hbox (1.48427pt too wide) in paragraph at lines 26--27
+\T1/ptm/m/n/12 gít-sé-gé-vel va-ló-sult meg. Ez a se-géd-osz-tály a Point osz-t
+ály, mi-vel a Sierpi«ski-háromszöget
  []
 
-[16
-
-
-
-] [17 <./SierpinskiTriangle.png>]
-Overfull \hbox (268.4942pt too wide) in paragraph at lines 56--93
+[17 <./img/SierpinskiTriangle.png>]
+Overfull \hbox (268.4942pt too wide) in paragraph at lines 40--77
  [] 
  []
 
@@ -861,91 +848,80 @@ Overfull \hbox (268.4942pt too wide) in paragraph at lines 56--93
 Overfull \vbox (33.67pt too high) has occurred while \output is active []
 
  [19]
+Overfull \hbox (12.56927pt too wide) in paragraph at lines 80--84
+\T1/ptm/m/n/12 A Sierpi«ski-sz®nyeg Hausdorff-dimenziója: $\OML/cmm/m/it/12 log
+\OT1/cmr/m/n/12 (8)\OML/cmm/m/it/12 =log\OT1/cmr/m/n/12 (3) = 1\OML/cmm/m/it/12
+ ; \OT1/cmr/m/n/12 8928$ \T1/ptm/m/n/12 A Sierpi«ski-sz®nyeg
+ []
 
-! Package inputenc Error: Unicode character â‰ˆ (U+2248)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.96 ...agy. Hausdorff-dimenziÃ³ja log 8/log 3 â‰ˆ
-                                                   1,8928.
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-<SierpinskiCarpet.png, id=96, 803.0pt x 803.0pt>
-File: SierpinskiCarpet.png Graphic file (type png)
-<use SierpinskiCarpet.png>
-Package pdftex.def Info: SierpinskiCarpet.png  used on input line 108.
+<img/SierpinskiCarpet.png, id=98, 803.0pt x 803.0pt>
+File: img/SierpinskiCarpet.png Graphic file (type png)
+<use img/SierpinskiCarpet.png>
+Package pdftex.def Info: img/SierpinskiCarpet.png  used on input line 93.
 (pdftex.def)             Requested size: 213.39566pt x 213.39436pt.
 
-Overfull \hbox (1.83206pt too wide) in paragraph at lines 105--112
+Overfull \hbox (1.83206pt too wide) in paragraph at lines 90--97
 \T1/ptm/m/n/12 Ezzel az el-já-rás-sal a négy-zet egy-re in-kább ki-ürül. Vég-te
 -len-szer meg-is-mé-tel-ve a Sierpi«ski-
  []
 
-[20] [21 <./SierpinskiCarpet.png>] [22]
-Overfull \hbox (18.38002pt too wide) in paragraph at lines 152--153
+[20] [21 <./img/SierpinskiCarpet.png>] [22]
+Overfull \hbox (21.52402pt too wide) in paragraph at lines 138--139
 \T1/ptm/m/n/12 Ez az al-go-rit-mus kon-fi-gu-rá-ci-ós le-he-t®-sé-gek te-rén ne
-m olyan szí-nes mint pél-dá-ul a Sierpinszki-
+m olyan szí-nes, mint pél-dá-ul a Sierpinszki-
  []
 
 [23]
+<img/KochCurve.png, id=111, 292.6935pt x 90.93974pt>
+File: img/KochCurve.png Graphic file (type png)
+<use img/KochCurve.png>
+Package pdftex.def Info: img/KochCurve.png  used on input line 167.
+(pdftex.def)             Requested size: 320.09349pt x 99.45396pt.
+ [24 <./img/KochCurve.png>] [25] [26] [27]
+<img/HilbertCurve1-1.png, id=126, 98.61844pt x 103.13531pt>
+File: img/HilbertCurve1-1.png Graphic file (type png)
+<use img/HilbertCurve1-1.png>
+Package pdftex.def Info: img/HilbertCurve1-1.png  used on input line 245.
+(pdftex.def)             Requested size: 98.61818pt x 103.13504pt.
+<img/HilbertCurve1-2.png, id=127, 142.28156pt x 143.78719pt>
+File: img/HilbertCurve1-2.png Graphic file (type png)
+<use img/HilbertCurve1-2.png>
+Package pdftex.def Info: img/HilbertCurve1-2.png  used on input line 251.
+(pdftex.def)             Requested size: 213.39566pt x 215.67586pt.
+<img/HilbertCurve2-1.png, id=128, 140.77594pt x 142.28156pt>
+File: img/HilbertCurve2-1.png Graphic file (type png)
+<use img/HilbertCurve2-1.png>
+Package pdftex.def Info: img/HilbertCurve2-1.png  used on input line 258.
+(pdftex.def)             Requested size: 213.39566pt x 215.6927pt.
+ [28 <./img/HilbertCurve1-1.png>] [29 <./img/HilbertCurve1-2.png> <./img/Hilber
+tCurve2-1.png>]
+<img/PythagorasTree.png, id=138, 385.44pt x 256.96pt>
+File: img/PythagorasTree.png Graphic file (type png)
+<use img/PythagorasTree.png>
+Package pdftex.def Info: img/PythagorasTree.png  used on input line 278.
+(pdftex.def)             Requested size: 213.39566pt x 142.2616pt.
+ [30] [31 <./img/PythagorasTree.png>] [32]
 
-! Package inputenc Error: Unicode character â‰ˆ (U+2248)
-(inputenc)                not set up for use with LaTeX.
+! LaTeX Error: File `i' not found.
 
-See the inputenc package documentation for explanation.
+See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.182 Innen pedig d=log34=lg4lg3â‰ˆ
-                                   1,2619.
-You may provide a definition with
-\DeclareUnicodeCharacter 
+l.335 		\includegraphics[width=0.5\textwidth]i
+                                              mg/{FractalTree}
+I could not locate the file with any of these extensions:
+.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPEG,.JBIG2,.JB2,.eps
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
 
-<KochCurve.png, id=109, 292.6935pt x 90.93974pt>
-File: KochCurve.png Graphic file (type png)
-<use KochCurve.png>
-Package pdftex.def Info: KochCurve.png  used on input line 186.
-(pdftex.def)             Requested size: 320.09349pt x 99.45396pt.
-[24] [25 <./KochCurve.png>] [26] [27]
-<HilbertCurve1-1.png, id=124, 98.61844pt x 103.13531pt>
-File: HilbertCurve1-1.png Graphic file (type png)
-<use HilbertCurve1-1.png>
-Package pdftex.def Info: HilbertCurve1-1.png  used on input line 267.
-(pdftex.def)             Requested size: 98.61818pt x 103.13504pt.
-<HilbertCurve1-2.png, id=125, 142.28156pt x 143.78719pt>
-File: HilbertCurve1-2.png Graphic file (type png)
-<use HilbertCurve1-2.png>
-Package pdftex.def Info: HilbertCurve1-2.png  used on input line 273.
-(pdftex.def)             Requested size: 213.39566pt x 215.67586pt.
-<HilbertCurve2-1.png, id=126, 140.77594pt x 142.28156pt>
-File: HilbertCurve2-1.png Graphic file (type png)
-<use HilbertCurve2-1.png>
-Package pdftex.def Info: HilbertCurve2-1.png  used on input line 280.
-(pdftex.def)             Requested size: 213.39566pt x 215.6927pt.
- [28] [29 <./HilbertCurve1-1.png> <./HilbertCurve1-2.png>]
-<PythagorasTree.png, id=139, 385.44pt x 256.96pt>
-File: PythagorasTree.png Graphic file (type png)
-<use PythagorasTree.png>
-Package pdftex.def Info: PythagorasTree.png  used on input line 299.
-(pdftex.def)             Requested size: 213.39566pt x 142.2616pt.
- [30 <./HilbertCurve2-1.png>] [31 <./PythagorasTree.png>]
-[32]
-<FractalTree.png, id=151, 361.35pt x 312.56775pt>
-File: FractalTree.png Graphic file (type png)
-<use FractalTree.png>
-Package pdftex.def Info: FractalTree.png  used on input line 355.
-(pdftex.def)             Requested size: 213.39566pt x 184.58983pt.
- [33] [34 <./FractalTree.png>] [35]
-<HTree.png, id=162, 261.97874pt x 193.72375pt>
-File: HTree.png Graphic file (type png)
-<use HTree.png>
-Package pdftex.def Info: HTree.png  used on input line 399.
+[33] [34]
+<img/HTree.png, id=157, 261.97874pt x 193.72375pt>
+File: img/HTree.png Graphic file (type png)
+<use img/HTree.png>
+Package pdftex.def Info: img/HTree.png  used on input line 380.
 (pdftex.def)             Requested size: 213.39566pt x 157.80215pt.
- [36 <./HTree.png>]) [37]
+ [35] [36 <./img/HTree.png>]) [37]
 ! You can't use `\relax' after \the.
 <recently read> \c@tét 
                        
@@ -994,10 +970,10 @@ I'm forgetting what you said and using zero instead.
 ### semi simple group (level 1) entered at line 4 (\begingroup)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 17569 strings out of 480934
- 327774 string characters out of 2909679
+ 17597 strings out of 480934
+ 327934 string characters out of 2909679
  821689 words of memory out of 3000000
- 33030 multiletter control sequences out of 15000+200000
+ 33036 multiletter control sequences out of 15000+200000
  573606 words of font info for 84 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  68i,14n,83p,2026b,2006s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1009,9 +985,9 @@ ts/type1/public/amsfonts/cm/cmr8.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/p
 ublic/amsfonts/cm/cmsy10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/urw/times
 /utmb8a.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><D:/P
 rogram Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (39 pages, 403317 bytes).
+Output written on main.pdf (39 pages, 340536 bytes).
 PDF statistics:
- 206 PDF objects out of 1000 (max. 8388607)
+ 204 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 154 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 149 words of extra memory for PDF output out of 10000 (max. 10000000)
 
