@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7350 64-bit) (preloaded format=pdflatex 2020.3.23)  6 MAY 2020 23:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7350 64-bit) (preloaded format=pdflatex 2020.3.23)  7 MAY 2020 02:29
 entering extended mode
 **./main.tex
 (main.tex
@@ -877,51 +877,49 @@ File: img/KochCurve.png Graphic file (type png)
 <use img/KochCurve.png>
 Package pdftex.def Info: img/KochCurve.png  used on input line 167.
 (pdftex.def)             Requested size: 320.09349pt x 99.45396pt.
- [24 <./img/KochCurve.png>] [25] [26] [27]
-<img/HilbertCurve1-1.png, id=126, 98.61844pt x 103.13531pt>
+ [24 <./img/KochCurve.png>] [25] [26]
+<img/LevyCCurve.png, id=123, 1284.8pt x 790.955pt>
+File: img/LevyCCurve.png Graphic file (type png)
+<use img/LevyCCurve.png>
+Package pdftex.def Info: img/LevyCCurve.png  used on input line 236.
+(pdftex.def)             Requested size: 213.39566pt x 131.37091pt.
+ [27]
+<img/HilbertCurve1-1.png, id=127, 98.61844pt x 103.13531pt>
 File: img/HilbertCurve1-1.png Graphic file (type png)
 <use img/HilbertCurve1-1.png>
-Package pdftex.def Info: img/HilbertCurve1-1.png  used on input line 245.
+Package pdftex.def Info: img/HilbertCurve1-1.png  used on input line 251.
 (pdftex.def)             Requested size: 98.61818pt x 103.13504pt.
-<img/HilbertCurve1-2.png, id=127, 142.28156pt x 143.78719pt>
+<img/HilbertCurve1-2.png, id=128, 142.28156pt x 143.78719pt>
 File: img/HilbertCurve1-2.png Graphic file (type png)
 <use img/HilbertCurve1-2.png>
-Package pdftex.def Info: img/HilbertCurve1-2.png  used on input line 251.
+Package pdftex.def Info: img/HilbertCurve1-2.png  used on input line 257.
 (pdftex.def)             Requested size: 213.39566pt x 215.67586pt.
-<img/HilbertCurve2-1.png, id=128, 140.77594pt x 142.28156pt>
+<img/HilbertCurve2-1.png, id=129, 140.77594pt x 142.28156pt>
 File: img/HilbertCurve2-1.png Graphic file (type png)
 <use img/HilbertCurve2-1.png>
-Package pdftex.def Info: img/HilbertCurve2-1.png  used on input line 258.
+Package pdftex.def Info: img/HilbertCurve2-1.png  used on input line 264.
 (pdftex.def)             Requested size: 213.39566pt x 215.6927pt.
- [28 <./img/HilbertCurve1-1.png>] [29 <./img/HilbertCurve1-2.png> <./img/Hilber
-tCurve2-1.png>]
-<img/PythagorasTree.png, id=138, 385.44pt x 256.96pt>
+ [28 <./img/LevyCCurve.png>]
+[29 <./img/HilbertCurve1-1.png> <./img/HilbertCurve1-2.png>] [30 <./img/Hilbert
+Curve2-1.png>]
+<img/PythagorasTree.png, id=145, 385.44pt x 256.96pt>
 File: img/PythagorasTree.png Graphic file (type png)
 <use img/PythagorasTree.png>
-Package pdftex.def Info: img/PythagorasTree.png  used on input line 278.
+Package pdftex.def Info: img/PythagorasTree.png  used on input line 301.
 (pdftex.def)             Requested size: 213.39566pt x 142.2616pt.
- [30] [31 <./img/PythagorasTree.png>] [32]
-
-! LaTeX Error: File `i' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.335 		\includegraphics[width=0.5\textwidth]i
-                                              mg/{FractalTree}
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPEG,.JBIG2,.JB2,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-[33] [34]
-<img/HTree.png, id=157, 261.97874pt x 193.72375pt>
+ [31] [32 <./img/PythagorasTree.png>] [33]
+<img/FractalTree.png, id=156, 361.35pt x 312.56775pt>
+File: img/FractalTree.png Graphic file (type png)
+<use img/FractalTree.png>
+Package pdftex.def Info: img/FractalTree.png  used on input line 358.
+(pdftex.def)             Requested size: 213.39566pt x 184.58983pt.
+ [34] [35 <./img/FractalTree.png>] [36]
+<img/HTree.png, id=167, 261.97874pt x 193.72375pt>
 File: img/HTree.png Graphic file (type png)
 <use img/HTree.png>
-Package pdftex.def Info: img/HTree.png  used on input line 380.
+Package pdftex.def Info: img/HTree.png  used on input line 403.
 (pdftex.def)             Requested size: 213.39566pt x 157.80215pt.
- [35] [36 <./img/HTree.png>]) [37]
+ [37 <./img/HTree.png>]) [38]
 ! You can't use `\relax' after \the.
 <recently read> \c@tét 
                        
@@ -931,7 +929,7 @@ I'm forgetting what you said and using zero instead.
 
 \openout2 = `nyilatkozat.aux'.
 
-(nyilatkozat.tex) [38
+(nyilatkozat.tex) [39
 
 
 
@@ -945,7 +943,7 @@ I'm forgetting what you said and using zero instead.
 
 \openout2 = `koszonet.aux'.
 
-(koszonet.tex) [39
+(koszonet.tex) [40
 
 
 
@@ -970,9 +968,9 @@ I'm forgetting what you said and using zero instead.
 ### semi simple group (level 1) entered at line 4 (\begingroup)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 17597 strings out of 480934
- 327934 string characters out of 2909679
- 821689 words of memory out of 3000000
+ 17586 strings out of 480934
+ 328121 string characters out of 2909679
+ 821691 words of memory out of 3000000
  33036 multiletter control sequences out of 15000+200000
  573606 words of font info for 84 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -985,9 +983,9 @@ ts/type1/public/amsfonts/cm/cmr8.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/p
 ublic/amsfonts/cm/cmsy10.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/urw/times
 /utmb8a.pfb><D:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><D:/P
 rogram Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (39 pages, 340536 bytes).
+Output written on main.pdf (40 pages, 435335 bytes).
 PDF statistics:
- 204 PDF objects out of 1000 (max. 8388607)
+ 211 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 149 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 159 words of extra memory for PDF output out of 10000 (max. 10000000)
 

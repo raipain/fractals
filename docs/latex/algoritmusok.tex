@@ -231,6 +231,12 @@ p.handleMousePressed = () => {
 Egérrel való kattintáskor az egér pozíciója az egyenes közepén van. A függvény ennek a pontnak az x pozíciójához hozzáadja és kivonja belőle az egyenes hosszának felét, az y pozíció mindkét pont esetén változatlan marad, így megkapjuk az egyenes két végpontját. Az így kapott egyenes vízszintes, így ha a felhasználó az egér görgője segítségével rotálta, további számolásokra van szükség. Mindkét végpontból kivonjuk az egyenes középpontját, így két megfelelő irányba mutató vektort kapunk amit a vektorok beépített rotate függvényével könnyen megfelelő pozícióba rotálhatunk. A this.rotation változó tárolja azt az értéket, amennyivel a felhasználó a kezdő egyenest rotálta, ezt az értéket kapja paraméterül ez a függvény. A Koch-görbe draw függvénye nagyon hasonló, mint a Sierpiński-szőnyegé, így ezt nem szemléltetném.
 \section*{Lévy C-görbe}
 A Lévy C-görbét először Enresto Cesàro és Georg Faber írta le és tanulmányozta a differenciálhatóságát, azonban mégis Paul Lévy francia matematikus nevét viseli, aki a fraktál önhasonlóságát definiálta. Ez a fraktál alapjáraton nagyon hasonlít a Koch-görbére, egyedüli eltérés, hogy az egyenesekre való háromszögek rajzolásakor nem az egyenes egy bizonyos százaléka adja a háromszög alapját, hanem a teljes egyenes. Mivel az algoritmus implementációja és a konfigurációs lehetőségek is nagyon hasonlítanak a Koch-görbe alguritmuséhoz, így ezt a fraktált nem részletezem tovább.
+\begin{figure}[!ht]
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{img/LevyCCurve}
+		\caption[labelInTOC]{Lévy C-görbe}
+	\end{center}
+\end{figure}
 \section*{Hilbert-görbe}
 A Hilbert-görbe a térkitöltő fraktálok csoportjába tartozik. Az első térkitöltő görbét ugyan Peano alkotta meg, de Hilbert volt az, aki először érthető geometriai képet tudott mutatni egy általa definiált térkitöltő görbéről. Megadott egy geometriai generáló eljárást, amivel létrehozta ezen görbék egy osztályát. A Hilbert-görbe első iterációjának megrajzolása úgy történik, hogy veszünk egy egységnégyzetet a következő pontokkal:
 \begin{itemize}
@@ -260,9 +266,26 @@ A Hilbert-görbe második iterációja 4 egységnégyzetből áll, mindegyikben 
 \end{center}
 \end{figure}
 \subsection*{Implementáció}
-Az implementációt úgy kezdtem, hogy kiszámoltam hány négyzetből és hány pontból fog állni a Hilbert görbe. Ehhez a következő egyenlőségeket használtam:\\
+Az implementáció megvalósításához elengedhetetlen két képlet használata, ezek a következők:\\
 $N = 2^I$,
-$P = N^2$, ahol N a négyzetek száma, I az iteráció, P pedig a pontok száma. Az iteráció adott, ugyanis a felhasználó konfigurációs lehetőségként meg kell adja, hogy hanyadik iterációig szeretné, hogy az algoritmus fusson. Az algoritmus draw függvénye úgy működik, hogy minden képrfissítéskor eggyel mélyebbre megy a pontok tömbjén, és összeköti az adott pontot a tömbben levő előző ponttal, ezzel egy animációs hatást keltve. 
+$P = N^2$, ahol N a négyzetek száma, I az iteráció, P pedig a pontok száma. Az iteráció adott, ugyanis a felhasználó konfigurációs lehetőségként meg kell adja, hogy hanyadik iterációig szeretné, hogy az algoritmus fusson. 
+Az algoritmus egy setup fügvénnyel indul, ez különbözik a p5.js setup függvényétől, és az alábbi módon néz ki:
+\begin{lstlisting}
+ setup(): void {
+	 this.squares = Math.pow(2, this.order);
+	 this.points = Math.pow(this.squares, 2);
+	 this.length = Math.min(this.width, this.height) / this.squares;
+	 for (let i = 0; i < this.points; i++) {
+		 this.path[i] = this.hilbert(i);
+		 this.path[i].mult(this.length);
+		 this.path[i].add(this.length / 2, this.length / 2);
+	 }
+	 this.root = new Line(new p5.Vector(this.path[0].x, this.path[0].y),
+	 new p5.Vector(this.path[1].x, this.path[1].y));
+ }
+\end{lstlisting}
+A függvény először, a fentebb említett képletek segítségével kiszámolja, hogy az adott iteráció esetén hány négyzetből, és hány pontból fog állni a Hilbert-görbe. Ezután kiszámolja, hogy mekkora lesz egy-egy vonal hossza. Mivel a vászon szélessége és hosszúsága különbözik, ezért a függvény a kettő közül a kisebbiket veszi számításba, így a görbe biztosan bele fog férni a vászonba, majd ezt leosztja a négyzetek számával. Egy for ciklus segítségével a függvény 0-tól a pontok számáig iterál, és minden iterációban meghívja a hilbert függvényt, amelynek paraméterül a ciklusváltozót adja. A hilbert függvény egy vektort ad vissza, amely megmondja, hogy az adott index, amit paraméterként átadtunk neki, az U alakzat mely pontjával egyezik meg. Ez (0, 0) vektor esetén az alakzat bal felső pontja, (0, 1) esetén a bal alsó pontja, és így tovább... Ezeket a vektorokat egy path nevezetű tömbhöz adja, megszorozza a fentebb kiszámított hosszúsággal, hogy a vektorok közötti távolság megfelelő legyen, majd a vektor x és y értékeihez hozzáadja a hosszúság felét, ezzel megfelelő helyre pozícionálva őket.
+\par Az algoritmus draw függvénye a setup függvény által feltöltött path tömbön iterál végig úgy, hogy minden képrfissítéskor eggyel mélyebbre megy a pontok tömbjén, és egy vonallal összeköti az adott pontot a tömbben levő előző ponttal, ezzel egy animációs hatást keltve. 
 \par Az algoritmus viszonylag kevés konfigurációs lehetőséggel bír, ezek a következők:
 \begin{itemize}
 	\item Gyorsaság
@@ -332,7 +355,7 @@ Ha a fixált gyökér lehetőséget kikapcsoljuk, akkor tetszőleges helyen hely
 A Fraktál-fa egy viszonylag egyszerűen megkonstruálható fraktál, ami a legismertebb fraktálok közé tartozik. Szerkezete nagyon hasonlít a Pitagorasz-fához, annyi különbséggel, hogy négyzetek helyett egyszerű vonalakból tevődik össze. A Fraktál-fa első iterációjában csak a törzs van, a másodikban a törzsből két ág nő ki egy bizonyos szöget bezárva a törzzsel. Ez a szög tetszőlegesen állítható a konfigurációs panelben. A további iterációkban ez ismétlődik, tehát a már meglévő ágakből új ágak nőnek ki, ez a végtelenségig ismételhető.  
 \begin{figure}[!ht]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]img/{FractalTree}
+		\includegraphics[width=0.5\textwidth]{img/FractalTree}
 		\caption[labelInTOC]{Fraktál fa}
 	\end{center}
 \end{figure}
