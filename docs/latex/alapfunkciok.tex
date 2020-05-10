@@ -51,9 +51,10 @@ Az algoritmusok listájában tárolódik tehát minden algoritmus
 	\item egy pár mondatos ismertető az adott algoritmusról, ez egy külön funkció lételeme, amelyről a későbbiekben lesz szó
 \end{itemize}
 A lista panelnek az algoritmusok előnézet azonosítójára, és az előnézet algoritmus referenciájára van szüksége, a konfigurációs panelnek pedig az algoritmusok konfigurációs lehetőségeire, amelyek tömbben tárolódnak. Ezen kívül mindkét panel eltüntethető és előhozható egy-egy gomb segítségével, ezzel is növelve az alkalmazás kompaktságát. Az eltüntetés és előhozás animációval történik, amely abból áll, hogy gomb megnyomásra, CSS szinten tolom a panelek pozicíóját X tengelyen jobb vagy balra, attól függően, hogy előhozni, vagy eltüntetni szeretnénk a paneleket. Az animáció megvalósítására az Angular Animations API-ját használtam. Ennek a menete, hogy a CSS animációkat egy tömbben definiáltam, majd hozzákötöttem az adott panelekhez egy boolean változó segítségével. A boolean változó értéke a gomb nyomására változik, így fogja tudni az alkalmazás, hogy eltüntetni, vagy megjeleníteni kell.
+
 \section*{Visszatekerés funkció}
 A visszatekerés funkció egy sajátos funkciója az alkalmazásomnak, hiszen egy hasonló alkalmazás sem rendelkezik ilyen lehetőséggel. Alapja egy csúszka, ami, ha a felhasználó interakcióba lép vele, az algoritmust visszatekerő módba helyezi. A csúszka kódja az alábbi módon néz ki:
-\begin{lstlisting}
+\begin{lstlisting}[language=html]
 <div class="slider-container">
 <input #slider (click)="rollBack(slider.value)" type="range" min="0" [max]="sliderLength" [value]="sliderLength" class="slider" id="myRange">
 </div>
@@ -80,15 +81,15 @@ rollBack(p: any) {
 Ez a függvény minden képfrissítéskor újrarajzolja a hátteret, ennek köszönhetően eddig megrajzolt alakzat törlődik a vászonról. Ezután a függvény végigiterál azon a listán, amelyben az algoritmus tárolja a visszatekerés előtt még megrajzolt alakzatokat, és ez alapján rajzolja vissza azokat az elemeket, amelyek szükségesek. Minden algoritmus rendelkezik ilyen listával, hiszen ez a visszatekerés funkciójának egy fontos alapeleme.
 \section*{Fraktál leírás funkció}
 Mindegyik fraktált generáló algoritmus rendelkezik egy leírással. Ebben a leírásban egy rövid ismeretőt olvashatunk az adott fraktálról, ki fedezte fel, hol használják, jellegzetes tulajdonságok megemlítése. A leírást egy előugró ablak tartalmazza. Ez az előugró ablak egy globális komponens, minden algoritmus esetén ugyanaz az ablak ugrik elő, csupán a tartalma változik dinamikusan. Az ablakot egy gomb megnyomásával hívhatjuk elő. Az ablak HTML kódja így néz ki:
-\begin{lstlisting}
+\begin{lstlisting}[language=html]
 <div>
 	<h1>{{data.title}}</h1>
 	<p>{{data.about}}</p>
-	<button (click)="close()" mat-button>Bezár</button>
+	<button (click)="close()" mat-button>Bezar</button>
 </div>
 \end{lstlisting}
 Ez egy eléggé rövid kódsor, azonban látszik, hogy a címet és magát a leírást a data változó tartalmazza. A data változó akkor definiálódik, amikor az ablakot előhozó gombra kattint a felhasználó, az értéke pedig az algoritmus listából olvasódik ki, attól függően, hogy éppen melyik fraktál generáló algoritmus aktív. A gomb megnyomására a következő függvény fut le:
-\begin{lstlisting}
+\begin{lstlisting}[language=typescript]
 about(): void {
 	let dialogRef = this.dialog.open(AboutComponent, {
 		width: '800px',

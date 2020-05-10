@@ -1,9 +1,0 @@
-\select@language {magyar} \contentsline {section}{Feladatkiírás}{3}%
-\select@language {magyar} \contentsline {section}{Tartalmi összefoglaló}{4}%
-\select@language {magyar} \contentsline {section}{Bevezetés}{5}%
-\select@language {magyar} \contentsline {section}{Háttér}{7}%
-\select@language {magyar} \contentsline {section}{Az alkalmazás alapfunkciói}{10}%
-\select@language {magyar} \contentsline {section}{Algoritmusok}{16}%
-\select@language {magyar} \ 
-\select@language {magyar} \contentsline {section}{Nyilatkozat}{39}%
-\select@language {magyar} \contentsline {section}{Köszönetnyilvánítás}{40}%

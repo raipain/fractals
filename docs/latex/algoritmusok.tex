@@ -1,7 +1,7 @@
 \chapter*{Algoritmusok}
 \addcontentsline{toc}{section}{Algoritmusok}
 \spacing{1.5}
-Ebben a fejezetben azokrók az fraktál generáló algoritmusokról lesz szó, amelyeket a webalkalmazás részeként leimplementáltam. Minden algoritmusról egy először rövid ismertetőt írok, majd bemutatom az implementáció menetét. Azonban még mielőtt ebbe belekezdenék, szeretnék egy pár fogalmat tisztázni.
+Ebben a fejezetben azokról az fraktál generáló algoritmusokról lesz szó, amelyeket a webalkalmazás részeként leimplementáltam. Minden algoritmusról egy először rövid ismertetőt írok, majd bemutatom az implementáció menetét. Azonban még mielőtt ebbe belekezdenék, szeretnék egy pár fogalmat tisztázni.
 \par A Hausdorff-dimenzió a fraktáloknál használt dimenziófogalom, melynek bevezetését az indokolja, hogy egyes alakzatok, ide tartozik a fraktálok sokasága, kerülete, területe, és egyéb dimenzióbeli mértékei ellentmondásos értéket adnak. Például a Sierpiński-szőnyeg lefed egy négyzetet, tehát kétdimenziós, viszont a hézagoknak köszönhetően a területe 0, akárcsak az egydimenziós alakzatoké. A szokásos alakzatok körében a Hausdorff-dimenzió megegyezik az ismert értékekkel: az egyenesé 1, a négyzeté 2, a kockáé 3. Ez abból fakad, hogy a Haussdorff-dimenzió a hosszúság és a terület mérésén alapul. A Hausdorff-dimenzió tehát, a hagyományos, pozitív egész számokkal mérhető dimenziófogalom általánosítása. A Hausdorff-dimenzió nem feltétlenül egész szám.
 \par Amit még szeretnék egy pár mondatban megfogalmazni az a p5.js könyvtár működési elve. A p5.js-ben történő rajzoláshoz két függvényt kell megvalósítani. Ezek a setup és a draw függvények. A setup függvény a rajzolás elkezdése előtt fut le egyszer, ez tipikusan a vászon létrehozására, háttér, szín, képfrissítés, és egyéb tulajdonságok beállítására használatos. Maga a rajzolás a draw függvényben történik. Ez a függvény minden másodpercben annyiszor fut le amennyi a képfrissítés tulajdonság értéke, ez alapértelmezetten 60-ra van állítva a legtöbb számítógép esetében. 
 \section*{Sierpiński-háromszög}
@@ -38,7 +38,7 @@ A Sierpiński-háromszög implementációjának kezdéseként először egy seg�
 A Sierpiński-háromszög implementációjának legfontosabb részét a draw függvény teszi ki, ami az alábbi módon néz ki:
 \begin{center}
 \begin{tabular}{c}
-\begin{lstlisting}
+\begin{lstlisting}[language=typescript]
 p.draw = () => {
 	this.setConfigurables(p);
 	
@@ -77,7 +77,7 @@ p.draw = () => {
 \end{center}
 Ez egy lerövidített kód, mivel az eredeti túl hosszú, így megpróbáltam csak a lényeget szemléltetni. Látható hogy a rajzolás különböző feltételekhez van kötve, amelyek a konfigurációktól függnek, mint például a véletlenszerű pontvastagság és a szivárvány mód. Továbbá látható, hogy a függvény csak akkor fog rajzolni, ha az algoritmus futása éppen nem szünetel. A points tömb tárolja a három pontot, amelyek a háromszöget határolják be, a refPoint változó pedig azt a pontot, amelytől a háromszög egy véletlenszerűen választott csúcsáig számítódik az a távolság, ahová az új pont kerül. A véletlenszerű csúcsot a függvény a p5 random metódusa segítségével választja ki. Az a pozíció, ahová az új pont kerül, a p5 könvytár beépített lerp függvényével számítódik ki. Az refPoint változó minden új pont rajzolása esetén értékül kapja ezt az új pontot. A rollBackList\$ változó a draw függvény minden lefutása után, pontosabban minden új pont kirajzolása után, egy új értéket közvetít a feliratkozóknak, ezzel beállítva a visszatekerő csúszka hosszát.
 \section*{Sierpiński-szőnyeg}
-A Sierpiński-szőnyeg szintén Wacław Sierpiński lengyel matematikus által megtalált fraktál, amely úgy áll elő, hogy egy négyzetet oldalai harmadolásával kilenc kisebb négyzetre bontunk, a középsőt elhagyjuk, és a maradék nyolcon elvégezzük ugyanezt az eljárást (vagyis azoknak is elhagyjuk a közepét), majd az így maradt 8×8 kisebb négyzeten is, stb. Az eredményül kapott alakzat területe nulla, kerülete végtelen nagy.\\ 
+A Sierpiński-szőnyeg szintén Waclaw Sierpinski lengyel matematikus által megtalált fraktál, amely úgy áll elő, hogy egy négyzetet oldalai harmadolásával kilenc kisebb négyzetre bontunk, a középsőt elhagyjuk, és a maradék nyolcon elvégezzük ugyanezt az eljárást (vagyis azoknak is elhagyjuk a közepét), majd az így maradt 8x8 kisebb négyzeten is, stb. Az eredményül kapott alakzat területe nulla, kerülete végtelen nagy.\\ 
 A Sierpiński-szőnyeg Hausdorff-dimenziója: $log(8)/log(3) = 1,8928$
 A Sierpiński-szőnyeg konstrukciójának lépései:
 \begin{itemize}
@@ -96,7 +96,7 @@ Ezzel az eljárással a négyzet egyre inkább kiürül. Végtelenszer megismét
 \end{figure}
 \subsection*{Implementáció}
 Az implementációt, a Sierpiński-háromszöghöz hasonlóan, itt is egy segédosztály megírásával kezdtem. Ez a segédosztály a Rectangle osztály. A segédosztály adattagként tárolja az adott négyzet középpontját, ami egy vektor objektum, és méretét. Mivel ennek a forráskódja túlságosan hosszú, így csak azt a függvényt szemléltetem, amely a kilencedelést végzi. Ez az alábbi módon néz ki:
-\begin{lstlisting}
+\begin{lstlisting}[language=typescript]
 divide(): Rectangle[] {
 	let rectangles = [];
 	
@@ -136,7 +136,7 @@ Ez a függvény mindig egy négyzetre van meghívva, így az ő kilenced részé
 	\item Szivárvány mód
 \end{itemize}
 Ez az algoritmus konfigurációs lehetőségek terén nem olyan színes, mint például a Sierpinszki-háromszög. Ez annak köszönhető, hogy egyszerűen nincs annyi állítható paraméter, mint az Sierpiński-háromszög esetén. A kevés konfigurációs lehetőség miatt a draw függvény is jóval egyszerűbb, a Sierpiński-háromszögétől.
-\begin{lstlisting}
+\begin{lstlisting}[language=typescript]
 p.draw = () => {
 	this.setConfigurables(p);
 
@@ -159,6 +159,8 @@ p.draw = () => {
 }
 \end{lstlisting}
 Látható, hogy a függvény a négyzetek tömbjén iterál végig, viszont segédváltozók segítségével mindig csak azokon a négyzeteken végez műveleteket, amelyek még nincsenek kirajzolva, így növelve az algoritmus hatékonyságán. A függvény az adott négyzetet kirajzolja, majd kilencedeli a már ismert divide függvény segítségével. A kilencedeléssel kapott négyzeteket a tömbbe helyezi, így a következő iterációkor a függvény az így kapott négyzeteken fogja a ugyanezt a műveletet elvégezni.
+
+
 \section*{Koch-görbe}
 A Koch-görbe vagy Koch-hópehely Helge von Koch svéd matematikus által leírt fraktál. A görbét úgy állítjuk elő, hogy veszünk egy szabályos (egyenlő oldalú) háromszöget, minden oldalát megharmadoljuk, és a középső harmadszakaszra újabb szabályos háromszögeket rajzolunk. Majd az így keletkezett háromszögoldalakra újra feltesszük ezt a "kinövést", és ezt a műveletet a végtelenségig folytatjuk. A görbe egyre jobban egy hópehelyhez fog hasonlítani. Természetesen az igazi, teljes hópehely lerajzolása lehetetlen, csupán a hozzá vezető állapotok egymásutánját tudjuk ábrázolni. Amint újabb és újabb "kinövéseket" szerkesztünk a háromszögek oldalaira, a hópehely kerülete egyre nő, azaz a hópehely kerülete valójában végtelen. Mivel maga az alakzat megmarad az első háromszög köré írt körének belsejében, így azt mondhatjuk, hogy a területe viszont véges.\\
 A Koch-görbe Hausdorff-dimenziója: $log(4)/log(3) = 1,26$
@@ -265,12 +267,14 @@ A Hilbert-görbe második iterációja 4 egységnégyzetből áll, mindegyikben 
 	\caption[labelInTOC]{Hilbert görbe 2. iterációja}
 \end{center}
 \end{figure}
+
+
 \subsection*{Implementáció}
 Az implementáció megvalósításához elengedhetetlen két képlet használata, ezek a következők:\\
 $N = 2^I$,
 $P = N^2$, ahol N a négyzetek száma, I az iteráció, P pedig a pontok száma. Az iteráció adott, ugyanis a felhasználó konfigurációs lehetőségként meg kell adja, hogy hanyadik iterációig szeretné, hogy az algoritmus fusson. 
 Az algoritmus egy setup fügvénnyel indul, ez különbözik a p5.js setup függvényétől, és az alábbi módon néz ki:
-\begin{lstlisting}
+\begin{lstlisting}[language=typescript]
  setup(): void {
 	 this.squares = Math.pow(2, this.order);
 	 this.points = Math.pow(this.squares, 2);
@@ -302,9 +306,10 @@ A Pitagorasz-fa egy négyzetekből álló fraktál, amelyet Albert Bosman fedeze
 		\caption[labelInTOC]{Pitagorasz-fa}
 	\end{center}
 \end{figure}
+
 \subsection*{Implementáció}
 Az kód átláthatósága érdekében itt is egy segédosztályt írtam először. Ebben az osztályban tárolódnak a négyzetek pontjai illetve mérete. Továbbá, két fontos függvényt tartalmaz, az expandLeft és expandRight függvényeket, amelyek az adott négyzet bal és jobb oldali négyzetágait adják meg. 
-\begin{lstlisting}
+\begin{lstlisting}[language=typescript]
 expandRight(p: any, angle: number): Rectangle {
 	let A: p5.Vector;
 	let B: p5.Vector;
