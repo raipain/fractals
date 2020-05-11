@@ -44,3 +44,9 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+/docs/latex/*.aux
+/docs/latex/*.pdf
+/docs/latex/*.toc
+/docs/latex/*.synctex.gz
+/docs/latex/*.log
