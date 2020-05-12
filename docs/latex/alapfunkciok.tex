@@ -1,8 +1,10 @@
-\chapter*{Az alkalmazás alapfunkciói}
-\addcontentsline{toc}{section}{Az alkalmazás alapfunkciói}
+\chapter{Az alkalmazás alapfunkciói}
 \spacing{1.5}
+
 A alábbi fejezetben az elkészült alkalmazás főbb funkcióit mutatom be, fejtem ki részletesen, külön kitérve a fontosabb, érdekesebb részekre.
-\section*{Lejátszást vezérlő funkciók}
+
+\section{Lejátszást vezérlő funkciók}
+
 A fraktál generáló algoritmusok futását három gombbal tudjuk vezérelni, ezek a Play, Pause és Start gombok. Mivel az alkalmazást megpróbáltam minél több komponensre bontani, így kellett egy külön szolgáltatás, amelynek a feladata az volt, hogy az egyes eseményeket, amelyeket a felhasználók a gombok megnyomásával váltanak ki, közvetítse az algoritmusnak, amely a fraktál generálására szolgál. Így az algoritmus tudni fogja mikor kell szünetelni, mikor kell rajzolni, és mikor kell újrakezdeni. A szolgáltatás kódja a következőképpen néz ki:
 \begin{lstlisting}[language=typescript]
 export class AnimationStateManagerService {
@@ -21,8 +23,9 @@ export class AnimationStateManagerService {
 	}
 }
 \end{lstlisting}
-A szolgáltatás alapja tehát egy {\it BehaviorSubject} objektum, amely {\it boolean} típusú adatot tud közvetíteni a feliratkozóknak. Amikor a felhasználó a lejátszást vezérlő gombok egyikével interakcióba lép, a szolgálatás {\it setState()} metódusa hívódik meg, amelynek a paramétere egy igaz-hamis adat, attól függően, hogy az algoritmus futása szünetel-e vagy sem. Amikor ez a metódus meghívódik, akkor a szolgáltatás a paraméterként kapott változó értéket közvetíti a feliratkozóknak, így azok tudni fogják, hogy a felhasználó interakcióba lépett a vezérlő gombok valamelyikével. A feliratkozó ebben az esetben az algoritmus, amely az adott fraktált generálja.  
-\section*{Algoritmus lista és konfigurációs panelek}
+A szolgáltatás alapja tehát egy {\it BehaviorSubject} objektum, amely {\it boolean} típusú adatot tud közvetíteni a feliratkozóknak. Amikor a felhasználó a lejátszást vezérlő gombok egyikével interakcióba lép, a szolgálatás {\it setState()} metódusa hívódik meg, amelynek a paramétere egy igaz-hamis adat, attól függően, hogy az algoritmus futása szünetel-e vagy sem. Amikor ez a metódus meghívódik, akkor a szolgáltatás a paraméterként kapott változó értéket közvetíti a feliratkozóknak, így azok tudni fogják, hogy a felhasználó interakcióba lépett a vezérlő gombok valamelyikével. A feliratkozó ebben az esetben az algoritmus, amely az adott fraktált generálja.
+
+\section{Algoritmus lista és konfigurációs panelek}
 A webalkalmazás két oldalsó panellel rendelkezik. Bal oldalon a fraktál generáló algoritmusok egy oszlopba rendezett listáját tekinthetjük meg. Az algoritmusok mindegyike rendelkezik előnézettel, tehát aki nem ismerné valamelyik algoritmust, láthatja, hogy az adott algoritmus milyen fraktált generál. Ezek az előnézetek maguknak az algoritmusoknak egy lebutított változatai, konfigurációs lehetőségek nélkül, az adott algoritmusok paraméterei alapértékekre vannak állítva. Minden algoritmus előnézete egy bizonyos szintig iterál, majd ha ezt a szintet elérte, újraindul. 
 \par Jobb oldalon a konfigurációs panel található. Ennek a tartalma dinamikus, aszerint generálódik, hogy az adott algoritmusnak milyen konfigurációs lehetőségei vannak. A konfigurálás három féle módon történhet:
 \begin{itemize}
@@ -52,7 +55,9 @@ Az algoritmusok listájában tárolódik tehát minden algoritmus
 \end{itemize}
 A lista panelnek az algoritmusok előnézet azonosítójára, és az előnézet algoritmus referenciájára van szüksége, a konfigurációs panelnek pedig az algoritmusok konfigurációs lehetőségeire, amelyek tömbben tárolódnak. Ezen kívül mindkét panel eltüntethető és előhozható egy-egy gomb segítségével, ezzel is növelve az alkalmazás kompaktságát. Az eltüntetés és előhozás animációval történik, amely abból áll, hogy gomb megnyomásra, CSS szinten tolom a panelek pozicíóját X tengelyen jobb vagy balra, attól függően, hogy előhozni, vagy eltüntetni szeretnénk a paneleket. Az animáció megvalósítására az Angular Animations API-ját használtam. Ennek a menete, hogy a CSS animációkat egy tömbben definiáltam, majd hozzákötöttem az adott panelekhez egy boolean változó segítségével. A boolean változó értéke a gomb nyomására változik, így fogja tudni az alkalmazás, hogy eltüntetni, vagy megjeleníteni kell.
 
-\section*{Visszatekerés funkció}
+
+\section{Visszatekerés funkció}
+
 A visszatekerés funkció egy sajátos funkciója az alkalmazásomnak, hiszen egy hasonló alkalmazás sem rendelkezik ilyen lehetőséggel. Alapja egy csúszka, ami, ha a felhasználó interakcióba lép vele, az algoritmust visszatekerő módba helyezi. A csúszka kódja az alábbi módon néz ki:
 \begin{lstlisting}[language=html]
 <div class="slider-container">
@@ -79,7 +84,10 @@ rollBack(p: any) {
 }
 \end{lstlisting}
 Ez a függvény minden képfrissítéskor újrarajzolja a hátteret, ennek köszönhetően eddig megrajzolt alakzat törlődik a vászonról. Ezután a függvény végigiterál azon a listán, amelyben az algoritmus tárolja a visszatekerés előtt még megrajzolt alakzatokat, és ez alapján rajzolja vissza azokat az elemeket, amelyek szükségesek. Minden algoritmus rendelkezik ilyen listával, hiszen ez a visszatekerés funkciójának egy fontos alapeleme.
-\section*{Fraktál leírás funkció}
+
+
+\section{Fraktál leírás funkció}
+
 Mindegyik fraktált generáló algoritmus rendelkezik egy leírással. Ebben a leírásban egy rövid ismeretőt olvashatunk az adott fraktálról, ki fedezte fel, hol használják, jellegzetes tulajdonságok megemlítése. A leírást egy előugró ablak tartalmazza. Ez az előugró ablak egy globális komponens, minden algoritmus esetén ugyanaz az ablak ugrik elő, csupán a tartalma változik dinamikusan. Az ablakot egy gomb megnyomásával hívhatjuk elő. Az ablak HTML kódja így néz ki:
 \begin{lstlisting}[language=html]
 <div>
