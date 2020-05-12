@@ -2,11 +2,11 @@
 \addcontentsline{toc}{section}{Algoritmusok}
 \spacing{1.5}
 Ebben a fejezetben azokról az fraktál generáló algoritmusokról lesz szó, amelyeket a webalkalmazás részeként leimplementáltam. Minden algoritmusról egy először rövid ismertetőt írok, majd bemutatom az implementáció menetét. Azonban még mielőtt ebbe belekezdenék, szeretnék egy pár fogalmat tisztázni.
-\par A Hausdorff-dimenzió a fraktáloknál használt dimenziófogalom, melynek bevezetését az indokolja, hogy egyes alakzatok, ide tartozik a fraktálok sokasága, kerülete, területe, és egyéb dimenzióbeli mértékei ellentmondásos értéket adnak. Például a Sierpiński-szőnyeg lefed egy négyzetet, tehát kétdimenziós, viszont a hézagoknak köszönhetően a területe 0, akárcsak az egydimenziós alakzatoké. A szokásos alakzatok körében a Hausdorff-dimenzió megegyezik az ismert értékekkel: az egyenesé 1, a négyzeté 2, a kockáé 3. Ez abból fakad, hogy a Haussdorff-dimenzió a hosszúság és a terület mérésén alapul. A Hausdorff-dimenzió tehát, a hagyományos, pozitív egész számokkal mérhető dimenziófogalom általánosítása. A Hausdorff-dimenzió nem feltétlenül egész szám.
+\par A Hausdorff-dimenzió a fraktáloknál használt dimenziófogalom, melynek bevezetését az indokolja, hogy egyes alakzatok, ide tartozik a fraktálok sokasága, kerülete, területe, és egyéb dimenzióbeli mértékei ellentmondásos értéket adnak. Például a Sierpiński-szőnyeg lefed egy négyzetet, tehát kétdimenziós, viszont a hézagoknak köszönhetően a területe 0, akárcsak az egydimenziós alakzatoké. A szokásos alakzatok körében a Hausdorff-dimenzió megegyezik az ismert értékekkel: az egyenesé 1, a négyzeté 2, a kockáé 3. Ez abból fakad, hogy a Haussdorff-dimenzió a hosszúság és a terület mérésén alapul. A Hausdorff-dimenzió tehát, a hagyományos, pozitív egész számokkal mérhető dimenziófogalom általánosítása. A Hausdorff-dimenzió nem feltétlenül egész szám. \cite{hausdorff}
 \par Amit még szeretnék egy pár mondatban megfogalmazni az a p5.js könyvtár működési elve. A p5.js-ben történő rajzoláshoz két függvényt kell megvalósítani. Ezek a setup és a draw függvények. A setup függvény a rajzolás elkezdése előtt fut le egyszer, ez tipikusan a vászon létrehozására, háttér, szín, képfrissítés, és egyéb tulajdonságok beállítására használatos. Maga a rajzolás a draw függvényben történik. Ez a függvény minden másodpercben annyiszor fut le amennyi a képfrissítés tulajdonság értéke, ez alapértelmezetten 60-ra van állítva a legtöbb számítógép esetében. 
 \section*{Sierpiński-háromszög}
 A Wacław Sierpiński lengyel matematikus által megtalált fraktál úgy áll elő, hogy egy szabályos háromszögből elhagyjuk az oldalfelező pontok összekötésével nyert belső háromszöget, majd az így maradt három háromszögre rekurzívan alkalmazzuk ugyanezt az eljárást.
-A Sierpiński-háromszög konstrukciójához többnyire egyenlő oldalú háromszöget választanak. Ez azonban nem kötelező, bármely háromszögből lehet Sierpiński-háromszöget készíteni.
+A Sierpiński-háromszög konstrukciójához többnyire egyenlő oldalú háromszöget választanak. Ez azonban nem kötelező, bármely háromszögből lehet Sierpiński-háromszöget készíteni. \cite{sierp-triangle}
 Az általam megírt algoritmus az alábbi lépések szerint generálja ezt a fraktált:
 \begin{itemize}
 \item Vegyünk három pontot, melyek a háromszöget határolják be, mindegyik pont a háromszög egy csúcsa
@@ -21,7 +21,7 @@ Az általam megírt algoritmus az alábbi lépések szerint generálja ezt a fra
 \end{center}
 \end{figure}
 Minden lépésben a keletkező kis háromszögek oldalhossza megfeleződik, és területük a negyedére csökken, miközben a középső háromszög eltűnik.\\
-A Sierpiński háromszög Hausdorff-dimenziója: $log(3)/log(2) = 1,585$
+A Sierpiński háromszög Hausdorff-dimenziója: $log(3)/log(2) = 1,585$ \cite{sierp-triangle-wiki}
 \subsection*{Implementáció}
 A Sierpiński-háromszög implementációjának kezdéseként először egy segédosztályt írtam, mint ahogy a többi algoritmus nagy részének implementációja is segédosztályok segítségével valósult meg. Ez a segédosztály a Point osztály, mivel a Sierpiński-háromszöget az algoritmus pontok segítségével rajzolja ki. Itt definiálva vannak a pontokhoz tartozó adattagok, ez ebben az esetben egy vektor, ami tárolja egy adott pont x és y pozícióját a koordináta rendszerben, valamint egy draw függvény, ami kirajzolja az adott pontot.
 \par Az implementáció további része a fő osztályban történt meg. Itt többek között definiálva vannak az algoritmus konfigurációs lehetőségei is, amelyek a következők:
@@ -79,7 +79,7 @@ Ez egy lerövidített kód, mivel az eredeti túl hosszú, így megpróbáltam c
 \section*{Sierpiński-szőnyeg}
 A Sierpiński-szőnyeg szintén Waclaw Sierpinski lengyel matematikus által megtalált fraktál, amely úgy áll elő, hogy egy négyzetet oldalai harmadolásával kilenc kisebb négyzetre bontunk, a középsőt elhagyjuk, és a maradék nyolcon elvégezzük ugyanezt az eljárást (vagyis azoknak is elhagyjuk a közepét), majd az így maradt 8x8 kisebb négyzeten is, stb. Az eredményül kapott alakzat területe nulla, kerülete végtelen nagy.\\ 
 A Sierpiński-szőnyeg Hausdorff-dimenziója: $log(8)/log(3) = 1,8928$
-A Sierpiński-szőnyeg konstrukciójának lépései:
+\\A Sierpiński-szőnyeg konstrukciójának lépései:
 \begin{itemize}
 	\item Vegyünk egy négyzetet
 	\item Osszuk fel minden oldalát három részre
@@ -87,7 +87,7 @@ A Sierpiński-szőnyeg konstrukciójának lépései:
 	\item Töröljük el a középső négyzetet
 	\item Ismételjük az előző lépéseket minden kis négyzetre.
 \end{itemize}
-Ezzel az eljárással a négyzet egyre inkább kiürül. Végtelenszer megismételve a Sierpiński-szőnyeg marad.
+Ezzel az eljárással a négyzet egyre inkább kiürül. Végtelenszer megismételve a Sierpiński-szőnyeg marad. \cite{sierp-carpet-wiki}
 \begin{figure}[!ht]
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{img/SierpinskiCarpet}
@@ -160,10 +160,10 @@ p.draw = () => {
 \end{lstlisting}
 Látható, hogy a függvény a négyzetek tömbjén iterál végig, viszont segédváltozók segítségével mindig csak azokon a négyzeteken végez műveleteket, amelyek még nincsenek kirajzolva, így növelve az algoritmus hatékonyságán. A függvény az adott négyzetet kirajzolja, majd kilencedeli a már ismert divide függvény segítségével. A kilencedeléssel kapott négyzeteket a tömbbe helyezi, így a következő iterációkor a függvény az így kapott négyzeteken fogja a ugyanezt a műveletet elvégezni.
 
-
+	
 \section*{Koch-görbe}
 A Koch-görbe vagy Koch-hópehely Helge von Koch svéd matematikus által leírt fraktál. A görbét úgy állítjuk elő, hogy veszünk egy szabályos (egyenlő oldalú) háromszöget, minden oldalát megharmadoljuk, és a középső harmadszakaszra újabb szabályos háromszögeket rajzolunk. Majd az így keletkezett háromszögoldalakra újra feltesszük ezt a "kinövést", és ezt a műveletet a végtelenségig folytatjuk. A görbe egyre jobban egy hópehelyhez fog hasonlítani. Természetesen az igazi, teljes hópehely lerajzolása lehetetlen, csupán a hozzá vezető állapotok egymásutánját tudjuk ábrázolni. Amint újabb és újabb "kinövéseket" szerkesztünk a háromszögek oldalaira, a hópehely kerülete egyre nő, azaz a hópehely kerülete valójában végtelen. Mivel maga az alakzat megmarad az első háromszög köré írt körének belsejében, így azt mondhatjuk, hogy a területe viszont véges.\\
-A Koch-görbe Hausdorff-dimenziója: $log(4)/log(3) = 1,26$
+A Koch-görbe Hausdorff-dimenziója: $log(4)/log(3) = 1,26$ \cite{koch-gorbe-wiki}
 \begin{figure}[!ht]
 	\begin{center}
 		\includegraphics[width=0.75\textwidth]{img/KochCurve}
@@ -232,7 +232,7 @@ p.handleMousePressed = () => {
 \end{lstlisting}
 Egérrel való kattintáskor az egér pozíciója az egyenes közepén van. A függvény ennek a pontnak az x pozíciójához hozzáadja és kivonja belőle az egyenes hosszának felét, az y pozíció mindkét pont esetén változatlan marad, így megkapjuk az egyenes két végpontját. Az így kapott egyenes vízszintes, így ha a felhasználó az egér görgője segítségével rotálta, további számolásokra van szükség. Mindkét végpontból kivonjuk az egyenes középpontját, így két megfelelő irányba mutató vektort kapunk amit a vektorok beépített rotate függvényével könnyen megfelelő pozícióba rotálhatunk. A this.rotation változó tárolja azt az értéket, amennyivel a felhasználó a kezdő egyenest rotálta, ezt az értéket kapja paraméterül ez a függvény. A Koch-görbe draw függvénye nagyon hasonló, mint a Sierpiński-szőnyegé, így ezt nem szemléltetném.
 \section*{Lévy C-görbe}
-A Lévy C-görbét először Enresto Cesàro és Georg Faber írta le és tanulmányozta a differenciálhatóságát, azonban mégis Paul Lévy francia matematikus nevét viseli, aki a fraktál önhasonlóságát definiálta. Ez a fraktál alapjáraton nagyon hasonlít a Koch-görbére, egyedüli eltérés, hogy az egyenesekre való háromszögek rajzolásakor nem az egyenes egy bizonyos százaléka adja a háromszög alapját, hanem a teljes egyenes. Mivel az algoritmus implementációja és a konfigurációs lehetőségek is nagyon hasonlítanak a Koch-görbe alguritmuséhoz, így ezt a fraktált nem részletezem tovább.
+A Lévy C-görbét először Enresto Cesàro és Georg Faber írta le és tanulmányozta a differenciálhatóságát, azonban mégis Paul Lévy francia matematikus nevét viseli, aki a fraktál önhasonlóságát definiálta. \cite{levy-c-wiki} Ez a fraktál alapjáraton nagyon hasonlít a Koch-görbére, egyedüli eltérés, hogy az egyenesekre való háromszögek rajzolásakor nem az egyenes egy bizonyos százaléka adja a háromszög alapját, hanem a teljes egyenes. Mivel az algoritmus implementációja és a konfigurációs lehetőségek is nagyon hasonlítanak a Koch-görbe alguritmuséhoz, így ezt a fraktált nem részletezem tovább.
 \begin{figure}[!ht]
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{img/LevyCCurve}
@@ -240,7 +240,7 @@ A Lévy C-görbét először Enresto Cesàro és Georg Faber írta le és tanulm
 	\end{center}
 \end{figure}
 \section*{Hilbert-görbe}
-A Hilbert-görbe a térkitöltő fraktálok csoportjába tartozik. Az első térkitöltő görbét ugyan Peano alkotta meg, de Hilbert volt az, aki először érthető geometriai képet tudott mutatni egy általa definiált térkitöltő görbéről. Megadott egy geometriai generáló eljárást, amivel létrehozta ezen görbék egy osztályát. A Hilbert-görbe első iterációjának megrajzolása úgy történik, hogy veszünk egy egységnégyzetet a következő pontokkal:
+A Hilbert-görbe a térkitöltő fraktálok csoportjába tartozik. Az első térkitöltő görbét ugyan Peano alkotta meg, de Hilbert volt az, aki először érthető geometriai képet tudott mutatni egy általa definiált térkitöltő görbéről. Megadott egy geometriai generáló eljárást, amivel létrehozta ezen görbék egy osztályát. \cite{hilbert-wiki} A Hilbert-görbe első iterációjának megrajzolása úgy történik, hogy veszünk egy egységnégyzetet a következő pontokkal:
 \begin{itemize}
 	\item (0, 0) pont a négyzet bal alsó sarka
 	\item (0, 1) pont a négyzet bal felső sarka
@@ -299,7 +299,7 @@ A függvény először, a fentebb említett képletek segítségével kiszámolj
 	\item Szivárvány mód
 \end{itemize}
 \section*{Pitagorasz-fa}
-A Pitagorasz-fa egy négyzetekből álló fraktál, amelyet Albert Bosman fedezett fel. A nevét onnan kapta, hogy minden egymást érintő négyzet hármas egy szabályos háromszöget zár be. Ha a legnagyobb négyzet $L x L$ méretű (törzs), akkor a teljes Pitagorasz-fa elfér egy $6L x 4L$ méretű négyzetben. A hagyományos, egyenlő szárú Pitagorasz-fa a következőképpen konstruálható: az első iterációban létrejön a törzse, amely egy négyzet. A második iterációban a törzsnek a felső élére egy egyenlő szárú derékszögű háromszög rajzolunk úgy, hogy átfogója a négyzet felső éle, valamint a háromszög két befogójából kiágazik az első két ág, amelyek szintén négyzetek. Ezután minden iterációban ez ismétlődik, azaz minden korábbi négyzet felső élére egy egyenlő szárú derékszögű háromszög nő, és azok befogói új négyzetágakat növesztenek. Minden négyzet mérete $sqrt(2)/2$ értékkel skálázódik le a szülő négyzet méretéhez képest.
+A Pitagorasz-fa egy négyzetekből álló fraktál, amelyet Albert Bosman fedezett fel. A nevét onnan kapta, hogy minden egymást érintő négyzet hármas egy szabályos háromszöget zár be. Ha a legnagyobb négyzet $L x L$ méretű (törzs), akkor a teljes Pitagorasz-fa elfér egy $6L x 4L$ méretű négyzetben. \cite{pitagorasz-fa} A hagyományos, egyenlő szárú Pitagorasz-fa a következőképpen konstruálható: az első iterációban létrejön a törzse, amely egy négyzet. A második iterációban a törzsnek a felső élére egy egyenlő szárú derékszögű háromszög rajzolunk úgy, hogy átfogója a négyzet felső éle, valamint a háromszög két befogójából kiágazik az első két ág, amelyek szintén négyzetek. Ezután minden iterációban ez ismétlődik, azaz minden korábbi négyzet felső élére egy egyenlő szárú derékszögű háromszög nő, és azok befogói új négyzetágakat növesztenek. Minden négyzet mérete $sqrt(2)/2$ értékkel skálázódik le a szülő négyzet méretéhez képest.
 \begin{figure}[!ht]
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{img/PythagorasTree}

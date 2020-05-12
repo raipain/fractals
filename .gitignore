@@ -50,3 +50,5 @@ Thumbs.db
 /docs/latex/*.toc
 /docs/latex/*.synctex.gz
 /docs/latex/*.log
+/docs/latex/*.bbl
+/docs/latex/*.blg
