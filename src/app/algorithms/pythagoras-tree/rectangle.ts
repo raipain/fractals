@@ -6,6 +6,7 @@ export class Rectangle {
     public C: p5.Vector;
     public D: p5.Vector;
     public size: number;
+    public color: any;
 
     constructor(A, B, C, D) {
         this.A = A;
@@ -71,7 +72,12 @@ export class Rectangle {
         return right;
     }
 
+    setColor(color: any) {
+        this.color = color;
+    }
+
     draw(p: any) {
+        p.fill(this.color);
         p.beginShape();
         p.vertex(this.A.x, this.A.y);
         p.vertex(this.B.x, this.B.y);

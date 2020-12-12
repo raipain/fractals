@@ -1,6 +1,7 @@
 .panel {
     position: absolute;
-    height: 100vh;
+    min-height: 100vh;
+    height: 100%;
     width: 300px;
     padding: 5px;
     padding-left: 1em;

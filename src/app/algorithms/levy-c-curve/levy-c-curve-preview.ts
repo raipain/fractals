@@ -19,6 +19,7 @@ export class LevyCCurvePreview extends Fractal {
             new p5.Vector(this.width / 2 - this.length / 2, this.height / 1.5), 
             new p5.Vector(this.width / 2 + this.length / 2, this.height / 1.5)
         );
+        this.root.setColor(this.color);
         this.lines = [this.root];
 
         this.createCanvas();
@@ -38,6 +39,7 @@ export class LevyCCurvePreview extends Fractal {
             if(this.iter < 10) {
                 let tempLines: Line[] = [];
                 for(let i = 0; i < this.lines.length; i++) {
+                    this.lines[i].setColor(this.color);
                     this.lines[i].draw(p);
                     tempLines = tempLines.concat(this.lines[i].expand(p, -1, p.PI / 4));
                 }

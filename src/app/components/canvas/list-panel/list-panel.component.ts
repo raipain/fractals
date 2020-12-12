@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AlgorithmService } from 'src/app/services/algorithm.service';
 import { IAlgorithmList } from 'src/app/models/algorithm-list';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { Subscription } from 'rxjs';
+import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 
 @Component({
     selector: 'app-list-panel',
@@ -29,7 +29,7 @@ export class ListPanelComponent implements OnInit, AfterViewInit, OnDestroy {
     listPanelHideAnimationStatus: string;
     algorithmList: IAlgorithmList[];
 
-    constructor(private algorithmService: AlgorithmService) {
+    constructor(private algorithmService: AlgorithmService, private animationStateManagerService: AnimationStateManagerService) {
         this.listPanelHideAnimationStatus = "hide";
     }
 
@@ -52,9 +52,14 @@ export class ListPanelComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     selectAlgorithm(index: number): void {
+        if(this.listPanelHideAnimationStatus == "hide") {
+            return;
+        }
+        this.algorithmList[this.activeAlgorithm].algorithm.removeCanvas();
         this.activeAlgorithm = index;
         this.algorithmService.selectAlgorithm(index);
         this.listPanelHideAnimationStatus = "hide";
+        this.animationStateManagerService.setState(false);
     }
 
     toggleListPanelAnimation(): void {

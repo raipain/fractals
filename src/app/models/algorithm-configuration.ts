@@ -10,4 +10,5 @@ export interface IAlgorithmConfiguration {
     func?: Function;
     values?: IAlgorithmConfiguration[];
     configurations?: IAlgorithmConfiguration[];
+    bind?: any;
 }

@@ -19,6 +19,7 @@ export class PythagorasTreePreview extends Fractal {
                                     new p5.Vector(this.width / 2 + this.rectSize / 2, this.height / 1.25 - this.rectSize),
                                     new p5.Vector(this.width / 2 - this.rectSize / 2, this.height / 1.25),
                                     new p5.Vector(this.width / 2 + this.rectSize / 2, this.height / 1.25));
+        this.root.setColor(this.color);
         this.rectangles = [this.root];
 
         this.createCanvas();
@@ -39,6 +40,7 @@ export class PythagorasTreePreview extends Fractal {
             if(this.iter < 6) {
                 let newRects: Rectangle[] = [];
                 for(let i = 0; i < this.rectangles.length; i++) {
+                    this.rectangles[i].setColor(this.color);
                     this.rectangles[i].draw(p);
                     let left = this.rectangles[i].expandLeft(p, p.PI / 2);
                     let right = this.rectangles[i].expandRight(p, p.PI / 2);

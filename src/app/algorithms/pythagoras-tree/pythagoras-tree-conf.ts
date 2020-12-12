@@ -3,9 +3,11 @@ import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { Rectangle } from './rectangle';
 import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configuration';
+import { BehaviorSubject } from 'rxjs';
 
 export class PythagorasTreeConfigurable extends ConfigurableFractal {
     private root: Rectangle;
+    private rectangles: Rectangle[];
     private fixedRoot: Rectangle;
     private customRoot: Rectangle;
     private useFixedRoot: boolean;
@@ -45,7 +47,8 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
             minValue: 10,
             maxValue: 400,
             step: 1,
-            func: this.setRectSize
+            func: this.setRectSize,
+            bind: new BehaviorSubject<number>(1)
         },
         {
             name: "Szín",
@@ -56,7 +59,8 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
             name: "Szivárvány mód",
             type: "checkbox",
             value: 0,   
-            func: this.setRainbowMode
+            func: this.setRainbowMode,
+            bind: new BehaviorSubject<number>(0)
         }
     ];
 
@@ -75,16 +79,17 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
         this.useFixedRoot = true;
         this.useFixedAngle = true;
         this.rectSize = 75;
+        this.CONFIGURATIONS[3].bind.next(this.rectSize);
         this.rotation = 0;
 
         this.fixedRoot = new Rectangle(new p5.Vector(this.width / 2 - this.rectSize / 2, this.height / 1.25 - this.rectSize),
             new p5.Vector(this.width / 2 + this.rectSize / 2, this.height / 1.25 - this.rectSize),
             new p5.Vector(this.width / 2 - this.rectSize / 2, this.height / 1.25),
             new p5.Vector(this.width / 2 + this.rectSize / 2, this.height / 1.25));
+        this.fixedRoot.setColor(this.color);
 
         this.root = this.fixedRoot;
-        this.list = [this.root];
-        this.rollBackList$.next(this.list);
+        this.rectangles = [this.root];
 
         this.createCanvas();
     }
@@ -145,20 +150,22 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
                 }
                 else {
                     let newRects: Rectangle[] = [];
-                    for (let i = this.iter; i < this.list.length; i++) {
+                    for (let i = this.iter; i < this.rectangles.length; i++) {
                         if(this.rainbowMode) {
-                            let h = p.map(i, this.iter, this.list.length, 0, 360);
-                            p.fill(h, 255, 255);
+                            let h = p.map(i, this.iter, this.rectangles.length, 0, 360);
+                            this.color = p.color(h, 255, 255);
                         }
-                        this.list[i].draw(p);
-                        let left = this.list[i].expandLeft(p, this.angle);
-                        let right = this.list[i].expandRight(p, this.angle);
+                        this.rectangles[i].setColor(this.color);
+                        this.rectangles[i].draw(p);
+                        let left = this.rectangles[i].expandLeft(p, this.angle);
+                        let right = this.rectangles[i].expandRight(p, this.angle);
                         newRects.push(left);
                         newRects.push(right);
                     }
-                    this.iter = this.list.length;
+                    this.list.push(this.rectangles.length);
                     this.rollBackList$.next(this.list);
-                    this.list = this.list.concat(newRects);
+                    this.iter = this.rectangles.length;
+                    this.rectangles = this.rectangles.concat(newRects);
                 }
             }
         }
@@ -201,8 +208,9 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
             let B = p5.Vector.add(center, dir);
 
             this.customRoot = new Rectangle(A, B, C, D);
+            this.customRoot.setColor(this.color);
             this.root = this.customRoot;
-            this.list = [this.root];
+            this.rectangles = [this.root];
         }
 
         p.setCustomAngle = () => {
@@ -229,6 +237,34 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
         }
     }
 
+    _rollBack(p: any) {
+        let to = 0;
+        for(let i = 0; i <= +this.rollBackTo; i++) {
+            to = to * 2 + 1;
+        }
+
+        if (this.rollBack) {
+            if (this.play) {
+                this.rollBack = false;
+                let temp = this.rectangles.slice(0, to);
+                this.rectangles = temp;
+                this.iter = (to - 1) / 2;
+                temp = this.list.slice(0, this.rollBackTo);
+                this.list = temp;
+            }
+            else {
+                p.background(this.canvasColor);
+                let from = (((to - 1) / 2) - 1) / 2;
+                if(from < 0) {
+                    from = 0;
+                }
+                for (let i = 0; i < (to - 1) / 2; i++) {
+                    this.rectangles[i].draw(p);
+                }
+            }
+        }
+    }
+
     //#region Setters
     setConfigurables(p: any) {
         p.frameRate(this.frameRate);
@@ -242,23 +278,29 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
         else {
             this.root = this.customRoot;
         }
+        if(this.root != null) {
+            this.root.setColor(this.color);
+        }
         if (this.useFixedAngle) {
             this.angle = this.fixedAngle;
         }
         else {
             this.angle = this.customAngle;
         }
-        this.list = [this.root];
+        this.rectangles = [this.root];
+        this.list = [];
         this.iter = 0;
         super.setStop();
     }
 
     setRectSize(obj: any, rectSize: number) {
         obj.rectSize = rectSize;
+        obj.CONFIGURATIONS[3].bind.next(rectSize);
         obj.fixedRoot = new Rectangle(new p5.Vector(obj.width / 2 - obj.rectSize / 2, obj.height / 1.25 - obj.rectSize),
             new p5.Vector(obj.width / 2 + obj.rectSize / 2, obj.height / 1.25 - obj.rectSize),
             new p5.Vector(obj.width / 2 - obj.rectSize / 2, obj.height / 1.25),
             new p5.Vector(obj.width / 2 + obj.rectSize / 2, obj.height / 1.25));
+        obj.fixedRoot.setColor(obj.color);
 
         obj.recalculateCustomRoot();
 
@@ -269,7 +311,7 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
             obj.root = obj.customRoot;
         }
         if(!obj.play) {
-            obj.list = [obj.root];
+            obj.rectangle = [obj.root];
         }
     }
 
@@ -308,7 +350,21 @@ export class PythagorasTreeConfigurable extends ConfigurableFractal {
             let B = p5.Vector.add(center, dir);
 
             this.customRoot = new Rectangle(A, B, C, D);
+            this.customRoot.setColor(this.color);
         }
+    }
+
+    setColor(obj: any, color: string): void {
+        obj.color = color;
+        obj.rainbowMode = false;
+        obj.CONFIGURATIONS[5].bind.next(0);
+        obj.setStop();
+    }
+
+    setRainbowMode(obj: any, value: boolean): void {
+        obj.rainbowMode = value;
+        obj.CONFIGURATIONS[5].bind.next(value);
+        obj.setStop();
     }
     //#endregion
 }

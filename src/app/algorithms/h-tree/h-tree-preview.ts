@@ -20,6 +20,7 @@ export class HTreePreview extends Fractal {
             new p5.Vector(this.width / 2 - this.length / 2, this.height / 2), 
             new p5.Vector(this.width / 2 + this.length / 2, this.height / 2)
         );
+        this.root.setColor(this.color);
         this.lines = [this.root];
         this.lerp =  (this.length / Math.sqrt(2)) / this.length;
 
@@ -44,6 +45,7 @@ export class HTreePreview extends Fractal {
                 let tempLines: Line[] = [];
             
                 for(let i = 0; i < this.lines.length; i++) {
+                    this.lines[i].setColor(this.color);
                     this.lines[i].draw(p);
                     
                     let left = this.lines[i].expandLeft(p, this.lerp);

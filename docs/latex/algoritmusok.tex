@@ -1,34 +1,33 @@
 \chapter{Algoritmusok}
 \spacing{1.5}
 
-Ebben a fejezetben azokról az fraktál generáló algoritmusokról lesz szó, amelyeket a webalkalmazás részeként leimplementáltam. Minden algoritmusról egy először rövid ismertetőt írok, majd bemutatom az implementáció menetét. Azonban még mielőtt ebbe belekezdenék, szeretnék egy pár fogalmat tisztázni.
-\par A Hausdorff-dimenzió a fraktáloknál használt dimenziófogalom, melynek bevezetését az indokolja, hogy egyes alakzatok, ide tartozik a fraktálok sokasága, kerülete, területe, és egyéb dimenzióbeli mértékei ellentmondásos értéket adnak. Például a Sierpiński-szőnyeg lefed egy négyzetet, tehát kétdimenziós, viszont a hézagoknak köszönhetően a területe 0, akárcsak az egydimenziós alakzatoké. A szokásos alakzatok körében a Hausdorff-dimenzió megegyezik az ismert értékekkel: az egyenesé 1, a négyzeté 2, a kockáé 3. Ez abból fakad, hogy a Haussdorff-dimenzió a hosszúság és a terület mérésén alapul. A Hausdorff-dimenzió tehát, a hagyományos, pozitív egész számokkal mérhető dimenziófogalom általánosítása. A Hausdorff-dimenzió nem feltétlenül egész szám~\cite{hausdorff}.
-\par Amit még szeretnék egy pár mondatban megfogalmazni az a p5.js könyvtár működési elve. A p5.js-ben történő rajzoláshoz két függvényt kell megvalósítani. Ezek a setup és a draw függvények. A setup függvény a rajzolás elkezdése előtt fut le egyszer, ez tipikusan a vászon létrehozására, háttér, szín, képfrissítés, és egyéb tulajdonságok beállítására használatos. Maga a rajzolás a draw függvényben történik. Ez a függvény minden másodpercben annyiszor fut le amennyi a képfrissítés tulajdonság értéke, ez alapértelmezetten 60-ra van állítva a legtöbb számítógép esetében.
+Ebben a fejezetben azokról a fraktálgeneráló algoritmusokról lesz szó, amelyeket a webalkalmazás részeként implementáltam. Minden algoritmus esetén először egy rövid ismertető lesz olvasható, majd bemutatom az implementáció menetét. Azonban még mielőtt ebbe belekezdenék, szeretnék egy pár fogalmat tisztázni.
+\par A Hausdorff-dimenzió a fraktáloknál használt dimenziófogalom, melynek bevezetését az indokolja, hogy egyes alakzatok, idetartozik a fraktálok kerülete, területe, és egyéb dimenzióbeli mértékei ellentmondásos értéket adnak. Például a Sierpiński-szőnyeg lefed egy négyzetet, tehát kétdimenziós, viszont a hézagoknak köszönhetően a területe 0, akárcsak az egydimenziós alakzatoké. A szokásos alakzatok körében a Hausdorff-dimenzió megegyezik az ismert értékekkel: az egyenesé 1, a négyzeté 2, a kockáé 3. Ez abból fakad, hogy a Haussdorff-dimenzió a hosszúság és a terület mérésén alapul. A Hausdorff-dimenzió tehát, a hagyományos, pozitív egész számokkal mérhető dimenziófogalom általánosítása. A Hausdorff-dimenzió nem feltétlenül egész szám~\cite{hausdorff}.
+\par Amit még szeretnék egy pár mondatban megfogalmazni az a P5.js könyvtár működési elve. A P5.js-ben történő rajzoláshoz két függvényt kell megvalósítani. Ez a két függvény a $setup$ és a $draw$. A $setup$ a rajzolás elkezdése előtt fut le egyszer, ez tipikusan a vászon létrehozására, háttér, szín, képfrissítés, és egyéb tulajdonságok beállítására használatos. Maga a rajzolás a $draw$ függvényben történik. Ez a függvény minden másodpercben annyiszor fut le amennyi a képfrissítés tulajdonság értéke, ami alapértelmezetten 60-ra van állítva a legtöbb számítógép esetében.
 
 
 \section{Sierpiński-háromszög}
 
-A Wacław Sierpiński lengyel matematikus által megtalált fraktál úgy áll elő, hogy egy szabályos háromszögből elhagyjuk az oldalfelező pontok összekötésével nyert belső háromszöget, majd az így maradt három háromszögre rekurzívan alkalmazzuk ugyanezt az eljárást.
-A Sierpiński-háromszög konstrukciójához többnyire egyenlő oldalú háromszöget választanak. Ez azonban nem kötelező, bármely háromszögből lehet Sierpiński-háromszöget készíteni~\cite{sierp-triangle}.
+A Wacław Sierpiński lengyel matematikus által megtalált fraktál úgy áll elő, hogy egy szabályos háromszögből elhagyjuk az oldalfelező pontok összekötésével nyert belső háromszöget, majd az így maradt három háromszögre rekurzívan alkalmazzuk ugyanezt az eljárást. Az így keletkező háromszögek oldalhossza minden lépésben megfeleződik, és területük a negyedére csökken, miközben a középső háromszög eltűnik.\\
+A Sierpiński-háromszög konstrukciójához többnyire egyenlő oldalú háromszöget választanak, ez azonban nem kötelező, bármely háromszögből lehet Sierpiński-háromszöget készíteni~\cite{sierp-triangle}.
 Az általam megírt algoritmus az alábbi lépések szerint generálja ezt a fraktált:
 \begin{itemize}
 \item Vegyünk három pontot, melyek a háromszöget határolják be, mindegyik pont a háromszög egy csúcsa
-\item Rajzoljunk egy pontot egy tetszőleges helyre, ez lesz a kezdőpont
-\item Válasszuk ki a háromszög egyik csúcsát valamilyen véletlenszerű módon, majd a választott csúcsot és a kezdőpontot összekötő képzeletbeli vonal közepére rajzoljunk be egy újabb pontot, ez lesz az új kezdőpont
+\item Rajzoljunk egy pontot egy tetszőleges helyre, ez lesz a kezdőpont, amelyből az algoritmus indul
+\item Véletlenszerűen válasszuk ki a háromszög egyik csúcsát, majd a választott csúcs és a kezdőpont közötti távolság felére rajzoljunk be egy újabb pontot, ez lesz az új kezdőpont
 \item Ismételjük meg ezeket a lépéseket
 \end{itemize}
-\begin{figure}[!ht]
+A Sierpiński-háromszög Hausdorff-dimenziója: $\dfrac{log(3)}{log(2)} = 1,585$ \cite{sierp-triangle-wiki}.
+\clearpage
+\begin{figure}[ht]
 \begin{center}
 	\includegraphics[width=0.5\textwidth]{img/SierpinskiTriangle}
 	\caption[labelInTOC]{Sierpiński-háromszög}
 \end{center}
 \end{figure}
-Minden lépésben a keletkező kis háromszögek oldalhossza megfeleződik, és területük a negyedére csökken, miközben a középső háromszög eltűnik.\\
-A Sierpiński háromszög Hausdorff-dimenziója: $log(3)/log(2) = 1,585$ \cite{sierp-triangle-wiki}.
-
 \subsection*{Implementáció}
-A Sierpiński-háromszög implementációjának kezdéseként először egy segédosztályt írtam, mint ahogy a többi algoritmus nagy részének implementációja is segédosztályok segítségével valósult meg. Ez a segédosztály a Point osztály, mivel a Sierpiński-háromszöget az algoritmus pontok segítségével rajzolja ki. Itt definiálva vannak a pontokhoz tartozó adattagok, ez ebben az esetben egy vektor, ami tárolja egy adott pont x és y pozícióját a koordináta rendszerben, valamint egy draw függvény, ami kirajzolja az adott pontot.
-\par Az implementáció további része a fő osztályban történt meg. Itt többek között definiálva vannak az algoritmus konfigurációs lehetőségei is, amelyek a következők:
+Minden algoritmus implementációját egy segédosztály megírásával kezdtem. Ezek a segédosztályok azoknak az alakzatoknak felelnek meg, amelyből az adott fraktál gyökéreleme áll, ebben az esetben egy pontnak az osztálya, aminek a neve $Point$. Ezeknek a segédosztályoknak a célja az, hogy az implementációt átláthatóbbá tegyék. A $Point$ osztály egyetlen adattagja egy vektor, amely tárolja egy adott pont $X$ és $Y$ pozícióját a koordináta rendszerben, valamint egy $draw$ függvény, ami kirajzolja az adott pontot. Fontos megemlíteni, hogy a segédosztályban levő $draw$ függvény különbözik a fent említett $draw$ függvénytől, ami a főosztályban kerül implementálásra.
+\par Az implementáció további része a főosztályban történt meg. Itt többek között definiálva vannak az algoritmus konfigurációs lehetőségei is, amelyek a következők:
 \begin{itemize}
 	\item Gyorsaság
 	\item Pontvastagság
@@ -39,9 +38,7 @@ A Sierpiński-háromszög implementációjának kezdéseként először egy seg�
 	\item Szín
 	\item Szivárvány mód
 \end{itemize}
-A Sierpiński-háromszög implementációjának legfontosabb részét a draw függvény teszi ki, ami az alábbi módon néz ki:
-\begin{center}
-\begin{tabular}{c}
+A Sierpiński-háromszög implementációjának legfontosabb részét a $draw$ függvény tartalmazza, ami az alábbi módon néz ki:
 \begin{lstlisting}[language=typescript]
 p.draw = () => {
 	this.setConfigurables(p);
@@ -77,19 +74,17 @@ p.draw = () => {
 	}
 }	
 \end{lstlisting}
-\end{tabular}
-\end{center}
-Ez egy lerövidített kód, mivel az eredeti túl hosszú, így megpróbáltam csak a lényeget szemléltetni. Látható hogy a rajzolás különböző feltételekhez van kötve, amelyek a konfigurációktól függnek, mint például a véletlenszerű pontvastagság és a szivárvány mód. Továbbá látható, hogy a függvény csak akkor fog rajzolni, ha az algoritmus futása éppen nem szünetel. A points tömb tárolja a három pontot, amelyek a háromszöget határolják be, a refPoint változó pedig azt a pontot, amelytől a háromszög egy véletlenszerűen választott csúcsáig számítódik az a távolság, ahová az új pont kerül. A véletlenszerű csúcsot a függvény a p5 random metódusa segítségével választja ki. Az a pozíció, ahová az új pont kerül, a p5 könvytár beépített lerp függvényével számítódik ki. Az refPoint változó minden új pont rajzolása esetén értékül kapja ezt az új pontot. A rollBackList\$ változó a draw függvény minden lefutása után, pontosabban minden új pont kirajzolása után, egy új értéket közvetít a feliratkozóknak, ezzel beállítva a visszatekerő csúszka hosszát.
+Ez egy lerövidített kód, mivel az eredeti túl hosszú, így megpróbáltam csak a lényeget szemléltetni. Látható hogy a rajzolás különböző feltételekhez van kötve, amelyek a konfigurációktól függnek, mint például a véletlenszerű pontvastagság és a szivárvány mód. Továbbá látható, hogy a függvény csak akkor fog rajzolni, ha az algoritmus futása éppen nem szünetel. A $points$ tömb tárolja azt a három pontot, amelyek a háromszöget határolják be, a $refPoint$ pedig azt a pontot, amelyből az algoritmus futása indul. Ez a változó minden új pont kirajzolása esetén értékül kapja ezt az új pontot. A véletlenszerű csúcs a P5.js $random$ metódusa segítségével választódik ki. Az a pozíció, ahová az új pont kerül, a beépített $lerp$ függvény segítségével számítódik ki. A $rollBackList\$$ változó a $draw$ függvény minden lefutása után, vagyis minden új pont kirajzolása után, egy új értéket közvetít a csúszkának, ezzel beállítva annak hosszát.
 \section{Sierpiński-szőnyeg}
-A Sierpiński-szőnyeg szintén Waclaw Sierpinski lengyel matematikus által megtalált fraktál, amely úgy áll elő, hogy egy négyzetet oldalai harmadolásával kilenc kisebb négyzetre bontunk, a középsőt elhagyjuk, és a maradék nyolcon elvégezzük ugyanezt az eljárást (vagyis azoknak is elhagyjuk a közepét), majd az így maradt 8x8 kisebb négyzeten is, stb. Az eredményül kapott alakzat területe nulla, kerülete végtelen nagy.\\ 
-A Sierpiński-szőnyeg Hausdorff-dimenziója: $log(8)/log(3) = 1,8928$
+A Sierpiński-szőnyeg szintén Wacław Sierpiński lengyel matematikus által megtalált fraktál, amely úgy áll elő, hogy egy négyzetet oldalai harmadolásával kilenc kisebb négyzetre bontunk, a középsőt elhagyjuk, és a maradék nyolcon elvégezzük ugyanezt az eljárást (vagyis azoknak is elhagyjuk a közepét), majd az így maradt $8x8$ kisebb négyzeten is, stb. Az eredményül kapott alakzat területe nulla, kerülete végtelen nagy.\\ 
+A Sierpiński-szőnyeg Hausdorff-dimenziója: $\dfrac{log(8)}{log(3)} = 1,8928$.
 \\A Sierpiński-szőnyeg konstrukciójának lépései:
 \begin{itemize}
 	\item Vegyünk egy négyzetet
 	\item Osszuk fel minden oldalát három részre
 	\item A kijelölt pontokat összekötve osszuk fel a négyzetet kilenc kis négyzetre
 	\item Töröljük el a középső négyzetet
-	\item Ismételjük az előző lépéseket minden kis négyzetre.
+	\item Ismételjük az előző lépéseket minden kis négyzetre
 \end{itemize}
 Ezzel az eljárással a négyzet egyre inkább kiürül. Végtelenszer megismételve a Sierpiński-szőnyeg marad~\cite{sierp-carpet-wiki}.
 \begin{figure}[!ht]
@@ -99,7 +94,7 @@ Ezzel az eljárással a négyzet egyre inkább kiürül. Végtelenszer megismét
 	\end{center}
 \end{figure}
 \subsection*{Implementáció}
-Az implementációt, a Sierpiński-háromszöghöz hasonlóan, itt is egy segédosztály megírásával kezdtem. Ez a segédosztály a Rectangle osztály. A segédosztály adattagként tárolja az adott négyzet középpontját, ami egy vektor objektum, és méretét. Mivel ennek a forráskódja túlságosan hosszú, így csak azt a függvényt szemléltetem, amely a kilencedelést végzi. Ez az alábbi módon néz ki:
+A Sierpiński-szőnyeghez tartozó segédosztály a $Rectangle$ osztály, amely adattagként tárolja az adott négyzet középpontját, ami egy vektor objektum, és méretét. Mivel ennek a forráskódja túlságosan hosszú, így csak azt a függvényt szemléltetem, amely a felosztást végzi. Ez az alábbi módon néz ki:
 \begin{lstlisting}[language=typescript]
 divide(): Rectangle[] {
 	let rectangles = [];
@@ -131,15 +126,15 @@ divide(): Rectangle[] {
 	return rectangles;
 }
 \end{lstlisting}
-Ez a függvény mindig egy négyzetre van meghívva, így az ő kilenced részét osztja fel további kilenc részre. Az algoritmus egy kezdő négyzettel indul, ami a vászon közepén helyezkedik el, így az algoritmus első iterációjában erre a négyzetre van meghívva a divide függvény. 
+Látható, hogy ez a függvény egy négyzetből további nyolc kisebb négyzetet készít úgy, hogy az eredeti négyzet középpontját nyolc irányba tolja el, ezek az eltolások lesznek az új négyzetek középpontjai, méretük pedig az eredeti négyzet méretének harmada lesz.
 \par Az algoritmus konfigurációs lehetőségei a következők:
 \begin{itemize}
 	\item Gyorsaság
 	\item Kezdő négyzet mérete
-	\item Szín 
+	\item Szín
 	\item Szivárvány mód
 \end{itemize}
-Ez az algoritmus konfigurációs lehetőségek terén nem olyan színes, mint például a Sierpinszki-háromszög. Ez annak köszönhető, hogy egyszerűen nincs annyi állítható paraméter, mint az Sierpiński-háromszög esetén. A kevés konfigurációs lehetőség miatt a draw függvény is jóval egyszerűbb, a Sierpiński-háromszögétől.
+Ez az algoritmus konfigurációs lehetőségek terén nem olyan színes, mint például a Sierpinszki-háromszög. Ez annak köszönhető, hogy egyszerűen nincs annyi állítható paraméter, mint az Sierpiński-háromszög esetén. A kevés konfigurációs lehetőség miatt a $draw$ függvény is jóval egyszerűbb a Sierpiński-háromszögétől.
 \begin{lstlisting}[language=typescript]
 p.draw = () => {
 	this.setConfigurables(p);
@@ -162,12 +157,12 @@ p.draw = () => {
 	}
 }
 \end{lstlisting}
-Látható, hogy a függvény a négyzetek tömbjén iterál végig, viszont segédváltozók segítségével mindig csak azokon a négyzeteken végez műveleteket, amelyek még nincsenek kirajzolva, így növelve az algoritmus hatékonyságán. A függvény az adott négyzetet kirajzolja, majd kilencedeli a már ismert divide függvény segítségével. A kilencedeléssel kapott négyzeteket a tömbbe helyezi, így a következő iterációkor a függvény az így kapott négyzeteken fogja a ugyanezt a műveletet elvégezni.
+Végigiterálunk a négyzetek tömbjén, viszont segédváltozók segítségével mindig csak azokon végez műveleteket a ciklus, amelyek még nincsenek kirajzolva, így növelve az algoritmus hatékonyságán. A függvény az adott négyzetet kirajzolja, majd 8 további négyzetet készít belőle a már ismert $divide$ függvény segítségével. Az így kapott elemeket a tömbhöz csatolja, így a következő iterációkor ezeken az új négyzeteken fogja ugyanezt a műveletet elvégezni. A tömb azért tárolja azokat az elemeket is, amelyek már meg lettek jelenítve, mert így visszatekerés esetén ezeket újra ki tudja majd rajzolni a $rollBack$ függvény.
 
 	
 \section{Koch-görbe}
-A Koch-görbe vagy Koch-hópehely Helge von Koch svéd matematikus által leírt fraktál. A görbét úgy állítjuk elő, hogy veszünk egy szabályos (egyenlő oldalú) háromszöget, minden oldalát megharmadoljuk, és a középső harmadszakaszra újabb szabályos háromszögeket rajzolunk. Majd az így keletkezett háromszögoldalakra újra feltesszük ezt a "kinövést", és ezt a műveletet a végtelenségig folytatjuk. A görbe egyre jobban egy hópehelyhez fog hasonlítani. Természetesen az igazi, teljes hópehely lerajzolása lehetetlen, csupán a hozzá vezető állapotok egymásutánját tudjuk ábrázolni. Amint újabb és újabb "kinövéseket" szerkesztünk a háromszögek oldalaira, a hópehely kerülete egyre nő, azaz a hópehely kerülete valójában végtelen. Mivel maga az alakzat megmarad az első háromszög köré írt körének belsejében, így azt mondhatjuk, hogy a területe viszont véges.\\
-A Koch-görbe Hausdorff-dimenziója: $log(4)/log(3) = 1,26$ \cite{koch-gorbe-wiki}.
+A Koch-görbe vagy Koch-hópehely Helge von Koch svéd matematikus által leírt fraktál. A görbét úgy állítjuk elő, hogy veszünk egy szabályos (egyenlő oldalú) háromszöget, minden oldalát megharmadoljuk, és a középső harmadszakaszra újabb szabályos háromszögeket rajzolunk. Majd az így keletkezett háromszögoldalakra újra feltesszük ezt a "kinövést", és ezt a műveletet a végtelenségig folytatjuk. A görbe egyre jobban egy hópehelyhez fog hasonlítani. Természetesen az igazi, teljes hópehely lerajzolása lehetetlen, csupán a hozzávezető állapotok egymásutánját tudjuk ábrázolni. Amint újabb és újabb "kinövéseket" szerkesztünk a háromszögek oldalaira, a hópehely kerülete egyre nő, azaz a hópehely kerülete valójában végtelen. Mivel maga az alakzat megmarad az első háromszög köré írt körének belsejében, így azt mondhatjuk, hogy a területe viszont véges.\\
+A Koch-görbe Hausdorff-dimenziója: $\dfrac{log(4)}{log(3)} = 1,26$ \cite{koch-gorbe-wiki}.
 \begin{figure}[!ht]
 	\begin{center}
 		\includegraphics[width=0.75\textwidth]{img/KochCurve}
@@ -175,7 +170,8 @@ A Koch-görbe Hausdorff-dimenziója: $log(4)/log(3) = 1,26$ \cite{koch-gorbe-wik
 	\end{center}
 \end{figure}
 \subsection*{Implementáció}
-A Koch-görbét generáló algoritmus alapja a Line segédosztály. A Line segédosztályban tárolódik minden egyenes két végpontja és hossza. Az osztálynak két fontos metódusa van, az expandLeft és expandRight metódusok. Ezek a metódusok az adott egyenesre rajzolnak háromszöget úgy, hogy ha háromszög alapja az egyenes, vagy annak egy bizonyos százaléka, akkor az expandRight metódus adja a háromszög bal oldalát, az expandRight pedig a jobb oldalát.
+A Koch-görbéhez tartozó segédosztály a $Line$ osztály, amely minden egyenes hosszát és két végpontját tárolja. Az osztálynak két fontos metódusa van, ezek az $expandLeft$ és $expandRight$ metódusok. Ezek az adott egyenesre rajzolnak háromszöget úgy, hogy ha háromszög alapja ez az egyenes, akkor az $expandLeft$ metódus adja a háromszög bal oldalát, az $expandRight$ pedig a jobb oldalát.
+\clearpage
 \begin{lstlisting}
 expandLeft(p: any, direction: number, lerp: number, angle: number): Line[] {
 	let len = this.length * lerp;
@@ -198,7 +194,7 @@ expandLeft(p: any, direction: number, lerp: number, angle: number): Line[] {
 	return newLines;
 }
 \end{lstlisting}
-A metódus paraméterei közé tartozik a direction, ami azt az irányt adja meg, hogy felfelé, vagy lefelé történjen a háromszög oldalának rajzolása, a lerp, ami azt mondja meg, hogy a háromszög alapja hány százaléka az egyenesnek, az angle pedig a háromszög alapja és az oldalai között bezárt szöget adja meg. Ezek a paraméterek a konfigurációs panelben állíthatóak. A függvény kiszámolja a háromszög bal oldalának két végpontját, ezekből létrehoz egy új Line objektumot, majd visszaadja egy tömb elemeként. A számolás vektorműveletek segítségével történik, a két végpontot kivonva egymásból egy új vektort kapunk, amelynek iránya megegyezik a két végpont által alkotott egyenes irányával. Ezt a vektort megfelelő szöggel rotálva megkapjuk a háromszög csúcspontját. 
+A metódus paraméterei közé tartozik a $direction$, ami az irányt adja meg, hogy felfelé, vagy lefelé történjen a háromszög oldalának rajzolása, a $lerp$, ami azt mondja meg, hogy a háromszög alapja hányad része az egyenesnek (ez alapértelmezetten az egyenes középső harmada), valamint az $angle$, ami pedig a háromszög alapja és az oldalai között bezárt szöget adja meg. Ezek a paraméterek a konfigurációs panelben állíthatóak. A számolás vektorműveletek segítségével történik, az egyenes két végpontját kivonva egymásból egy új vektort kapunk, amelynek iránya megegyezik az egyenes irányával. Ezt a vektort megfelelő szöggel rotálva, valamint a megfelelő értékkel eltolva megkapjuk a háromszög csúcspontját.
 \par A Koch-görbe konfigurációs lehetőségei a következők:
 \begin{itemize}
 	\item Gyorsaság
@@ -211,7 +207,7 @@ A metódus paraméterei közé tartozik a direction, ami azt az irányt adja meg
 	\item Irány
 	\item Szivárvány mód
 \end{itemize}
-A fixált kezdővonal opció kikapcsolásával testreszabhatjuk a kezdő egyenes helyét, és méretét, valamint az egér görgőjével rotálhatjuk, majd kattintással elhelyezhetjük a vászonon. A kezdő egyenes megadása esetén az egér mozgására a változások valós időben láthatóak. Kattintáskor az alábbi függvény fut le:
+A fixált kezdővonal opció kikapcsolásával testreszabhatjuk a gyökér helyét, és méretét, valamint az egér görgőjével rotálhatjuk, majd kattintással elhelyezhetjük a vászonon. A gyökér megadása esetén az egér mozgására a változások valós időben láthatóak. Kattintáskor az alábbi függvény fut le:
 \begin{lstlisting}
 p.handleMousePressed = () => {
 	if (this.play && !this.useFixedRoot && this.customRoot == null) {
@@ -234,9 +230,9 @@ p.handleMousePressed = () => {
 	}
 }
 \end{lstlisting}
-Egérrel való kattintáskor az egér pozíciója az egyenes közepén van. A függvény ennek a pontnak az x pozíciójához hozzáadja és kivonja belőle az egyenes hosszának felét, az y pozíció mindkét pont esetén változatlan marad, így megkapjuk az egyenes két végpontját. Az így kapott egyenes vízszintes, így ha a felhasználó az egér görgője segítségével rotálta, további számolásokra van szükség. Mindkét végpontból kivonjuk az egyenes középpontját, így két megfelelő irányba mutató vektort kapunk amit a vektorok beépített rotate függvényével könnyen megfelelő pozícióba rotálhatunk. A this.rotation változó tárolja azt az értéket, amennyivel a felhasználó a kezdő egyenest rotálta, ezt az értéket kapja paraméterül ez a függvény. A Koch-görbe draw függvénye nagyon hasonló, mint a Sierpiński-szőnyegé, így ezt nem szemléltetném.
+Kattintáskor az egyenes úgy rajzolódik ki, hogy annak középpontja megegyezik a kurzor pozíciójával. Az egyenes bal oldali végpontját úgy kapjuk meg, hogy a kurzor $X$ pozíciójából kivonjuk az egyenes hosszának a felét. Hasonlóan a jobb oldali végpont esetében, annyi különbséggel, hogy ott kivonás helyett hozzáadjuk. Az így kapott egyenes vízszintes, ezért, ha a felhasználó az egér görgője segítségével rotálta, további számolásokra van szükség. Mindkét végpontból kivonjuk az egyenes középpontját, így két megfelelő irányba mutató vektort kapunk, amit a vektorok beépített $rotate$ függvényével könnyen megfelelő pozícióba rotálhatunk. A $this.rotation$ változó tárolja azt az értéket, amennyivel a felhasználó az egyenest rotálta, ezt az értéket kapja paraméterül a $rotate$ függvény. A Koch-görbe $draw$ függvénye nagyon hasonló, mint a Sierpiński-szőnyegé, így ezt nem szemléltetném.
 \section{Lévy C-görbe}
-A Lévy C-görbét először Enresto Cesàro és Georg Faber írta le és tanulmányozta a differenciálhatóságát, azonban mégis Paul Lévy francia matematikus nevét viseli, aki a fraktál önhasonlóságát definiálta~\cite{levy-c-wiki}. Ez a fraktál alapjáraton nagyon hasonlít a Koch-görbére, egyedüli eltérés, hogy az egyenesekre való háromszögek rajzolásakor nem az egyenes egy bizonyos százaléka adja a háromszög alapját, hanem a teljes egyenes. Mivel az algoritmus implementációja és a konfigurációs lehetőségek is nagyon hasonlítanak a Koch-görbe alguritmuséhoz, így ezt a fraktált nem részletezem tovább.
+A Lévy C-görbét először Ernesto Cesàro és Georg Faber írta le és tanulmányozta a differenciálhatóságát, azonban mégis Paul Lévy francia matematikus nevét viseli, aki a fraktál önhasonlóságát definiálta~\cite{levy-c-wiki}. Ez a fraktál alapvetően nagyon hasonlít a Koch-görbére, egyedüli eltérés, hogy az egyenesekre való háromszögek rajzolásakor nem az egyenes egy bizonyos része adja a háromszög alapját, hanem a teljes egyenes. Mivel az algoritmus implementációja és a konfigurációs lehetőségek is nagyon hasonlítanak a Koch-görbe algoritmuséhoz, így ezt a fraktált nem részletezem tovább.
 \begin{figure}[!ht]
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{img/LevyCCurve}
@@ -244,27 +240,29 @@ A Lévy C-görbét először Enresto Cesàro és Georg Faber írta le és tanulm
 	\end{center}
 \end{figure}
 \section{Hilbert-görbe}
-A Hilbert-görbe a térkitöltő fraktálok csoportjába tartozik. Az első térkitöltő görbét ugyan Peano alkotta meg, de Hilbert volt az, aki először érthető geometriai képet tudott mutatni egy általa definiált térkitöltő görbéről. Megadott egy geometriai generáló eljárást, amivel létrehozta ezen görbék egy osztályát~\cite{hilbert-wiki}. A Hilbert-görbe első iterációjának megrajzolása úgy történik, hogy veszünk egy egységnégyzetet a következő pontokkal:
+A Hilbert-görbe a térkitöltő fraktálok csoportjába tartozik. Az első térkitöltő görbét ugyan Peano alkotta meg, de Hilbert volt az, aki először érthető geometriai képet tudott mutatni egy általa definiált térkitöltő görbéről. Megadott egy geometriai generáló eljárást, amivel létrehozta ezen görbék egy osztályát~\cite{hilbert-wiki}. 
+\par A Hilbert-görbe első iterációjának megrajzolása úgy történik, hogy veszünk egy egységnégyzetet a következő pontokkal:
 \begin{itemize}
-	\item (0, 0) pont a négyzet bal alsó sarka
-	\item (0, 1) pont a négyzet bal felső sarka
-	\item (1, 1) pont a négyzet jobb felső sarka
-	\item (1, 0) pont a négyzet jobb alsó sarka
+	\item $(0, 0)$ pont a négyzet bal alsó sarka
+	\item $(0, 1)$ pont a négyzet bal felső sarka
+	\item $(1, 1)$ pont a négyzet jobb felső sarka
+	\item $(1, 0)$ pont a négyzet jobb alsó sarka
 \end{itemize}
-Ezt az egységnégyzetet képzeletben további 4 szabályos négyzetre bonjuk, és egy töröttvonalat húzunk, úgy, hogy az átmenjen a mind a négy négyzet középpontján az alábbi sorrendet követve: A bal alsó sarokban levő négyzet középpontjából indul, majd felfelé megy a bal felső négyzet középpontjáig, innen jobbra a jobb felső négyzet középpontjáig, majd a jobb alsó négyzet középpontjában áll meg. Ezzel egy fordított U alakzatot kapunk. 
+Ezt az egységnégyzetet további 4 szabályos négyzetre bontjuk, és egy töröttvonalat húzunk, úgy, hogy az átmenjen mind a négy négyzet középpontján az alábbi sorrendet követve: A bal alsó sarokban levő négyzet középpontjából indul, majd felfelé megy a bal felső négyzet középpontjáig, innen jobbra a jobb felső négyzet középpontjáig, majd a jobb alsó négyzet középpontjában áll meg. Ezzel egy fordított U alakzatot kapunk. 
 \begin{figure}[!ht]
-	\begin{center}
-		\includegraphics{img/HilbertCurve1-1}
-		\caption[labelInTOC]{Hilbert görbe 1. iterációja}
-	\end{center}
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=.4\linewidth]{img/HilbertCurve1-1}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=.4\linewidth]{img/HilbertCurve1-2}
+	\end{subfigure}
+	\caption{A Hilbert-görbe 1. iterációja}
+	\label{fig:test}
 \end{figure}
-\begin{figure}[!ht]
-	\begin{center}
-		\includegraphics[width=0.5\textwidth]{img/HilbertCurve1-2}
-		\caption[labelInTOC]{Hilbert görbe 1. iterációja}
-	\end{center}
-\end{figure}
-A Hilbert-görbe második iterációja 4 egységnégyzetből áll, mindegyikben megrajzolva az első iteráció fordított U alakzatát. A bal alsó négyzetet 90 fokkal jobbra, a jobb alsó négyzetet 90 fokkal balra forgatjuk, így a két alsó U alakzat egymástól "elfelé" néz. Végül az U alakzat megrajzolásával megegyező sorrendben (bal alsó, bal felső, jobb felső, jobb alsó) összekötjük mind a 4 egységnégyzetben levő alakzatok egymáshoz legközelebbre eső végpontjait.
+\\A Hilbert-görbe második iterációja 4 egységnégyzetből áll, mindegyikben megrajzolva az első iteráció fordított U alakzatát. A bal alsó négyzetet 90 fokkal jobbra, a jobb alsó négyzetet 90 fokkal balra forgatjuk, így a két alsó U alakzat egymástól "elfelé" néz. Végül az U alakzat megrajzolásával megegyező sorrendben (bal alsó, bal felső, jobb felső, jobb alsó) összekötjük mind a 4 egységnégyzetben levő alakzatok egymáshoz legközelebbre eső végpontjait.
 \begin{figure}[!ht]
 	\begin{center}
 	\includegraphics[width=0.5\textwidth]{img/HilbertCurve2-1}
@@ -276,8 +274,8 @@ A Hilbert-görbe második iterációja 4 egységnégyzetből áll, mindegyikben 
 \subsection*{Implementáció}
 Az implementáció megvalósításához elengedhetetlen két képlet használata, ezek a következők:\\
 $N = 2^I$,
-$P = N^2$, ahol N a négyzetek száma, I az iteráció, P pedig a pontok száma. Az iteráció adott, ugyanis a felhasználó konfigurációs lehetőségként meg kell adja, hogy hanyadik iterációig szeretné, hogy az algoritmus fusson. 
-Az algoritmus egy setup fügvénnyel indul, ez különbözik a p5.js setup függvényétől, és az alábbi módon néz ki:
+$P = N^2$, ahol $N$ a négyzetek száma, $I$ az iteráció, $P$ pedig a pontok száma. Az iteráció adott, ugyanis a felhasználó konfigurációs lehetőségként meg kell adja, hogy hanyadik iterációig szeretné, hogy az algoritmus fusson. 
+Az algoritmus egy $setup$ függvénnyel indul, ez különbözik a P5.js $setup$ függvényétől, és az alábbi módon néz ki:
 \begin{lstlisting}[language=typescript]
  setup(): void {
 	 this.squares = Math.pow(2, this.order);
@@ -292,8 +290,8 @@ Az algoritmus egy setup fügvénnyel indul, ez különbözik a p5.js setup függ
 	 new p5.Vector(this.path[1].x, this.path[1].y));
  }
 \end{lstlisting}
-A függvény először, a fentebb említett képletek segítségével kiszámolja, hogy az adott iteráció esetén hány négyzetből, és hány pontból fog állni a Hilbert-görbe. Ezután kiszámolja, hogy mekkora lesz egy-egy vonal hossza. Mivel a vászon szélessége és hosszúsága különbözik, ezért a függvény a kettő közül a kisebbiket veszi számításba, így a görbe biztosan bele fog férni a vászonba, majd ezt leosztja a négyzetek számával. Egy for ciklus segítségével a függvény 0-tól a pontok számáig iterál, és minden iterációban meghívja a hilbert függvényt, amelynek paraméterül a ciklusváltozót adja. A hilbert függvény egy vektort ad vissza, amely megmondja, hogy az adott index, amit paraméterként átadtunk neki, az U alakzat mely pontjával egyezik meg. Ez (0, 0) vektor esetén az alakzat bal felső pontja, (0, 1) esetén a bal alsó pontja, és így tovább... Ezeket a vektorokat egy path nevezetű tömbhöz adja, megszorozza a fentebb kiszámított hosszúsággal, hogy a vektorok közötti távolság megfelelő legyen, majd a vektor x és y értékeihez hozzáadja a hosszúság felét, ezzel megfelelő helyre pozícionálva őket.
-\par Az algoritmus draw függvénye a setup függvény által feltöltött path tömbön iterál végig úgy, hogy minden képrfissítéskor eggyel mélyebbre megy a pontok tömbjén, és egy vonallal összeköti az adott pontot a tömbben levő előző ponttal, ezzel egy animációs hatást keltve. 
+A függvény először, a fentebb említett képletek segítségével kiszámolja, hogy az adott iteráció esetén hány négyzetből, és hány pontból fog állni a Hilbert-görbe. Ezután kiszámolja, hogy mekkora lesz egy-egy vonal hossza. Mivel a vászon szélessége és hosszúsága különbözik, ezért a függvény a kettő közül a kisebbiket veszi számításba, így a görbe biztosan bele fog férni a vászonba, majd ezt leosztja a négyzetek számával. Egy $for$ ciklus segítségével a függvény 0-tól a pontok számáig iterál, és minden iterációban meghívja a $hilbert$ függvényt, amelynek paraméterül a ciklusváltozót adja. A $hilbert$ függvény egy vektort ad vissza, amely megmondja, hogy az adott index, amit paraméterként átadtunk neki, az U alakzat mely pontjával egyezik meg. Ez $(0, 0)$ vektor esetén az alakzat bal felső pontja, $(0, 1)$ esetén a bal alsó pontja, és így tovább... Ezeket a vektorokat egy tömbhöz adja, megszorozza a fentebb kiszámított hosszúsággal, hogy a vektorok (U pontjai) közötti távolság megfelelő legyen, majd a vektor $X$ és $Y$ értékeihez hozzáadja a vászon hosszának vagy szélességének felét, amelyik éppen kisebb, ezzel megfelelő helyre pozícionálva őket.
+\par Az algoritmus $draw$ függvénye a $setup$ függvény által feltöltött tömbön iterál végig úgy, hogy minden képfrissítéskor eggyel mélyebbre megy a pontok tömbjén, és egy vonallal összeköti az adott pontot a tömbben levő előző ponttal, ezzel egy animációs hatást keltve. 
 \par Az algoritmus viszonylag kevés konfigurációs lehetőséggel bír, ezek a következők:
 \begin{itemize}
 	\item Gyorsaság
@@ -303,7 +301,7 @@ A függvény először, a fentebb említett képletek segítségével kiszámolj
 	\item Szivárvány mód
 \end{itemize}
 \section{Pitagorasz-fa}
-A Pitagorasz-fa egy négyzetekből álló fraktál, amelyet Albert Bosman fedezett fel. A nevét onnan kapta, hogy minden egymást érintő négyzet hármas egy szabályos háromszöget zár be. Ha a legnagyobb négyzet $L x L$ méretű (törzs), akkor a teljes Pitagorasz-fa elfér egy $6L x 4L$ méretű négyzetben~\cite{pitagorasz-fa}. A hagyományos, egyenlő szárú Pitagorasz-fa a következőképpen konstruálható: az első iterációban létrejön a törzse, amely egy négyzet. A második iterációban a törzsnek a felső élére egy egyenlő szárú derékszögű háromszög rajzolunk úgy, hogy átfogója a négyzet felső éle, valamint a háromszög két befogójából kiágazik az első két ág, amelyek szintén négyzetek. Ezután minden iterációban ez ismétlődik, azaz minden korábbi négyzet felső élére egy egyenlő szárú derékszögű háromszög nő, és azok befogói új négyzetágakat növesztenek. Minden négyzet mérete $sqrt(2)/2$ értékkel skálázódik le a szülő négyzet méretéhez képest.
+A Pitagorasz-fa egy négyzetekből álló fraktál, amelyet Albert Bosman fedezett fel. A nevét onnan kapta, hogy minden egymást érintő négyzet hármas egy szabályos háromszöget zár be. Ha a legnagyobb négyzet $L x L$ méretű (törzs), akkor a teljes Pitagorasz-fa elfér egy $6L x 4L$ méretű négyzetben~\cite{pitagorasz-fa}. A hagyományos, egyenlő szárú Pitagorasz-fa a következőképpen konstruálható: az első iterációban létrejön a törzse, amely egy négyzet. A második iterációban a törzsnek a felső élére egy egyenlő szárú derékszögű háromszöget rajzolunk úgy, hogy átfogója a négyzet felső éle, valamint a háromszög két befogójából kiágazik az első két ág, amelyek szintén négyzetek. Ezután minden iterációban ez ismétlődik, azaz minden korábbi négyzet felső élére egy egyenlő szárú derékszögű háromszög nő, és azok befogói új négyzetágakat növesztenek. Minden négyzet mérete $\dfrac{\sqrt{2}}{2}$ értékkel skálázódik le a szülő méretéhez képest.
 \begin{figure}[!ht]
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{img/PythagorasTree}
@@ -312,7 +310,7 @@ A Pitagorasz-fa egy négyzetekből álló fraktál, amelyet Albert Bosman fedeze
 \end{figure}
 
 \subsection*{Implementáció}
-Az kód átláthatósága érdekében itt is egy segédosztályt írtam először. Ebben az osztályban tárolódnak a négyzetek pontjai illetve mérete. Továbbá, két fontos függvényt tartalmaz, az expandLeft és expandRight függvényeket, amelyek az adott négyzet bal és jobb oldali négyzetágait adják meg. 
+A kód átláthatósága érdekében itt is egy segédosztályt írtam először, a $Rectangle$ osztályt. Ebben az osztályban tárolódnak a négyzetek pontjai, illetve mérete. Továbbá két fontos függvényt tartalmaz, az $expandLeft$ és $expandRight$ függvényeket, amelyek az adott négyzet bal és jobb oldali ágát adják meg. 
 \begin{lstlisting}[language=typescript]
 expandRight(p: any, angle: number): Rectangle {
 	let A: p5.Vector;
@@ -344,12 +342,12 @@ expandRight(p: any, angle: number): Rectangle {
 \end{lstlisting}
 Az új négyzetek pontjai vektorműveletek sorozatával számolódnak ki. A pontok elnevezése a következő rendszert követi: 
 \begin{itemize}
-	\item A - bal felső
-	\item B - jobb felső
-	\item C - bal alsó
-	\item D - jobb alsó
+	\item $A$ - bal felső
+	\item $B$ - jobb felső
+	\item $C$ - bal alsó
+	\item $D$ - jobb alsó
 \end{itemize}
-A jobb oldali négyzetág D pontja megegyezik a szülő négyzet B pontjával. A C pontot úgy kapom meg, hogy a szülő négyzet B pontjából egy vektort hozok létre, amelyből kivonom a szülő négyzet felső élének középpontjából létrehozott vektort, így egy megfelelő irányba mutató vektort kapok, amelyet rotálok egy bizonyos értékkel. A rotálási szöget a függvény paraméterként kapja, ugyanis ez az érték testreszabható a konfigurációs panelben. A maradék A és B pontok már könnyen kiszámolhatóak, ezeket úgy kapom meg, hogy két új vektort hozok létre, egyik a C-ből D-be, másik a D-ből C-be mutat, majd ezeket 90 fokkal rotálom a megfelelő irányba. A függvény visszatérési értékként egy új négyzet objektumot hoz létre a kiszámított pontokból. Az expandLeft függvény hasonlóan működik, csupán a rotálási irányok változnak. 
+A jobb oldali ág négyzetének $D$ pontja megegyezik a szülőnégyzet $B$ pontjával. A $C$ pontot úgy kapjuk meg, hogy a szülőnégyzet felső éléből egy megfelelő irányba mutató vektort hozunk létre, amelyet rotálunk egy bizonyos szöggel. A rotálási szöget a függvény paraméterként kapja, ugyanis ez az érték testreszabható a konfigurációs panelben. A maradék $A$ és $B$ pontok már könnyen kiszámolhatóak, ezeket úgy kapjuk meg, hogy két új vektort hozunk létre, egyik a $C$-ből $D$-be, másik a $D$-ből $C$-be mutat, majd ezeket 90 fokkal rotáljuk a megfelelő irányba. A függvény visszatérési értékként egy új négyzetet hoz létre a kiszámított pontokból. Az $expandLeft$ függvény hasonlóan működik, csupán a rotálási irányok változnak. 
 \par Az algoritmus konfigurációs lehetőségei a következők:
 \begin{itemize}
 	\item Gyorsaság
@@ -359,9 +357,9 @@ A jobb oldali négyzetág D pontja megegyezik a szülő négyzet B pontjával. A
 	\item Szín
 	\item Szivárvány mód
 \end{itemize}
-Ha a fixált gyökér lehetőséget kikapcsoljuk, akkor tetszőleges helyen helyezhetünk el gyökér négyzetet a vászonon, ezt az egér görgője segítségével rotálhatjuk, illetve az oldalhosszúság opció érékének változtatásával megadhatjuk a méretét. Hasonlóan, a fixált szög lehetőség kikapcsolásával tetszőleges szöggel elhajlíthatjuk a négyzetágakat jobb vagy bal irányba. A szög megadása az egér segítségével történik. Ahhoz, hogy a felhasználóknak érthető legyen a szög megadásának módja, a törzs négyzet felső élének középpontjából egy egyenes indul az egérmutató pozíciója felé. Ennek egyenesnek a hossza az oldalhosszúság felével egyezik meg. Kattintáskor a program kiszámolja az egyenes és a négyzet felső éle között bezárt szöget, és ezt felhasználja a négyzetágak generálásakor.
+Ha a fixált gyökér lehetőséget kikapcsoljuk, akkor tetszőleges helyen helyezhetünk el gyökérnégyzetet a vászonon. Ezt az egér görgője segítségével rotálhatjuk, illetve az oldalhosszúság opció értékének változtatásával megadhatjuk a méretét. Hasonlóan, a fixált szög lehetőség kikapcsolásával tetszőleges szöggel elhajlíthatjuk az ágakat jobb vagy bal irányba. A szög megadása az egér segítségével történik. Ahhoz, hogy a felhasználóknak érthető legyen a szög megadásának módja, a gyökér felső élének középpontjából egy egyenes indul az egérmutató pozíciója felé. Ennek az egyenesnek a hossza az oldalhosszúság felével egyezik meg. Kattintáskor a program kiszámolja az egyenes és a négyzet felső éle között bezárt szöget, és ezt felhasználja az ágak generálásakor.
 \section{Fraktál-fa}
-A Fraktál-fa egy viszonylag egyszerűen megkonstruálható fraktál, ami a legismertebb fraktálok közé tartozik. Szerkezete nagyon hasonlít a Pitagorasz-fához, annyi különbséggel, hogy négyzetek helyett egyszerű vonalakból tevődik össze. A Fraktál-fa első iterációjában csak a törzs van, a másodikban a törzsből két ág nő ki egy bizonyos szöget bezárva a törzzsel. Ez a szög tetszőlegesen állítható a konfigurációs panelben. A további iterációkban ez ismétlődik, tehát a már meglévő ágakből új ágak nőnek ki, ez a végtelenségig ismételhető.  
+A Fraktál-fa egy viszonylag egyszerűen megkonstruálható fraktál, ami a legismertebb fraktálok közé tartozik. Szerkezete nagyon hasonlít a Pitagorasz-fáéhoz, annyi különbséggel, hogy négyzetek helyett egyenesekből tevődik össze. A Fraktál-fa első iterációjában csak a törzs van, a másodikban a törzsből két ág nő ki egy bizonyos szöget bezárva a törzzsel. Ez a szög tetszőlegesen állítható a konfigurációs panelben. A további iterációkban ez ismétlődik, tehát a már meglévő ágakból új ágak nőnek ki, ez a végtelenségig ismételhető.  
 \begin{figure}[!ht]
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{img/FractalTree}
@@ -369,7 +367,7 @@ A Fraktál-fa egy viszonylag egyszerűen megkonstruálható fraktál, ami a legi
 	\end{center}
 \end{figure}
 \subsection*{Implementáció}
-A szerkezeti hasonlóságokból eredően az algoritmus implementációja sok helyen hasonlít a Pitagorasz-fáéhoz. Itt is egy segédosztály megírásával kezdtem az implementációt. Ez az osztály tárolja a vonalak A és B végpontjait, valamint hosszát, ezen kívül még tartalmaz egy branch nevezetű függvényt, amely egy adott vonalra meghívva kiszámolja annak az ágait. 
+A szerkezeti hasonlóságokból eredően az algoritmus implementációja sok helyen hasonlít a Pitagorasz-fáéhoz. Itt is egy segédosztály megírásával kezdtem az implementációt. Ez az osztály tárolja az egyenesek $A$ és $B$ végpontjait, valamint hosszát. Ezen kívül még tartalmaz egy $branch$ nevezetű függvényt, amely egy adott vonalra meghívva megadja annak az ágait. 
 \begin{lstlisting}
 branch(p: any, angleLeft: number, angleRight: number, lerpPercentage: number): Line[] {
 	let lines: Line[] = [];
@@ -389,7 +387,7 @@ branch(p: any, angleLeft: number, angleRight: number, lerpPercentage: number): L
 	return lines;
 }
 \end{lstlisting}
-Ennek a függvénynek 3 fontos paramétere van, az angleLeft, ami megadja a bal oldali ág és a szülő ág által bezárt szöget, az angleRight, ami a jobb oldali ág és a szülő ág által bezárt szöget adja meg, valamint a lerpPercentage, ami azt adja meg, hogy az ágak hossza hány százaléka a szülő ág hosszának. Mivel az egyes vonalak A és B végpontjait vektor típusokként tárolja a segédosztály, ezért az új ágak végpontjai vektorműveletek segítségével könnyen kiszámolhatóak. Az A végpontból kivonva a B végpontot, egy, a vonal irányával megegyező irányú vektort kapok. Ezt, a paraméterben kapott értékekkel jobbra és balra forgatva, megkapom az új ágak A végpontjait. Az új ágak B végpontjai a szülő ág A végpontjával egyeznek meg értelemszerűen. A visszatérési értéke egy tömb, amely az új ágakat tartalmazza.
+Ennek a függvénynek 3 fontos paramétere van, az $angleLeft$, ami megadja a bal oldali ág és a szülő által bezárt szöget, az $angleRight$, ami a jobb oldali ág és a szülő által bezárt szöget adja meg, valamint a $lerpPercentage$, ami azt adja meg, hogy az új ágak hossza hány százaléka a szülőág hosszának. Mivel az egyenesek $A$ és $B$ végpontjait vektorokként tárolja a segédosztály, ezért az új ágak végpontjai vektorműveletek segítségével könnyen kiszámolhatóak. Az $A$ végpontból kivonva a $B$ végpontot, egy, a szülőág irányával megegyező irányú vektort kapunk. Ezt, a paraméterben kapott értékekkel jobbra és balra forgatva, megkapjuk az új ágak $A$ végpontjait. Az új ágak $B$ végpontjai a szülőág $A$ végpontjával egyeznek meg értelemszerűen. A visszatérési értéke egy tömb, amely az új ágakat tartalmazza.
 \par Az algoritmus konfigurációs lehetőségei a következők:
 \begin{itemize}
 	\item Gyorsaság
@@ -403,10 +401,10 @@ Ennek a függvénynek 3 fontos paramétere van, az angleLeft, ami megadja a bal 
 	\item Szín
 	\item Szivárvány mód
 \end{itemize}
-Az ágak száma opcióval megadható, hogy az egyes ágakból 2 vagy 3 új ág keletkezzen, 3 ág esetén a középső ág iránya megegyezik a szülő ág irányával. A fixált kezdővonal opció kikapcsolásával a fa törzsét adhatjuk meg tetszőlegesen, hasonlóan, mint az előző algoritmusoknál.
+Az ágak száma opcióval megadható, hogy az egyes ágakból kettő vagy három új ág keletkezzen. Három ág esetén a középső ág iránya megegyezik a szülőág irányával. A fixált kezdővonal opció kikapcsolásával a fa törzsét adhatjuk meg tetszőlegesen, hasonlóan, mint az előző algoritmusoknál.
 \section{H-fa}
-A H-fa struktúrája hasonló a Fraktál-fáéhoz. Ez a fraktál merőleges vonalak közvetlen egymás mellé helyezésével konstruálható meg. Minden vonal mindkét végpontján egy rá merőleges vonal halad át, amelynek hossza mindig $sqrt(2)$-vel kisebb az előző vonal hosszától. Ez egy alapértelmezett érték, ami a konfigurációs panelben tetszőlegesen állítható. A fraktál a nevét onnan kapta, hogy a benne ismétlődő minta a H betűre emlékeztet.\\ 
-A H-fa Hausdorff dimenziója 2.
+A H-fa struktúrája hasonló a Fraktál-fáéhoz. Ez a fraktál merőleges egyenesek közvetlen egymás mellé helyezésével konstruálható meg. Minden egyenes mindkét végpontján egy rá merőleges egyenes halad át, amelynek hossza mindig $\sqrt{2}$-vel kisebb az előző egyenes hosszától. Ez egy alapértelmezett érték, ami a konfigurációs panelben tetszőlegesen állítható. A fraktál a nevét onnan kapta, hogy a benne ismétlődő minta a H betűre emlékeztet.\\ 
+A H-fa Hausdorff dimenziója $2$.
 \begin{figure}[!ht]
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{img/HTree}
@@ -414,7 +412,7 @@ A H-fa Hausdorff dimenziója 2.
 	\end{center}
 \end{figure}
 \subsection*{Implementáció}
-A H-fa egy viszonlyag egyszerűnek mondható fraktál, ezért az implementációja is egyszerű. A függvények, amelyek az ágak pontjainak kiszámolását végzik itt is egy segédosztályban vannak megírva, ezek az expandLeft és expandRight függvények.
+A H-fa egy viszonlyag egyszerűnek mondható fraktál, ezért az implementációja is egyszerű. A függvények, amelyek az új ágak pontjainak kiszámolását végzik itt is egy segédosztályban vannak megírva, ezek az $expandLeft$ és $expandRight$ függvények.
 \begin{lstlisting}
 expandLeft(p: any, lerp: number) {
 	let dir = p5.Vector.sub(this.A, this.B);
@@ -429,7 +427,7 @@ expandLeft(p: any, lerp: number) {
 	return new Line(x, y);
 }
 \end{lstlisting}
-A segédosztályban a vonalak végpontjai itt is vektorokként vannak tárolva. A végpontokat egymásból kivonva egy vektort kapunk, amelynek iránya megegyezik a vonal irányával, majd ezt jobbra és balra forgatva megkapjuk az bal oldali ág két végpontját. A két új végpontot nem teljesen kötjük össze a szülő vonal bal oldali végpontjával, az új végpontok irányába csak az új ág hosszának a felével megegyező mértékig megyünk, ezzel megkapva az ág megfelelő hosszát. A jobb oldali ág kiszámítása hasonlóan történik.
+A segédosztályban az egyenesek végpontjai vektorokként vannak tárolva. A végpontokat egymásból kivonva egy vektort kapunk, amelynek iránya megegyezik az egyenes irányával, majd ezt jobbra és balra forgatva megkapjuk a bal oldali ág két végpontját. Az eredeti egyenes bal oldali végpontjából az új végpontok irányába csak az új ág hosszának felével megegyező mértékig megyünk, ezzel megkapva az új ág megfelelő hosszát. A jobb oldali ág kiszámítása hasonlóan történik.
 \par Az algoritmushoz tartozó konfigurációs lehetőségek a következők:
 \begin{itemize}
 	\item Gyorsaság

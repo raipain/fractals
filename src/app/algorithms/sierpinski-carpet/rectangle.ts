@@ -3,6 +3,7 @@ import * as p5 from 'p5';
 export class Rectangle {
     public center: p5.Vector;
     public size: number;
+    public color: any;
 
     constructor(center: p5.Vector, size: number) {
         this.center = center;
@@ -24,8 +25,13 @@ export class Rectangle {
         return rectangles;
     }
 
+    setColor(color: any) {
+        this.color = color;
+    }
+
     draw(p: any): void {
         p.rectMode(p.CENTER);
+        p.fill(this.color);
         p.rect(this.center.x, this.center.y, this.size, this.size);
     }
 }

@@ -3,10 +3,12 @@ import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { Line } from './line';
 import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configuration';
+import { BehaviorSubject } from 'rxjs';
 
 export class HTreeConfigurable extends ConfigurableFractal {
     private length: number;
     private root: Line;
+    private lines: Line[];
     private fixedRoot: Line;
     private customRoot: Line;
     private useFixedRoot: boolean;
@@ -26,7 +28,7 @@ export class HTreeConfigurable extends ConfigurableFractal {
         {
             name: "Vonalvastagság",
             type: "slider",
-            value: 3,
+            value: 1,
             minValue: 1,
             maxValue: 10,
             step: 1,
@@ -39,7 +41,8 @@ export class HTreeConfigurable extends ConfigurableFractal {
             minValue: 50,
             maxValue: 500,
             step: 1,
-            func: this.setLength
+            func: this.setLength,
+            bind: new BehaviorSubject<number>(200)
         },
         {
             name: "Ág hosszúság (%)",
@@ -48,7 +51,8 @@ export class HTreeConfigurable extends ConfigurableFractal {
             minValue: 1,
             maxValue: 100,
             step: 1,
-            func: this.setLerpPercentage
+            func: this.setLerpPercentage,
+            bind: new BehaviorSubject<number>(1)
         },
         {
             name: "Fixált kezdővonal",
@@ -65,7 +69,8 @@ export class HTreeConfigurable extends ConfigurableFractal {
             name: "Szivárvány mód",
             type: "checkbox",
             value: 0,   
-            func: this.setRainbowMode
+            func: this.setRainbowMode,
+            bind: new BehaviorSubject<number>(0)
         }
     ];
 
@@ -78,16 +83,19 @@ export class HTreeConfigurable extends ConfigurableFractal {
 
         this.useFixedRoot = true;
         this.length = this.width / 3;
+        this.CONFIGURATIONS[2].bind.next(this.length);
         this.rotation = 0;
         this.lerp =  (this.length / Math.sqrt(2)) / this.length;
+        this.CONFIGURATIONS[3].bind.next(this.lerp * 100);
 
         this.fixedRoot = new Line(
             new p5.Vector(this.width / 2 - this.length / 2, this.height / 2),
             new p5.Vector(this.width / 2 + this.length / 2, this.height / 2)
         );
+        this.fixedRoot.setColor(this.color);
 
         this.root = this.fixedRoot;
-        this.list = [this.root];
+        this.lines = [this.root];
 
         this.createCanvas();
     }
@@ -130,23 +138,25 @@ export class HTreeConfigurable extends ConfigurableFractal {
                 else {
                     let tempLines: Line[] = [];
 
-                    for (let i = this.iter; i < this.list.length; i++) {
+                    for (let i = this.iter; i < this.lines.length; i++) {
                         if(this.rainbowMode) {
-                            let h = p.map(i, this.iter, this.list.length, 0, 360);
-                            p.stroke(h, 255, 255);
+                            let h = p.map(i, this.iter, this.lines.length, 0, 360);
+                            this.color = p.color(h, 255, 255);
                         }
-                        this.list[i].draw(p);
+                        this.lines[i].setColor(this.color);
+                        this.lines[i].draw(p);
 
-                        let left = this.list[i].expandLeft(p, this.lerp);
-                        let right = this.list[i].expandRight(p, this.lerp);
+                        let left = this.lines[i].expandLeft(p, this.lerp);
+                        let right = this.lines[i].expandRight(p, this.lerp);
 
                         tempLines.push(left);
                         tempLines.push(right);
                     }
 
+                    this.list.push(this.lines.length);
                     this.rollBackList$.next(this.list);
-                    this.iter = this.list.length;
-                    this.list = this.list.concat(tempLines);
+                    this.iter = this.lines.length;
+                    this.lines = this.lines.concat(tempLines);
                 }
             }
         }
@@ -179,8 +189,33 @@ export class HTreeConfigurable extends ConfigurableFractal {
                 let yOffset = p5.Vector.add(center, yDir);
 
                 this.customRoot = new Line(xOffset, yOffset);
+                this.customRoot.setColor(this.color);
                 this.root = this.customRoot;
-                this.list = [this.root];
+                this.lines = [this.root];
+            }
+        }
+    }
+
+    _rollBack(p: any) {
+        let to = 0;
+        for(let i = 0; i <= +this.rollBackTo; i++) {
+            to = to * 2 + 1;
+        }
+
+        if (this.rollBack) {
+            if (this.play) {
+                this.rollBack = false;
+                let temp = this.lines.slice(0, to);
+                this.lines = temp;
+                this.iter = (to - 1) / 2;
+                temp = this.list.slice(0, this.rollBackTo);
+                this.list = temp;
+            }
+            else {
+                p.background(this.canvasColor);
+                for (let i = 0; i < (to - 1) / 2; i++) {
+                    this.lines[i].draw(p);
+                }
             }
         }
     }
@@ -196,23 +231,30 @@ export class HTreeConfigurable extends ConfigurableFractal {
             new p5.Vector(this.width / 2 - this.length / 2, this.height / 2),
             new p5.Vector(this.width / 2 + this.length / 2, this.height / 2)
         );
+        this.fixedRoot.setColor(this.color);
         if (this.useFixedRoot) {
             this.root = this.fixedRoot;
         }
         else {
             this.root = this.customRoot;
         }
-        this.list = [this.root];
+        if(this.root != null) {
+            this.root.setColor(this.color);
+        }
+        this.lines = [this.root];
+        this.list = [];
         this.iter = 0;
         super.setStop();
     }
 
     setLength(obj: HTreeConfigurable, length: number): void {
         obj.length = length;
+        obj.CONFIGURATIONS[2].bind.next(length);
         obj.fixedRoot = new Line(
             new p5.Vector(obj.width / 2 - obj.length / 2, obj.height / 2),
             new p5.Vector(obj.width / 2 + obj.length / 2, obj.height / 2)
         );
+        obj.fixedRoot.setColor(obj.color);
         obj.recalculateCustomRoot();
 
         if (obj.useFixedRoot) {
@@ -222,7 +264,7 @@ export class HTreeConfigurable extends ConfigurableFractal {
             obj.root = obj.customRoot;
         }
         if(!obj.play) {
-            obj.list = [obj.root];
+            obj.lines = [obj.root];
         }
     }
 
@@ -254,7 +296,21 @@ export class HTreeConfigurable extends ConfigurableFractal {
             let yOffset = p5.Vector.add(center, yDir);
 
             this.customRoot = new Line(xOffset, yOffset);
+            this.customRoot.setColor(this.color);
         }
+    }
+
+    setColor(obj: any, color: string): void {
+        obj.color = color;
+        obj.rainbowMode = false;
+        obj.CONFIGURATIONS[6].bind.next(0);
+        obj.setStop();
+    }
+
+    setRainbowMode(obj: any, value: boolean): void {
+        obj.rainbowMode = value;
+        obj.CONFIGURATIONS[6].bind.next(value);
+        obj.setStop();
     }
 }
 

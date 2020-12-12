@@ -4,6 +4,7 @@ export class Line {
     public A: p5.Vector;
     public B: p5.Vector;
     public length: number;
+    public color: any;
 
     constructor(A: p5.Vector, B: p5.Vector) {
         this.A = A;
@@ -37,7 +38,12 @@ export class Line {
         return new Line(x, y);
     }
 
+    setColor(color: any) {
+        this.color = color;
+    }
+
     draw(p: any) {
+        p.stroke(this.color);
         p.line(this.A.x, this.A.y, this.B.x, this.B.y);
     }
 }

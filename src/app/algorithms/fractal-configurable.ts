@@ -27,7 +27,9 @@ export abstract class ConfigurableFractal extends Fractal {
         if (this.rollBack) {
             if (this.play) {
                 for (let i = 0; i < this.list.length; i++) {
-                    this.list[i].draw(p);
+                    if(this.list[i].color) {
+                        this.list[i].draw(p);                           
+                    }
                 }
                 this.rollBack = false;
             }

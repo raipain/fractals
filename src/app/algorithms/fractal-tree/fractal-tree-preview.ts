@@ -18,6 +18,7 @@ export class FractalTreePreview extends Fractal {
             new p5.Vector(this.width / 2, this.height - this.length), 
             new p5.Vector(this.width / 2, this.height)
         );
+        this.root.setColor(this.color);
         this.lines = [this.root];
 
         this.createCanvas();
@@ -37,6 +38,7 @@ export class FractalTreePreview extends Fractal {
                 let tempLines: Line[] = [];
 
                 for(let i = 0; i < this.lines.length; i++) {
+                    this.lines[i].setColor(this.color);
                     this.lines[i].draw(p);
                     tempLines = tempLines.concat(this.lines[i].branch(p, p.PI / 4, p.PI / 4, 0.7));
                 }

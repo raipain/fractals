@@ -2,6 +2,7 @@ import * as p5 from 'p5';
 import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { Line } from './line';
+import { BehaviorSubject } from 'rxjs';
 
 export class LevyCCurveConfigurable extends ConfigurableFractal {
     private lines: Line[];
@@ -42,15 +43,16 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
             name: "Vonalhosszúság",
             type: "slider",
             value: 1,
-            minValue: 10,
-            maxValue: 400,
+            minValue: 100,
+            maxValue: 500,
             step: 1,
-            func: this.setLength
+            func: this.setLength,
+            bind: new BehaviorSubject<number>(1)
         },
         {
             name: "Szög",
             type: "slider",
-            value: 60,
+            value: 45,
             minValue: 20,
             maxValue: 80,
             step: 1,
@@ -83,7 +85,8 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
             name: "Szivárvány mód",
             type: "checkbox",
             value: 0,   
-            func: this.setRainbowMode
+            func: this.setRainbowMode,
+            bind: new BehaviorSubject<number>(0)
         }
     ]
 
@@ -101,11 +104,13 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
         this.rotation = 0;
         this.angle = Math.PI / 4;
         this.length = this.width / 3;
+        this.CONFIGURATIONS[3].bind.next(this.length);
 
         this.fixedRoot = new Line(
             new p5.Vector(this.width / 2 - this.length / 2, this.height - 100),
             new p5.Vector(this.width / 2 + this.length / 2, this.height - 100)
         );
+        this.fixedRoot.setColor(this.color);
         this.root = this.fixedRoot;
         this.lines = [this.root];
 
@@ -154,8 +159,9 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
                     for (let i = this.iter; i < this.lines.length; i++) {
                         if(this.rainbowMode) {
                             let h = p.map(i, this.iter, this.lines.length, 0, 360);
-                            p.stroke(h, 255, 255);
+                            this.color = p.color(h, 255, 255);
                         }
+                        this.lines[i].setColor(this.color);
                         this.lines[i].draw(p);
                         tempLines = tempLines.concat(this.lines[i].expand(p, this.direction, this.angle));
                     }
@@ -203,22 +209,27 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
     }
 
     _rollBack(p: any) {
-        let from = this.list[this.rollBackTo - 2];
-        let to = this.list[this.rollBackTo - 1];
-        if (from == null) {
-            from = 0;
+        let to = 0;
+        for(let i = 0; i <= +this.rollBackTo; i++) {
+            to = to * 2 + 1;
         }
 
         if (this.rollBack) {
             if (this.play) {
-                for (let i = this.rollBackTo; i < this.lines.length; i++) {
-                    this.lines[i].draw(p);
-                }
                 this.rollBack = false;
+                let temp = this.lines.slice(0, to);
+                this.lines = temp;
+                this.iter = (to - 1) / 2;
+                temp = this.list.slice(0, this.rollBackTo);
+                this.list = temp;
             }
             else {
                 p.background(this.canvasColor);
-                for (let i = from; i < to; i++) {
+                let from = (((to - 1) / 2) - 1) / 2;
+                if(from < 0) {
+                    from = 0;
+                }
+                for (let i = from; i < (to - 1) / 2; i++) {
                     this.lines[i].draw(p);
                 }
             }
@@ -231,11 +242,15 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
             new p5.Vector(this.width / 2 - this.length / 2, this.height - 100),
             new p5.Vector(this.width / 2 + this.length / 2, this.height - 100)
         );
+        this.fixedRoot.setColor(this.color);
         if (this.useFixedRoot) {
             this.root = this.fixedRoot;
         }
         else {
             this.root = this.customRoot;
+        }
+        if(this.root != null) {
+            this.root.setColor(this.color);
         }
         this.lines = [this.root];
         this.list = [];
@@ -245,10 +260,12 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
 
     setLength(obj: any, value: number) {
         obj.length = value;
+        obj.CONFIGURATIONS[3].bind.next(length);
         obj.fixedRoot = new Line(
             new p5.Vector(obj.width / 2 - obj.length / 2, obj.height - 100),
             new p5.Vector(obj.width / 2 + obj.length / 2, obj.height - 100)
         );
+        obj.fixedRoot.setColor(obj.color);
         obj.recalculateCustomRoot();
 
         if (obj.useFixedRoot) {
@@ -301,7 +318,21 @@ export class LevyCCurveConfigurable extends ConfigurableFractal {
             let yOffset = p5.Vector.add(center, yDir);
     
             this.customRoot = new Line(xOffset, yOffset);
+            this.customRoot.setColor(this.color);
         }
+    }
+
+    setColor(obj: any, color: string): void {
+        obj.color = color;
+        obj.rainbowMode = false;
+        obj.CONFIGURATIONS[7].bind.next(0);
+        obj.setStop();
+    }
+
+    setRainbowMode(obj: any, value: boolean): void {
+        obj.rainbowMode = value;
+        obj.CONFIGURATIONS[7].bind.next(value);
+        obj.setStop();
     }
     //#endregion
 }

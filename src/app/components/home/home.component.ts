@@ -10,7 +10,7 @@ import { IAlgorithmList } from 'src/app/models/algorithm-list';
 export class HomeComponent implements OnInit, OnDestroy {
 
     @Output() canvas: EventEmitter<void> = new EventEmitter<void>();
-    private algorithmList: IAlgorithmList[];
+    public algorithmList: IAlgorithmList[];
 
     constructor(private algorithmService: AlgorithmService) { }
 
@@ -24,6 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     selectAlgorithm(index: number): void {
         this.algorithmService.selectAlgorithm(index);
         this.canvas.emit();
+        location.reload();
     }
 
     ngOnDestroy(): void {

@@ -4,6 +4,7 @@ export class Line {
     public A;
     public B;
     public length;
+    public color: any = "#000";
 
     constructor(A, B) {
         this.A = A;
@@ -53,7 +54,12 @@ export class Line {
         return newLines;
     }
 
+    setColor(color: any) {
+        this.color = color;
+    }
+
     draw(p: any): void {
+        p.stroke(this.color);
         p.line(this.A.x, this.A.y, this.B.x, this.B.y);
     }
 }

@@ -1,11 +1,11 @@
 \chapter{Az alkalmazás alapfunkciói}
 \spacing{1.5}
 
-A alábbi fejezetben az elkészült alkalmazás főbb funkcióit mutatom be, fejtem ki részletesen, külön kitérve a fontosabb, érdekesebb részekre.
+Ebben a fejezetben az elkészült alkalmazás főbb funkcióit mutatom be, fejtem ki részletesen, külön kitérve a fontosabb, érdekesebb részekre.
 
 \section{Lejátszást vezérlő funkciók}
 
-A fraktál generáló algoritmusok futását három gombbal tudjuk vezérelni, ezek a Play, Pause és Start gombok. Mivel az alkalmazást megpróbáltam minél több komponensre bontani, így kellett egy külön szolgáltatás, amelynek a feladata az volt, hogy az egyes eseményeket, amelyeket a felhasználók a gombok megnyomásával váltanak ki, közvetítse az algoritmusnak, amely a fraktál generálására szolgál. Így az algoritmus tudni fogja mikor kell szünetelni, mikor kell rajzolni, és mikor kell újrakezdeni. A szolgáltatás kódja a következőképpen néz ki:
+A fraktálgeneráló algoritmusok futását három gombbal tudjuk vezérelni, ezek a Play, Pause és Start gombok. Mivel az alkalmazást megpróbáltam minél több komponensre bontani, így kellett egy külön szolgáltatás, amelynek a feladata az volt, hogy az egyes eseményeket, amelyeket a felhasználók a gombok megnyomásával váltanak ki, közvetítse annak az algoritmusnak, amely az adott fraktált rajzolja. Ennek köszönhetően az algoritmus tudni fogja mikor kell szünetelni, mikor kell rajzolni, és mikor kell újrakezdeni a rajzolást. A szolgáltatás kódja a következőképpen néz ki:
 \begin{lstlisting}[language=typescript]
 export class AnimationStateManagerService {
 	private state: BehaviorSubject<boolean>;
@@ -23,11 +23,11 @@ export class AnimationStateManagerService {
 	}
 }
 \end{lstlisting}
-A szolgáltatás alapja tehát egy {\it BehaviorSubject} objektum, amely {\it boolean} típusú adatot tud közvetíteni a feliratkozóknak. Amikor a felhasználó a lejátszást vezérlő gombok egyikével interakcióba lép, a szolgálatás {\it setState()} metódusa hívódik meg, amelynek a paramétere egy igaz-hamis adat, attól függően, hogy az algoritmus futása szünetel-e vagy sem. Amikor ez a metódus meghívódik, akkor a szolgáltatás a paraméterként kapott változó értéket közvetíti a feliratkozóknak, így azok tudni fogják, hogy a felhasználó interakcióba lépett a vezérlő gombok valamelyikével. A feliratkozó ebben az esetben az algoritmus, amely az adott fraktált generálja.
+A szolgáltatás alapja tehát egy {\it BehaviorSubject} objektum, amely {\it boolean} típusú adatot tud közvetíteni a feliratkozóknak. Amint a felhasználó a lejátszást vezérlő gombok egyikével interakcióba lép, a szolgálatás {\it setState} metódusa hívódik meg, amelynek a paramétere egy igaz vagy hamis értékű változó, attól függően, hogy az algoritmus futása éppen szünetel-e vagy sem. Amikor ez bekövetkezik, akkor a szolgáltatás a paraméterként kapott változó értékét közvetíti a feliratkozóknak, így azok tudni fogják, hogy a felhasználó interakcióba lépett a vezérlőgombok valamelyikével. A feliratkozó ebben az esetben az algoritmus, amely az adott fraktált generálja.
 
 \section{Algoritmus lista és konfigurációs panelek}
-A webalkalmazás két oldalsó panellel rendelkezik. Bal oldalon a fraktál generáló algoritmusok egy oszlopba rendezett listáját tekinthetjük meg. Az algoritmusok mindegyike rendelkezik előnézettel, tehát aki nem ismerné valamelyik algoritmust, láthatja, hogy az adott algoritmus milyen fraktált generál. Ezek az előnézetek maguknak az algoritmusoknak egy lebutított változatai, konfigurációs lehetőségek nélkül, az adott algoritmusok paraméterei alapértékekre vannak állítva. Minden algoritmus előnézete egy bizonyos szintig iterál, majd ha ezt a szintet elérte, újraindul. 
-\par Jobb oldalon a konfigurációs panel található. Ennek a tartalma dinamikus, aszerint generálódik, hogy az adott algoritmusnak milyen konfigurációs lehetőségei vannak. A konfigurálás három féle módon történhet:
+A webalkalmazás két oldalsó panellel rendelkezik. Bal oldalon a fraktálokat generáló algoritmusok egy oszlopba rendezett listáját tekinthetjük meg, ezek közül kattintással választhatunk. Az algoritmusok mindegyike rendelkezik előnézettel, tehát aki nem ismerné valamelyik fraktált, láthatja, hogy az vizuálisan hogyan néz is ki. Ezek az előnézetek maguknak a konfigurálható algoritmusoknak egy lebutított változatai, természetesen konfigurációs lehetőségek nélkül, mindegyik paraméter alapértékre van állítva. Minden algoritmus előnézete egy bizonyos szintig iterál, majd ha ezt a szintet elérte, újraindul. 
+\par Jobb oldalon a konfigurációs panel található. Ennek a tartalma dinamikus, aszerint generálódik, hogy a kiválasztott algoritmusnak milyen konfigurációs lehetőségei vannak. A konfigurálás háromféle módon történhet:
 \begin{itemize}
 	\item  csúszka segítségével állíthatunk be értéket az adott algoritmus valamely paraméterének, egy megadott értékkészleten belül
 	\item jelölőnégyzet ki-be pipálásával tudjuk jelezni, hogy az adott konfigurációs lehetőséget használni szeretnénk-e
@@ -47,24 +47,24 @@ export interface IAlgorithmList {
 Az algoritmusok listájában tárolódik tehát minden algoritmus
 \begin{itemize}
 	\item neve
-	\item előnézetének azonosítója, amely az előnézet megjelenítéséhez kell
-	\item a fraktál előnézetét kirajzoló algoritmus referenciája, amely a tényleges algoritmus egy lebutított változata
-	\item a tényleges algoritmus referenciája, amely már konfigurációs lehetőségekkel rendelkezik
+	\item előnézetének azonosítója, amely az előnézet megjelenítéséhez szükséges
+	\item a fraktál előnézetét kirajzoló algoritmus referenciája
+	\item a konfigurációs lehetőségekkel rendelkező algoritmus referenciája
 	\item az adott algoritmus konfigurációs lehetőségei, tömbben tárolva
-	\item egy pár mondatos ismertető az adott algoritmusról, ez egy külön funkció lételeme, amelyről a későbbiekben lesz szó
+	\item egy pár mondatos ismertető az adott algoritmusról, ez egy külön funkció lételeme amelyről a későbbiekben lesz szó
 \end{itemize}
-A lista panelnek az algoritmusok előnézet azonosítójára, és az előnézet algoritmus referenciájára van szüksége, a konfigurációs panelnek pedig az algoritmusok konfigurációs lehetőségeire, amelyek tömbben tárolódnak. Ezen kívül mindkét panel eltüntethető és előhozható egy-egy gomb segítségével, ezzel is növelve az alkalmazás kompaktságát. Az eltüntetés és előhozás animációval történik, amely abból áll, hogy gomb megnyomásra, CSS szinten tolom a panelek pozicíóját X tengelyen jobb vagy balra, attól függően, hogy előhozni, vagy eltüntetni szeretnénk a paneleket. Az animáció megvalósítására az Angular Animations API-ját használtam. Ennek a menete, hogy a CSS animációkat egy tömbben definiáltam, majd hozzákötöttem az adott panelekhez egy boolean változó segítségével. A boolean változó értéke a gomb nyomására változik, így fogja tudni az alkalmazás, hogy eltüntetni, vagy megjeleníteni kell.
+A lista panelnek az algoritmusok előnézetének azonosítójára, és az előnézet algoritmus referenciájára van szüksége, a konfigurációs panelnek pedig az algoritmusok konfigurációs lehetőségeire, amelyek tömbben tárolódnak. Ezen kívül mindkét panel eltüntethető és előhozható egy-egy gomb segítségével, ezzel is növelve az alkalmazás kompaktságát. Az eltüntetés és előhozás animációval történik, amely abból áll, hogy gombnyomásra, CSS szinten tolódik a panelek pozíciója $X$ tengelyen jobbra vagy balra, attól függően, hogy előhozni, vagy eltüntetni szeretnénk a paneleket. Az animáció megvalósítására az Angular Animations API-ját használtam. Ez annyiból áll, hogy a CSS animációkat egy tömbben definiáltam, majd hozzákötöttem az adott panelekhez egy $boolean$ változó segítségével. A $boolean$ változó értéke gombnyomásra változik, így tudni fogja az alkalmazás, hogy eltüntetni, vagy megjeleníteni kell.
 
 
 \section{Visszatekerés funkció}
 
-A visszatekerés funkció egy sajátos funkciója az alkalmazásomnak, hiszen egy hasonló alkalmazás sem rendelkezik ilyen lehetőséggel. Alapja egy csúszka, ami, ha a felhasználó interakcióba lép vele, az algoritmust visszatekerő módba helyezi. A csúszka kódja az alábbi módon néz ki:
+A visszatekerés egy sajátos funkciója az alkalmazásomnak, hiszen egy hasonló alkalmazás sem rendelkezik ilyen lehetőséggel. Alapja egy csúszka, ami, ha a felhasználó interakcióba lép vele, az algoritmust visszatekerő módba helyezi. A csúszka kódja az alábbi módon néz ki:
 \begin{lstlisting}[language=html]
 <div class="slider-container">
 <input #slider (click)="rollBack(slider.value)" type="range" min="0" [max]="sliderLength" [value]="sliderLength" class="slider" id="myRange">
 </div>
 \end{lstlisting}
-Lényegében ez egy egyéni stílusú, range típusú input mező, amelynek a max és a value direktivákkal lehet értéket beállítani. A value paraméter mondja meg, hogy a csúszka éppen hol áll, ez alapértelmezetten 0-ra van állítva. A max paraméter azt adja meg, hogy a csúszka milyen hosszúságú, ennek az értéke az algoritmus futásával párhuzamosan változik, amit egy BehaviourSubject típusú változóval oldottam meg. Lényegében, amikor az algoritmus egy új iterációját rajzolja le a fraktálnak, ez a BehaviorSubject objektum egy új értéket közvetít a feliratkozóknak, aki jelen esetben a csúszka, így annak a hossza mindig a megfelelő értékre lesz beállítva. Ha a csúszkára kattint a felhasználó, az adott algoritmus visszatekerő módba kerül, és meghívódik a rollBack metódusa, amellyel minden algoritmus rendelkezik. A visszatekeró mód annyit jelent, hogy beállítódnak azok az értékek, amelyeket kiolvasva, az algoritmus tudni fogja meddig kell visszatekerni a fraktált. Ennek a kódja így néz ki:
+Lényegében ez egy egyéni stílusú, $range$ típusú beviteli mező, amelyet a $max$ és $value$ direktivák beállításával lehet módosítani. A $value$ paraméter mondja meg, hogy a csúszka éppen hol áll, ez alapértelmezetten a csúszka hosszára van állítva. A $max$ paraméter azt adja meg, hogy a csúszka milyen hosszúságú, ennek az értéke az algoritmus futásával párhuzamosan nő, amit egy $BehaviourSubject$ típusú változó bevezetésével oldottam meg. Amikor az algoritmus egy új iterációját rajzolja ki a fraktálnak, ez a $BehaviorSubject$ objektum egy új értéket közvetít a feliratkozónak, aki jelen esetben a csúszka, így annak a hossza mindig a megfelelő értékre lesz beállítva. Ha a csúszkára kattint a felhasználó, az adott algoritmus visszatekerő módba kerül, és meghívódik a $rollBack$ metódusa. A visszatekeró mód annyit jelent, hogy beállítódnak azok az értékek, amelyeket kiolvasva, az algoritmus tudni fogja meddig kell visszatekerni a fraktál rajzolását. Ennek a forráskódja így néz ki:
 \begin{lstlisting}
 rollBack(p: any) {
 	if (this.rollBack) {
@@ -83,12 +83,12 @@ rollBack(p: any) {
 	}
 }
 \end{lstlisting}
-Ez a függvény minden képfrissítéskor újrarajzolja a hátteret, ennek köszönhetően eddig megrajzolt alakzat törlődik a vászonról. Ezután a függvény végigiterál azon a listán, amelyben az algoritmus tárolja a visszatekerés előtt még megrajzolt alakzatokat, és ez alapján rajzolja vissza azokat az elemeket, amelyek szükségesek. Minden algoritmus rendelkezik ilyen listával, hiszen ez a visszatekerés funkciójának egy fontos alapeleme.
+Ez a függvény minden képfrissítéskor újrarajzolja a hátteret, ennek köszönhetően az eddig megrajzolt alakzat törlődik a vászonról. Ezután végigiterál azon a listán, amelyben az algoritmus tárolja a visszatekerés előtt még megrajzolt alakzatokat, és a $rollBackTo$ paraméter segítségével rajzolja vissza azokat az elemeket, amelyek szükségesek. Minden algoritmus rendelkezik ilyen listával, hiszen ez a visszatekerés funkciónak egy fontos alapeleme.
 
 
 \section{Fraktál leírás funkció}
 
-Mindegyik fraktált generáló algoritmus rendelkezik egy leírással. Ebben a leírásban egy rövid ismeretőt olvashatunk az adott fraktálról, ki fedezte fel, hol használják, jellegzetes tulajdonságok megemlítése. A leírást egy előugró ablak tartalmazza. Ez az előugró ablak egy globális komponens, minden algoritmus esetén ugyanaz az ablak ugrik elő, csupán a tartalma változik dinamikusan. Az ablakot egy gomb megnyomásával hívhatjuk elő. Az ablak HTML kódja így néz ki:
+A webalkalmazásban minden fraktálról egy rövid leírást olvashatunk, amiben szó van az adott fraktálról általánosságban, valamint arról, hogy ki fedezte fel, hol használják, és a jellegzetes tulajdonságairól. Ezt a leírást egy előugró ablak tartalmazza, ami egy globális komponens, minden algoritmus esetén ugyanez az ablak ugrik elő, csupán a tartalma változik dinamikusan. Az ablakot egy gomb megnyomásával hívhatjuk elő. Az ablak HTML kódja így néz ki:
 \begin{lstlisting}[language=html]
 <div>
 	<h1>{{data.title}}</h1>
@@ -96,7 +96,8 @@ Mindegyik fraktált generáló algoritmus rendelkezik egy leírással. Ebben a l
 	<button (click)="close()" mat-button>Bezar</button>
 </div>
 \end{lstlisting}
-Ez egy eléggé rövid kódsor, azonban látszik, hogy a címet és magát a leírást a data változó tartalmazza. A data változó akkor definiálódik, amikor az ablakot előhozó gombra kattint a felhasználó, az értéke pedig az algoritmus listából olvasódik ki, attól függően, hogy éppen melyik fraktál generáló algoritmus aktív. A gomb megnyomására a következő függvény fut le:
+Ez egy eléggé rövid kódrészlet, azonban az látszik, hogy a címet és magát a leíró szöveget a $data$ változó tartalmazza. A $data$ változó akkor definiálódik, amikor az ablakot előhozó gombra kattint a felhasználó, értéke pedig az algoritmusokat tartalmazó listából olvasódik ki, attól függően, hogy éppen melyik fraktálgeneráló algoritmus aktív. A gomb megnyomására a következő függvény fut le:
+\clearpage
 \begin{lstlisting}[language=typescript]
 about(): void {
 	let dialogRef = this.dialog.open(AboutComponent, {
@@ -108,4 +109,4 @@ about(): void {
 	});
 }
 \end{lstlisting}
-A width property értelemszerűen az előugró ablak szélességét adja meg, ebben az esetben az ablak 800 pixel széles lesz. Magasságot azért nem definiáltam, hogy különböző hosszúságú szövegek esetén se csússzon szét az ablak, a data változóról pedig pár sorral fentebb volt szó.
+A $width$ tulajdonság értelemszerűen az előugró ablak szélességét adja meg, ebben az esetben az ablak 800 pixel széles lesz. A magasságot azért nem definiáltam, hogy különböző hosszúságú szövegek esetén se csússzon szét az ablak, a $data$ változóról pedig pár sorral fentebb volt szó.

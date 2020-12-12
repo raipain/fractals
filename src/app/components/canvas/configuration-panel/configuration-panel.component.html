@@ -4,14 +4,14 @@
         <div *ngFor="let conf of algorithmList[activeAlgorithm].configurations; let i = index">
             <div *ngIf="conf.type == 'slider'">
                 <p>{{conf.name}}</p>
-                <mat-slider #slider thumbLabel min="{{conf.minValue}}" max="{{conf.maxValue}}" step="{{conf.step}}" value="{{conf.value}}" (change)="setValue(conf.func, slider.value)"></mat-slider>
+                <mat-slider #slider thumbLabel min="{{conf.minValue}}" max="{{conf.maxValue}}" step="{{conf.step}}" [value]="(conf.bind | async) || conf.value" (change)="setValue(conf.func, slider.value)"></mat-slider>
             </div>
             <div *ngIf="conf.type == 'checkbox'">
-                <mat-checkbox #checkbox [checked]="conf.value" (change)="setValue(conf.func, checkbox._checked)">{{conf.name}}</mat-checkbox>
+                <mat-checkbox #checkbox [checked]="(conf.bind | async) || conf.value" (change)="setValue(conf.func, checkbox.checked)">{{conf.name}}</mat-checkbox>
             </div>
             <div *ngIf="conf.type == 'checkbox-tree'">
-                <mat-checkbox #checkbox (change)="setValue(conf.func, checkbox._checked)">{{conf.name}}</mat-checkbox>
-                <div *ngIf="checkbox._checked">
+                <mat-checkbox #checkbox [checked]="(conf.bind | async) || conf.value" (change)="setValue(conf.func, checkbox.checked)">{{conf.name}}</mat-checkbox>
+                <div *ngIf="checkbox.checked">
                     <div *ngFor="let childConf of conf.configurations; let j = index">
                         <div *ngIf="childConf.type == 'colorpicker'">
                             <label>{{childConf.name}}</label><input class="color-picker" [(colorPicker)]="subColors[j]" [style.background]="subColors[j]" [cpAlphaChannel]="'disabled'" [cpPosition]="'left'" (colorPickerChange)="setValue(childConf.func, subColors[j])"/>

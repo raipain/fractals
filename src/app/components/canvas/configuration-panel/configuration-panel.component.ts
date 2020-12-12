@@ -18,12 +18,12 @@ import { Subscription } from 'rxjs';
 })
 export class ConfigurationPanelComponent implements OnInit {
 
-    private activeAlgorithmSubscription: Subscription;
-    private activeAlgorithm: number;
-    private algorithmList: IAlgorithmList[];
-    private configurationPanelHideAnimationStatus: string;
-    private color: string;
-    private subColors: string[];
+    public activeAlgorithmSubscription: Subscription;
+    public activeAlgorithm: number;
+    public algorithmList: IAlgorithmList[];
+    public configurationPanelHideAnimationStatus: string;
+    public color: string;
+    public subColors: string[];
 
     constructor(private algorithmService: AlgorithmService) {
         this.configurationPanelHideAnimationStatus = "hide";

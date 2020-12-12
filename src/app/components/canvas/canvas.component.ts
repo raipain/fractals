@@ -17,16 +17,16 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 	@ViewChild('canvas', { read: ElementRef, static: false }) container: ElementRef;
 	@Output() home: EventEmitter<void> = new EventEmitter<void>();
 
-	private activeAlgorithmSubscription: Subscription;
-	private animationStateSubscription: Subscription
-	private rollBackSubscription: Subscription;
-	private canvasWidth: number;
-	private canvasHeight: number;
-	private algorithmList: IAlgorithmList[];
-	private activeAlgorithm: number;
-	private title: string;
-	private sliderLength: number;
-	private animationState: boolean;
+	public activeAlgorithmSubscription: Subscription;
+	public animationStateSubscription: Subscription
+	public rollBackSubscription: Subscription;
+	public canvasWidth: number;
+	public canvasHeight: number;
+	public algorithmList: IAlgorithmList[];
+	public activeAlgorithm: number;
+	public title: string;
+	public sliderLength: number;
+	public animationState: boolean;
 
 	constructor(private algorithmService: AlgorithmService,
 		private animationStateManagerService: AnimationStateManagerService,
@@ -65,6 +65,8 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.canvasWidth = window.innerWidth * 0.75;
 		this.algorithmList[this.activeAlgorithm].algorithm.removeCanvas();
 		this.algorithmList[this.activeAlgorithm].algorithm.init("canvas", this.canvasWidth, this.canvasHeight, "#f3f3f3");
+		this.animationStateManagerService.setState(false);
+		this.algorithmList[this.activeAlgorithm].algorithm.setStop();
 	}
 
 	togglePlay(): void {
@@ -99,6 +101,7 @@ export class CanvasComponent implements OnInit, AfterViewInit, OnDestroy {
 	homepage(): void {
 		this.algorithmList[this.activeAlgorithm].algorithm.removeCanvas();
 		this.home.emit();
+		location.reload();
 	}
 
 }

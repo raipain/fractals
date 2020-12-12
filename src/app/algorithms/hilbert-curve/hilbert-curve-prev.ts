@@ -1,5 +1,6 @@
 import * as p5 from 'p5';
 import { Fractal } from '../fractal';
+import { Line } from './line';
 
 export class HilbertCurvePreview extends Fractal {
     private order: number;
@@ -33,10 +34,11 @@ export class HilbertCurvePreview extends Fractal {
             this.canvas = p.createCanvas(this.width, this.height);
             this.canvas.parent(this.parentId);
 
-            p.stroke(0);
-            p.strokeWeight(1);
+            p.stroke(this.color);
+            p.strokeWeight(this.strokeWeight);
             p.background(this.canvasColor);
             p.frameRate(this.frameRate);
+
         }
 
         p.draw = () => {

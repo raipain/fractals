@@ -14,10 +14,6 @@ export abstract class Fractal {
     protected iter: number;
 
     constructor() {
-        this.frameRate = 1;
-        this.strokeWeight = 1;
-        this.color = "#000";
-        this.iter = 0;
         this.sketch = this.sketch.bind(this);
     }
 
@@ -27,6 +23,10 @@ export abstract class Fractal {
         this.width = width;
         this.height = height;
         this.canvasColor = canvasColor;
+        this.frameRate = 1;
+        this.strokeWeight = 1;
+        this.color = "#000";
+        this.iter = 0;
     }
 
     abstract sketch(p: any): void;

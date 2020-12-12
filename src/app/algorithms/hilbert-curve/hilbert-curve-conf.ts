@@ -3,6 +3,7 @@ import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { Line } from './line';
 import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configuration';
+import { BehaviorSubject } from 'rxjs';
 
 export class HilbertCurveConfigurable extends ConfigurableFractal {
     private order: number;
@@ -37,7 +38,7 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
             type: "slider",
             value: 5,
             minValue: 1,
-            maxValue: 20,
+            maxValue: 7,
             step: 1,
             func: this.setOrder
         },
@@ -50,7 +51,8 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
             name: "Szivárvány mód",
             type: "checkbox",
             value: 0,
-            func: this.setRainbowMode
+            func: this.setRainbowMode,
+            bind: new BehaviorSubject<number>(0)
         }
     ];
 
@@ -96,12 +98,13 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
                     if (i < this.path.length) {
                         if(this.rainbowMode) {
                             let h = p.map(i, 0, this.path.length, 0, 360);
-                            p.stroke(h, 255, 255);
+                            this.color = p.color(h, 255, 255);
                         }
                         let line = new Line(
                             new p5.Vector(this.path[i].x, this.path[i].y),
                             new p5.Vector(this.path[i - 1].x, this.path[i - 1].y)
                         );
+                        line.setColor(this.color);
                         this.list.push(line);
                         this.rollBackList$.next(this.list);
                         line.draw(p);
@@ -111,6 +114,23 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
                 this.counter += 1;
                 if (this.counter > this.path.length) {
                     this.play = false;
+                }
+            }
+        }
+    }
+
+    _rollBack(p: any) {
+        if (this.rollBack) {
+            if (this.play) {
+                this.rollBack = false;
+                let temp = this.list.slice(0, +this.rollBackTo);
+                this.list = temp;
+                this.counter = +this.rollBackTo + 2;
+            }
+            else {
+                p.background(this.canvasColor);
+                for (let i = 0; i < this.rollBackTo; i++) {
+                    this.list[i].draw(p);
                 }
             }
         }
@@ -127,6 +147,7 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
         }
         this.root = new Line(new p5.Vector(this.path[0].x, this.path[0].y),
             new p5.Vector(this.path[1].x, this.path[1].y));
+        this.root.setColor(this.color);
     }
 
     hilbert(i: number): p5.Vector {
@@ -179,6 +200,20 @@ export class HilbertCurveConfigurable extends ConfigurableFractal {
 
     setOrder(obj: any, order: number): void {
         obj.order = order;
+        obj.CONFIGURATIONS[4].bind.next(1);
+        obj.setStop();
+    }
+
+    setColor(obj: any, color: string): void {
+        obj.color = color;
+        obj.rainbowMode = false;
+        obj.CONFIGURATIONS[4].bind.next(0);
+        obj.setStop();
+    }
+
+    setRainbowMode(obj: any, value: boolean): void {
+        obj.rainbowMode = value;
+        obj.CONFIGURATIONS[4].bind.next(value);
         obj.setStop();
     }
 }

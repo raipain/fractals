@@ -3,6 +3,7 @@ import { ConfigurableFractal } from '../fractal-configurable';
 import { AnimationStateManagerService } from 'src/app/services/animation-state-manager.service';
 import { Line } from './line';
 import { IAlgorithmConfiguration } from 'src/app/models/algorithm-configuration';
+import { BehaviorSubject } from 'rxjs';
 
 export class KochCurveConfigurable extends ConfigurableFractal {
     private length: number;
@@ -44,10 +45,11 @@ export class KochCurveConfigurable extends ConfigurableFractal {
             name: "Vonalhosszúság",
             type: "slider",
             value: 200,
-            minValue: 1,
-            maxValue: 500,
+            minValue: 200,
+            maxValue: 700,
             step: 1,
-            func: this.setLength
+            func: this.setLength,
+            bind: new BehaviorSubject<number>(200)
         },
         {
             name: "Szög",
@@ -94,7 +96,8 @@ export class KochCurveConfigurable extends ConfigurableFractal {
             name: "Szivárvány mód",
             type: "checkbox",
             value: 0,   
-            func: this.setRainbowMode
+            func: this.setRainbowMode,
+            bind: new BehaviorSubject<number>(0)
         }
     ]
 
@@ -113,9 +116,12 @@ export class KochCurveConfigurable extends ConfigurableFractal {
         this.lerp = 1/3;
 
         this.length = this.width / 2;
+        this.CONFIGURATIONS[3].bind.next(this.length);
         this.fixedRoot = new Line(
             new p5.Vector(this.width / 2 - this.length / 2, this.height / 2),
             new p5.Vector(this.width / 2 + this.length / 2, this.height / 2));
+        this.fixedRoot.setColor(this.color);
+        
 
         this.root = this.fixedRoot;
         this.lines = [this.root];
@@ -165,8 +171,9 @@ export class KochCurveConfigurable extends ConfigurableFractal {
                     for (let i = this.iter; i < this.lines.length; i++) {
                         if(this.rainbowMode) {
                             let h = p.map(i, this.iter, this.lines.length, 0, 360);
-                            p.stroke(h, 255, 255);
+                            this.color = p.color(h, 255, 255);
                         }
+                        this.lines[i].setColor(this.color);
                         this.lines[i].draw(p);
 
                         let left = this.lines[i].expandLeft(p, this.direction, this.lerp, this.angle);
@@ -198,6 +205,7 @@ export class KochCurveConfigurable extends ConfigurableFractal {
                 let yOffset = p5.Vector.add(center, yDir);
 
                 this.customRoot = new Line(xOffset, yOffset);
+                this.customRoot.setColor(this.color);
                 this.root = this.customRoot;
                 this.lines = [this.root];
             }
@@ -217,22 +225,27 @@ export class KochCurveConfigurable extends ConfigurableFractal {
     }
 
     _rollBack(p: any) {
-        let from = this.list[this.rollBackTo - 2];
-        let to = this.list[this.rollBackTo - 1];
-        if (from == null) {
-            from = 0;
+        let to = 0;
+        for(let i = 0; i <= +this.rollBackTo; i++) {
+            to = to * 4 + 1;
         }
 
         if (this.rollBack) {
             if (this.play) {
-                for (let i = this.rollBackTo; i < this.lines.length; i++) {
-                    this.lines[i].draw(p);
-                }
                 this.rollBack = false;
+                let temp = this.lines.slice(0, to);
+                this.lines = temp;
+                this.iter = (to - 1) / 4;
+                temp = this.list.slice(0, this.rollBackTo);
+                this.list = temp;
             }
             else {
                 p.background(this.canvasColor);
-                for (let i = from; i < to; i++) {
+                let from = (((to - 1) / 4) - 1) / 4;
+                if(from < 0) {
+                    from = 0;
+                }
+                for (let i = from; i < (to - 1) / 4; i++) {
                     this.lines[i].draw(p);
                 }
             }
@@ -245,11 +258,15 @@ export class KochCurveConfigurable extends ConfigurableFractal {
             new p5.Vector(this.width / 2 - this.length / 2, this.height / 2),
             new p5.Vector(this.width / 2 + this.length / 2, this.height / 2)
         );
+        this.fixedRoot.setColor(this.color);
         if (this.useFixedRoot) {
             this.root = this.fixedRoot;
         }
         else {
             this.root = this.customRoot;
+        }
+        if(this.root != null) {
+            this.root.setColor(this.color);
         }
         this.lines = [this.root];
         this.list = [];
@@ -270,10 +287,12 @@ export class KochCurveConfigurable extends ConfigurableFractal {
 
     setLength(obj: KochCurveConfigurable, length: number): void {
         obj.length = length;
+        obj.CONFIGURATIONS[3].bind.next(length);
         obj.fixedRoot = new Line(
             new p5.Vector(obj.width / 2 - obj.length / 2, obj.height / 2),
             new p5.Vector(obj.width / 2 + obj.length / 2, obj.height / 2)
         );
+        obj.fixedRoot.setColor(obj.color);
         obj.recalculateCustomRoot();
 
         if (obj.useFixedRoot) {
@@ -321,7 +340,21 @@ export class KochCurveConfigurable extends ConfigurableFractal {
             let yOffset = p5.Vector.add(center, yDir);
     
             this.customRoot = new Line(xOffset, yOffset);
+            this.customRoot.setColor(this.color);
         }
+    }
+
+    setColor(obj: any, color: string): void {
+        obj.color = color;
+        obj.rainbowMode = false;
+        obj.CONFIGURATIONS[8].bind.next(0);
+        obj.setStop();
+    }
+
+    setRainbowMode(obj: any, value: boolean): void {
+        obj.rainbowMode = value;
+        obj.CONFIGURATIONS[8].bind.next(value);
+        obj.setStop();
     }
     //#endregion
 }
